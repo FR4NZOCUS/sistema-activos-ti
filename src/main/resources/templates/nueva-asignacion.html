@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Nueva asignación</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+            /* =====================================================
+               MENÚ
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 95%;
+                max-width: 1200px;
+
+                margin: 30px auto;
+            }
+
+            .titulo-seccion {
+                margin-bottom: 20px;
+            }
+
+            .titulo-seccion h2 {
+                margin: 0;
+
+                font-size: 22px;
+
+                color: #16374f;
+            }
+
+            .titulo-seccion p {
+                margin-top: 6px;
+
+                color: #607d8b;
+
+                font-size: 14px;
+            }
+
+            /* =====================================================
+               TARJETAS
+               ===================================================== */
+
+            .tarjeta {
+                background: white;
+
+                border-radius: 8px;
+
+                padding: 22px;
+
+                margin-bottom: 20px;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0, 0, 0, 0.04);
+            }
+
+            .tarjeta h3 {
+                margin-top: 0;
+
+                color: #16374f;
+
+                font-size: 18px;
+            }
+
+            /* =====================================================
+               FORMULARIOS
+               ===================================================== */
+
+            label {
+                display: block;
+
+                margin-bottom: 7px;
+
+                font-weight: bold;
+
+                font-size: 14px;
+            }
+
+            select,
+            textarea {
+                width: 100%;
+
+                padding: 11px 12px;
+
+                border: 1px solid #cfd8dc;
+
+                border-radius: 5px;
+
+                font-size: 14px;
+
+                background: white;
+            }
+
+            select:focus,
+            textarea:focus {
+                outline: none;
+
+                border-color: #0f5ca8;
+            }
+
+            textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+            /* =====================================================
+               INFORMACIÓN DEL COLABORADOR
+               ===================================================== */
+
+            .info-colaborador {
+                background: #eef6fb;
+
+                border-left: 4px solid #0f5ca8;
+
+                border-radius: 5px;
+
+                padding: 15px 18px;
+
+                margin-bottom: 20px;
+            }
+
+            .info-colaborador strong {
+                color: #16374f;
+            }
+
+            .info-colaborador p {
+                margin: 5px 0;
+            }
+
+            /* =====================================================
+               REQUISITOS COMPLEMENTARIOS
+               ===================================================== */
+
+            .lista-requisitos {
+                display: flex;
+
+                flex-wrap: wrap;
+
+                gap: 10px;
+
+                margin-top: 12px;
+            }
+
+            .requisito {
+                background: #edf7ed;
+
+                color: #28642f;
+
+                border: 1px solid #cce5ce;
+
+                padding: 8px 12px;
+
+                border-radius: 20px;
+
+                font-size: 13px;
+
+                font-weight: bold;
+            }
+
+            /* =====================================================
+               ACTIVO PRINCIPAL AUTOMÁTICO
+               ===================================================== */
+
+            .activo-automatico {
+                position: relative;
+
+                background: #f7fbff;
+
+                border: 2px solid #0f5ca8;
+
+                border-radius: 8px;
+
+                padding: 22px;
+
+                margin-top: 15px;
+            }
+
+            .activo-automatico-titulo {
+                margin-bottom: 15px;
+
+                color: #16374f;
+
+                font-size: 18px;
+
+                font-weight: bold;
+            }
+
+            .activo-automatico-grid {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 12px 20px;
+            }
+
+            .dato {
+                font-size: 14px;
+
+                line-height: 1.5;
+            }
+
+            .dato strong {
+                color: #37474f;
+            }
+
+            .etiqueta-automatico {
+                display: inline-block;
+
+                background: #e7f1fc;
+
+                color: #0f5ca8;
+
+                border: 1px solid #b9d6f2;
+
+                padding: 6px 10px;
+
+                border-radius: 4px;
+
+                font-size: 11px;
+
+                font-weight: bold;
+
+                margin-bottom: 15px;
+            }
+
+            .explicacion-automatica {
+                margin-top: 18px;
+
+                padding: 12px 14px;
+
+                background: #eef6fb;
+
+                border-left: 4px solid #0f5ca8;
+
+                border-radius: 4px;
+
+                color: #455a64;
+
+                font-size: 13px;
+
+                line-height: 1.5;
+            }
+
+            /* =====================================================
+               COMPLEMENTARIOS
+               ===================================================== */
+
+            .lista-activos {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(
+                    auto-fit,
+                    minmax(280px, 1fr)
+                    );
+
+                gap: 15px;
+
+                margin-top: 15px;
+            }
+
+            .activo-card {
+                position: relative;
+
+                border: 1px solid #d9e1e5;
+
+                border-radius: 7px;
+
+                padding: 17px;
+
+                cursor: pointer;
+
+                transition:
+                    border-color .2s,
+                    box-shadow .2s,
+                    transform .2s;
+
+                background: #ffffff;
+            }
+
+            .activo-card:hover {
+                border-color: #0f5ca8;
+
+                box-shadow:
+                    0 3px 10px
+                    rgba(0, 0, 0, 0.08);
+
+                transform: translateY(-1px);
+            }
+
+            .activo-card input {
+                margin-right: 8px;
+            }
+
+            .activo-titulo {
+                font-weight: bold;
+
+                color: #16374f;
+
+                margin-bottom: 10px;
+            }
+
+            .activo-detalle {
+                font-size: 13px;
+
+                color: #546e7a;
+
+                line-height: 1.7;
+            }
+
+            .complementario-card {
+                border-left: 4px solid #628d64;
+            }
+
+            .etiqueta-complemento {
+                display: inline-block;
+
+                background: #edf7ed;
+
+                color: #28642f;
+
+                border: 1px solid #cce5ce;
+
+                padding: 4px 7px;
+
+                border-radius: 4px;
+
+                font-size: 11px;
+
+                font-weight: bold;
+
+                margin-top: 10px;
+            }
+
+            /* =====================================================
+               MENSAJES
+               ===================================================== */
+
+            .sin-resultados {
+                padding: 15px;
+
+                background: #fff8e1;
+
+                border-left: 4px solid #e0a800;
+
+                border-radius: 4px;
+
+                color: #725c00;
+
+                font-size: 14px;
+
+                margin-top: 12px;
+
+                line-height: 1.5;
+            }
+
+            .sin-equipo {
+                padding: 18px;
+
+                background: #fff3f3;
+
+                border-left: 4px solid #c62828;
+
+                border-radius: 5px;
+
+                color: #8b1d1d;
+
+                font-size: 14px;
+
+                line-height: 1.6;
+
+                margin-top: 15px;
+            }
+
+            /* =====================================================
+               BOTONES
+               ===================================================== */
+
+            .acciones {
+                display: flex;
+
+                justify-content: flex-end;
+
+                gap: 10px;
+
+                margin-top: 20px;
+            }
+
+            .btn {
+                border: none;
+
+                border-radius: 5px;
+
+                padding: 11px 18px;
+
+                cursor: pointer;
+
+                text-decoration: none;
+
+                font-size: 14px;
+
+                display: inline-block;
+            }
+
+            .btn-primario {
+                background: #0f5ca8;
+
+                color: white;
+            }
+
+            .btn-primario:hover:not(:disabled) {
+                background: #0b4a88;
+            }
+
+            .btn-primario:disabled {
+                background: #b0bec5;
+
+                cursor: not-allowed;
+            }
+
+            .btn-secundario {
+                background: #eceff1;
+
+                color: #37474f;
+            }
+
+            .btn-secundario:hover {
+                background: #dfe3e6;
+            }
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 800px) {
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .lista-activos,
+                .activo-automatico-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .acciones {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Gestión de Activos TI
+                    </h1>
+
+                    <p>
+                        Control y asignación de activos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form method="post"
+                          th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MENÚ
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}"
+                   class="activo">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a th:if="${esAdministrador}"
+                   th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+             ===================================================== -->
+
+        <div class="contenedor">
+
+
+            <div class="titulo-seccion">
+
+                <h2>
+                    Nueva asignación
+                </h2>
+
+                <p>
+                    Seleccione un colaborador. El sistema determinará
+                    automáticamente el equipo principal más adecuado
+                    según los requisitos configurados para su cargo.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 PASO 1: SELECCIONAR COLABORADOR
+                 ================================================= -->
+
+            <div class="tarjeta">
+
+                <h3>
+                    1. Seleccionar colaborador
+                </h3>
+
+
+                <form method="get"
+                      th:action="@{/asignaciones/nueva}">
+
+                    <label>
+                        Colaborador
+                    </label>
+
+
+                    <select name="colaboradorId"
+                            required
+                            onchange="this.form.submit()">
+
+                        <option value="">
+                            -- Seleccione un colaborador --
+                        </option>
+
+
+                        <option
+                            th:each="colaborador : ${colaboradores}"
+
+                            th:value="${colaborador.idColaborador}"
+
+                            th:selected="${colaboradorSeleccionado != null
+                            and colaboradorSeleccionado.idColaborador
+                            == colaborador.idColaborador}"
+
+                            th:text="${colaborador.nombreCompleto
+                            + ' - '
+                            + (colaborador.cargo != null
+                            ? colaborador.cargo.nombreCargo
+                            : 'Sin cargo')}">
+                        </option>
+
+                    </select>
+
+                </form>
+
+            </div>
+
+
+            <!-- =================================================
+                 SOLO MOSTRAR SI HAY COLABORADOR
+                 ================================================= -->
+
+            <div th:if="${colaboradorSeleccionado != null}">
+
+
+                <!-- =============================================
+                     INFORMACIÓN DEL COLABORADOR
+                     ============================================= -->
+
+                <div class="info-colaborador">
+
+                    <p>
+
+                        <strong>
+                            Colaborador:
+                        </strong>
+
+                        <span
+                            th:text="${colaboradorSeleccionado.nombreCompleto}">
+                        </span>
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Cargo:
+                        </strong>
+
+                        <span
+                            th:text="${colaboradorSeleccionado.cargo != null
+                            ? colaboradorSeleccionado.cargo.nombreCargo
+                            : 'Sin cargo'}">
+                        </span>
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Código:
+                        </strong>
+
+                        <span
+                            th:text="${colaboradorSeleccionado.codigoUsuario}">
+                        </span>
+
+                    </p>
+
+                </div>
+
+
+                <!-- =============================================
+                     COMPLEMENTOS CONFIGURADOS
+                     ============================================= -->
+
+                <div class="tarjeta">
+
+                    <h3>
+                        Complementos sugeridos para el cargo
+                    </h3>
+
+
+                    <div
+                        th:if="${requisitosComplementarios != null
+                        and !requisitosComplementarios.isEmpty()}">
+
+
+                        <div class="lista-requisitos">
+
+                            <div
+                                class="requisito"
+
+                                th:each="requisito :
+                                ${requisitosComplementarios}">
+
+                                ✓
+
+                                <span
+                                    th:text="${requisito.tipoEquipo.nombreTipo}">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="sin-resultados"
+
+                        th:if="${requisitosComplementarios == null
+                        or requisitosComplementarios.isEmpty()}">
+
+                        El cargo seleccionado no tiene
+                        complementos configurados.
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     FORMULARIO DE ASIGNACIÓN
+                     ============================================= -->
+
+                <form method="post"
+                      th:action="@{/asignaciones/guardar}"
+                      th:object="${asignacion}">
+
+
+                    <!-- ID DEL COLABORADOR -->
+
+                    <input
+                        type="hidden"
+                        th:field="*{colaborador.idColaborador}">
+
+
+                    <!-- =========================================
+                         PASO 2: EQUIPO PRINCIPAL AUTOMÁTICO
+                         ========================================= -->
+
+                    <div class="tarjeta">
+
+                        <h3>
+                            2. Equipo principal seleccionado automáticamente
+                        </h3>
+
+
+                        <!-- EXISTE EQUIPO PRINCIPAL -->
+
+                        <div
+                            th:if="${activoPrincipalAutomatico != null}">
+
+
+                            <div class="activo-automatico">
+
+
+                                <span class="etiqueta-automatico">
+
+                                    SELECCIONADO AUTOMÁTICAMENTE
+
+                                </span>
+
+
+                                <div class="activo-automatico-titulo">
+
+                                    <span
+                                        th:text="${activoPrincipalAutomatico.numeroInventario}">
+                                    </span>
+
+                                    -
+
+                                    <span
+                                        th:text="${activoPrincipalAutomatico.modelo != null
+                                        ? activoPrincipalAutomatico.modelo
+                                        : 'Modelo no registrado'}">
+                                    </span>
+
+                                </div>
+
+
+                                <div class="activo-automatico-grid">
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Tipo:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.tipoEquipo != null
+                                            ? activoPrincipalAutomatico.tipoEquipo.nombreTipo
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Marca:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.marca != null
+                                            ? activoPrincipalAutomatico.marca.nombreMarca
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Modelo:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.modelo != null
+                                            ? activoPrincipalAutomatico.modelo
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Número de serie:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.numeroSerie != null
+                                            ? activoPrincipalAutomatico.numeroSerie
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Procesador:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.procesador != null
+                                            ? activoPrincipalAutomatico.procesador
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Generación:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.generacionProcesador != null
+                                            ? activoPrincipalAutomatico.generacionProcesador
+                                            : 'Pendiente'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            RAM:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.ramGb != null
+                                            ? activoPrincipalAutomatico.ramGb + ' GB'
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Almacenamiento:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.almacenamientoGb != null
+                                            ? activoPrincipalAutomatico.almacenamientoGb + ' GB'
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Estado:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.estado != null
+                                            ? activoPrincipalAutomatico.estado.nombreEstado
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="dato">
+
+                                        <strong>
+                                            Ubicación:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activoPrincipalAutomatico.ubicacion != null
+                                            ? activoPrincipalAutomatico.ubicacion.nombreUbicacion
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="explicacion-automatica">
+
+                                    Este equipo fue seleccionado automáticamente
+                                    porque cumple los requisitos técnicos
+                                    configurados para el cargo del colaborador.
+
+                                    El sistema prioriza un equipo compatible que
+                                    se ajuste lo más posible a la generación,
+                                    procesador, memoria RAM y almacenamiento
+                                    requeridos.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- NO EXISTE EQUIPO -->
+
+                        <div
+                            class="sin-equipo"
+
+                            th:if="${activoPrincipalAutomatico == null}">
+
+                            <strong>
+                                No existe un equipo principal compatible.
+                            </strong>
+
+                            <br><br>
+
+                            Actualmente no hay un activo disponible que cumpla
+                            todos los requisitos configurados para el cargo
+                            seleccionado.
+
+                            <br><br>
+
+                            Verifique:
+
+                            <br>
+
+                            • disponibilidad del equipo;
+
+                            <br>
+
+                            • procesador;
+
+                            <br>
+
+                            • generación mínima;
+
+                            <br>
+
+                            • memoria RAM;
+
+                            <br>
+
+                            • almacenamiento.
+
+                            <br><br>
+
+                            La asignación no podrá confirmarse hasta que exista
+                            un equipo compatible.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         PASO 3: COMPLEMENTARIOS
+                         ========================================= -->
+
+                    <div class="tarjeta">
+
+                        <h3>
+                            3. Seleccionar activos complementarios
+                        </h3>
+
+
+                        <p style="font-size:14px; color:#607d8b;">
+
+                            Los complementos son opcionales.
+                            Puede seleccionar los activos adicionales que
+                            correspondan al colaborador según disponibilidad.
+
+                        </p>
+
+
+                        <!-- EXISTEN COMPLEMENTARIOS -->
+
+                        <div
+                            class="lista-activos"
+
+                            th:if="${activosComplementarios != null
+                            and !activosComplementarios.isEmpty()}">
+
+
+                            <label
+                                class="activo-card complementario-card"
+
+                                th:each="activo :
+                                ${activosComplementarios}">
+
+
+                                <div class="activo-titulo">
+
+
+                                    <input
+                                        type="checkbox"
+
+                                        name="activosComplementariosSeleccionados"
+
+                                        th:value="${activo.idActivo}">
+
+
+                                    <span
+                                        th:text="${activo.numeroInventario}">
+                                    </span>
+
+                                </div>
+
+
+                                <div class="activo-detalle">
+
+
+                                    <div>
+
+                                        <strong>
+                                            Tipo:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activo.tipoEquipo != null
+                                            ? activo.tipoEquipo.nombreTipo
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            Marca:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activo.marca != null
+                                            ? activo.marca.nombreMarca
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            Modelo:
+                                        </strong>
+
+                                        <span
+                                            th:text="${activo.modelo != null
+                                            ? activo.modelo
+                                            : '-'}">
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="etiqueta-complemento">
+
+                                        COMPLEMENTARIO
+
+                                    </span>
+
+                                </div>
+
+                            </label>
+
+                        </div>
+
+
+                        <!-- NO EXISTEN COMPLEMENTARIOS -->
+
+                        <div
+                            class="sin-resultados"
+
+                            th:if="${activosComplementarios == null
+                            or activosComplementarios.isEmpty()}">
+
+                            Actualmente no existen activos complementarios
+                            disponibles para los requisitos del cargo.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         OBSERVACIONES
+                         ========================================= -->
+
+                    <div class="tarjeta">
+
+                        <h3>
+                            4. Observaciones
+                        </h3>
+
+
+                        <label>
+                            Observaciones de la asignación
+                        </label>
+
+
+                        <textarea
+                            th:field="*{observaciones}"
+
+                            placeholder="Ingrese una observación si es necesario...">
+                        </textarea>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         BOTONES
+                         ========================================= -->
+
+                    <div class="acciones">
+
+
+                        <a
+                            th:href="@{/asignaciones}"
+
+                            class="btn btn-secundario">
+
+                            Cancelar
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+
+                            class="btn btn-primario"
+
+                            th:disabled="${activoPrincipalAutomatico == null}">
+
+                            Confirmar asignación automática
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

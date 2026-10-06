@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Asignaciones</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1500px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1500px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 96%;
+                max-width: 1600px;
+                margin: 30px auto;
+            }
+
+            .encabezado-pagina {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                margin-bottom: 20px;
+
+                gap: 20px;
+            }
+
+            .encabezado-pagina h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            .encabezado-pagina p {
+                margin: 6px 0 0;
+                color: #607d8b;
+                font-size: 14px;
+            }
+
+            .btn {
+                text-decoration: none;
+                border-radius: 5px;
+                padding: 10px 16px;
+                font-size: 14px;
+                display: inline-block;
+            }
+
+            .btn-nuevo {
+                background: #158a54;
+                color: white;
+                font-weight: bold;
+            }
+
+            .btn-nuevo:hover {
+                background: #107044;
+            }
+
+            .tabla-contenedor {
+                width: 100%;
+                background: white;
+
+                border-radius: 8px;
+
+                overflow-x: auto;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 1450px;
+            }
+
+            th {
+                background: #f7f9fa;
+
+                text-align: left;
+
+                padding: 13px;
+
+                border-bottom: 1px solid #dfe3e6;
+
+                font-size: 13px;
+
+                color: #37474f;
+            }
+
+            td {
+                padding: 13px;
+
+                border-bottom: 1px solid #eceff1;
+
+                font-size: 13px;
+
+                vertical-align: middle;
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            tbody tr:hover {
+                background: #fafcfd;
+            }
+
+            /*
+             * ================================================
+             * ESTADO DE ASIGNACIÓN
+             * ================================================
+             */
+
+            .estado {
+                display: inline-block;
+
+                padding: 5px 9px;
+
+                border-radius: 14px;
+
+                font-size: 11px;
+
+                font-weight: bold;
+
+                white-space: nowrap;
+            }
+
+            .estado-activa {
+                background: #d8f5e8;
+                color: #08784f;
+            }
+
+            .estado-finalizada {
+                background: #eceff1;
+                color: #546e7a;
+            }
+
+            .estado-otro {
+                background: #fff1cd;
+                color: #8a6700;
+            }
+
+
+            /*
+             * ================================================
+             * ESTADOS DEL ACTIVO
+             * ================================================
+             */
+
+            .activo-asignado {
+                background: #dbeafe;
+                color: #1d4ed8;
+            }
+
+            .activo-renovacion {
+                background: #fef3c7;
+                color: #92400e;
+            }
+
+            .activo-cesado {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .activo-prestamo {
+                background: #ede9fe;
+                color: #6d28d9;
+            }
+
+            .activo-disponible {
+                background: #d1fae5;
+                color: #065f46;
+            }
+
+            .activo-otro {
+                background: #e5e7eb;
+                color: #4b5563;
+            }
+
+
+            /*
+             * ================================================
+             * PERFIL TECNOLÓGICO
+             * ================================================
+             */
+
+            .perfil {
+                display: inline-block;
+
+                padding: 5px 9px;
+
+                border-radius: 12px;
+
+                background: #e7f1fc;
+
+                color: #0f5ca8;
+
+                font-size: 11px;
+
+                font-weight: bold;
+
+                white-space: nowrap;
+            }
+
+
+            /*
+             * ================================================
+             * ACCIONES
+             * ================================================
+             */
+
+            .acciones-tabla {
+                white-space: nowrap;
+            }
+
+            .accion {
+                color: #0f5ca8;
+                text-decoration: none;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .accion:hover {
+                text-decoration: underline;
+            }
+
+            .accion-devolver {
+                color: #b26a00;
+            }
+
+            .sin-datos {
+                padding: 25px;
+                text-align: center;
+                color: #607d8b;
+            }
+
+            @media(max-width: 900px) {
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .usuario-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .encabezado-pagina {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Gestión de asignaciones de activos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}"
+                   class="activo">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+
+                    Usuarios
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="contenedor">
+
+            <div class="encabezado-pagina">
+
+                <div>
+
+                    <h2>
+                        Asignaciones
+                    </h2>
+
+                    <p>
+                        Consulte las asignaciones actuales,
+                        el estado de cada activo y gestione
+                        las devoluciones correspondientes.
+                    </p>
+
+                </div>
+
+
+                <a
+                    th:if="${puedeGestionar}"
+                    th:href="@{/asignaciones/nueva}"
+                    class="btn btn-nuevo">
+
+                    + Nueva asignación
+
+                </a>
+
+            </div>
+
+
+            <div class="tabla-contenedor">
+
+                <table
+                    th:if="${asignaciones != null
+                    and !asignaciones.isEmpty()}">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Colaborador</th>
+
+                            <th>Perfil tecnológico</th>
+
+                            <th>Inventario</th>
+
+                            <th>Tipo</th>
+
+                            <th>Marca</th>
+
+                            <th>Modelo</th>
+
+                            <th>Estado del activo</th>
+
+                            <th>Fecha</th>
+
+                            <th>Estado asignación</th>
+
+                            <th>Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr
+                            th:each="asignacion : ${asignaciones}">
+
+
+                            <!-- ID -->
+
+                            <td
+                                th:text="${asignacion.idAsignacion}">
+                            </td>
+
+
+                            <!-- COLABORADOR -->
+
+                            <td
+                                th:text="${asignacion.colaborador != null
+                                ? asignacion.colaborador.nombreCompleto
+                                : '-'}">
+                            </td>
+
+
+                            <!-- PERFIL TECNOLÓGICO -->
+
+                            <td>
+
+                                <span
+                                    th:if="${asignacion.colaborador != null
+                                    and asignacion.colaborador.cargo != null}"
+
+                                    class="perfil"
+
+                                    th:text="${asignacion.colaborador.cargo.nombreCargo}">
+
+                                </span>
+
+                                <span
+                                    th:if="${asignacion.colaborador == null
+                                    or asignacion.colaborador.cargo == null}">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- INVENTARIO -->
+
+                            <td
+                                th:text="${asignacion.activo != null
+                                ? asignacion.activo.numeroInventario
+                                : '-'}">
+                            </td>
+
+
+                            <!-- TIPO -->
+
+                            <td
+                                th:text="${asignacion.activo != null
+                                and asignacion.activo.tipoEquipo != null
+                                ? asignacion.activo.tipoEquipo.nombreTipo
+                                : '-'}">
+                            </td>
+
+
+                            <!-- MARCA -->
+
+                            <td
+                                th:text="${asignacion.activo != null
+                                and asignacion.activo.marca != null
+                                ? asignacion.activo.marca.nombreMarca
+                                : '-'}">
+                            </td>
+
+
+                            <!-- MODELO -->
+
+                            <td
+                                th:text="${asignacion.activo != null
+                                and asignacion.activo.modelo != null
+                                ? asignacion.activo.modelo
+                                : '-'}">
+                            </td>
+
+
+                            <!-- ESTADO DEL ACTIVO -->
+
+                            <td>
+
+                                <!-- ASIGNADO EN USO -->
+
+                                <span
+                                    class="estado activo-asignado"
+
+                                    th:if="${asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    and asignacion.activo.estado.nombreEstado
+                                    == 'ASIGNADO_EN_USO'}">
+
+                                    ASIGNADO EN USO
+
+                                </span>
+
+
+                                <!-- RENOVACIÓN POR DEVOLVER -->
+
+                                <span
+                                    class="estado activo-renovacion"
+
+                                    th:if="${asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    and asignacion.activo.estado.nombreEstado
+                                    == 'RENOVACION_POR_DEVOLVER'}">
+
+                                    RENOVACIÓN POR DEVOLVER
+
+                                </span>
+
+
+                                <!-- CESADO POR DEVOLVER -->
+
+                                <span
+                                    class="estado activo-cesado"
+
+                                    th:if="${asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    and asignacion.activo.estado.nombreEstado
+                                    == 'CESADO_POR_DEVOLVER'}">
+
+                                    CESADO POR DEVOLVER
+
+                                </span>
+
+
+                                <!-- PRÉSTAMO POR GARANTÍA -->
+
+                                <span
+                                    class="estado activo-prestamo"
+
+                                    th:if="${asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    and asignacion.activo.estado.nombreEstado
+                                    == 'PRESTAMO_POR_GARANTIA'}">
+
+                                    PRÉSTAMO POR GARANTÍA
+
+                                </span>
+
+
+                                <!-- DISPONIBLE -->
+
+                                <span
+                                    class="estado activo-disponible"
+
+                                    th:if="${asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    and asignacion.activo.estado.nombreEstado
+                                    == 'DISPONIBLE'}">
+
+                                    DISPONIBLE
+
+                                </span>
+
+
+                                <!-- CUALQUIER OTRO ESTADO -->
+
+                                <span
+                                    class="estado activo-otro"
+
+                                    th:if="${asignacion.activo == null
+                                    or asignacion.activo.estado == null
+                                    or (
+                                    asignacion.activo.estado.nombreEstado
+                                    != 'ASIGNADO_EN_USO'
+                                    and asignacion.activo.estado.nombreEstado
+                                    != 'RENOVACION_POR_DEVOLVER'
+                                    and asignacion.activo.estado.nombreEstado
+                                    != 'CESADO_POR_DEVOLVER'
+                                    and asignacion.activo.estado.nombreEstado
+                                    != 'PRESTAMO_POR_GARANTIA'
+                                    and asignacion.activo.estado.nombreEstado
+                                    != 'DISPONIBLE'
+                                    )}"
+
+                                    th:text="${asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    ? asignacion.activo.estado.nombreEstado
+                                    : '-'}">
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- FECHA -->
+
+                            <td
+                                th:text="${asignacion.fechaAsignacion != null
+                                ? #temporals.format(
+                                asignacion.fechaAsignacion,
+                                'dd/MM/yyyy HH:mm'
+                                )
+                                : '-'}">
+                            </td>
+
+
+                            <!-- ESTADO DE LA ASIGNACIÓN -->
+
+                            <td>
+
+                                <span
+                                    class="estado estado-activa"
+
+                                    th:if="${asignacion.estadoAsignacion == 'ACTIVA'}">
+
+                                    ACTIVA
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-finalizada"
+
+                                    th:if="${asignacion.estadoAsignacion == 'FINALIZADA'}">
+
+                                    FINALIZADA
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-otro"
+
+                                    th:if="${asignacion.estadoAsignacion != 'ACTIVA'
+                                    and asignacion.estadoAsignacion != 'FINALIZADA'}"
+
+                                    th:text="${asignacion.estadoAsignacion != null
+                                    ? asignacion.estadoAsignacion
+                                    : '-'}">
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td class="acciones-tabla">
+
+
+                                <!-- TODOS PUEDEN CONSULTAR -->
+
+                                <a
+                                    th:href="@{/asignaciones/ver/{id}
+                                    (id=${asignacion.idAsignacion})}"
+
+                                    class="accion">
+
+                                    Ver
+
+                                </a>
+
+
+                                <!--
+                                    DEVOLUCIÓN
+        
+                                    Requisitos:
+        
+                                    1. Usuario ADMIN o SOPORTE.
+                                    2. Asignación ACTIVA.
+                                    3. Activo existente.
+                                    4. Estado retornable.
+        
+                                    Estados retornables:
+        
+                                    ASIGNADO_EN_USO
+                                    RENOVACION_POR_DEVOLVER
+                                    CESADO_POR_DEVOLVER
+                                    PRESTAMO_POR_GARANTIA
+                                -->
+
+                                <a
+                                    th:if="${puedeGestionar
+                                    and asignacion.estadoAsignacion == 'ACTIVA'
+                                    and asignacion.activo != null
+                                    and asignacion.activo.estado != null
+                                    and (
+                                    asignacion.activo.estado.nombreEstado
+                                    == 'ASIGNADO_EN_USO'
+                                    or asignacion.activo.estado.nombreEstado
+                                    == 'RENOVACION_POR_DEVOLVER'
+                                    or asignacion.activo.estado.nombreEstado
+                                    == 'CESADO_POR_DEVOLVER'
+                                    or asignacion.activo.estado.nombreEstado
+                                    == 'PRESTAMO_POR_GARANTIA'
+                                    )}"
+
+                                    th:href="@{/devoluciones/nueva/{id}
+                                    (id=${asignacion.idAsignacion})}"
+
+                                    class="accion accion-devolver">
+
+                                    Devolver
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div
+                    class="sin-datos"
+
+                    th:if="${asignaciones == null
+                    or asignaciones.isEmpty()}">
+
+                    No existen asignaciones registradas.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

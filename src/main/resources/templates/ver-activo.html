@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Detalle del activo</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #1f2937;
+            }
+
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+
+            /* =====================================================
+               NAVEGACIÓN
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 92%;
+                max-width: 1050px;
+                margin: 30px auto 40px;
+            }
+
+            .tarjeta {
+                background: white;
+
+                border: 1px solid #e0e5e8;
+
+                border-radius: 10px;
+
+                padding: 30px;
+
+                box-shadow:
+                    0 2px 8px rgba(0,0,0,0.06);
+            }
+
+
+            /* =====================================================
+               TÍTULO
+               ===================================================== */
+
+            .titulo {
+                display: flex;
+
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 20px;
+
+                margin-bottom: 25px;
+
+                padding-bottom: 18px;
+
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .titulo h2 {
+                margin: 0;
+
+                color: #16374f;
+
+                font-size: 22px;
+            }
+
+            .titulo small {
+                display: block;
+
+                margin-top: 5px;
+
+                color: #64748b;
+            }
+
+
+            /* =====================================================
+               ESTADOS
+               ===================================================== */
+
+            .estado {
+                padding: 7px 14px;
+
+                border-radius: 18px;
+
+                font-weight: bold;
+
+                font-size: 11px;
+
+                background: #e5e7eb;
+
+                white-space: nowrap;
+            }
+
+            .disponible {
+                background: #d1fae5;
+                color: #065f46;
+            }
+
+            .asignado {
+                background: #dbeafe;
+                color: #1e40af;
+            }
+
+            .mantenimiento {
+                background: #fef3c7;
+                color: #92400e;
+            }
+
+            .renovacion {
+                background: #fef3c7;
+                color: #92400e;
+            }
+
+            .cesado {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .prestamo {
+                background: #ede9fe;
+                color: #6d28d9;
+            }
+
+            .backup {
+                background: #cffafe;
+                color: #0e7490;
+            }
+
+            .garantia {
+                background: #f3e8ff;
+                color: #7e22ce;
+            }
+
+            .pendiente {
+                background: #ffedd5;
+                color: #9a3412;
+            }
+
+            .baja {
+                background: #eceff1;
+                color: #546e7a;
+            }
+
+
+            /* =====================================================
+               SECCIONES
+               ===================================================== */
+
+            .subtitulo {
+                margin: 26px 0 16px;
+
+                color: #16374f;
+
+                font-size: 16px;
+
+                border-bottom: 1px solid #e5e7eb;
+
+                padding-bottom: 8px;
+            }
+
+
+            /* =====================================================
+               DATOS
+               ===================================================== */
+
+            .grid {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 18px 30px;
+            }
+
+            .dato {
+                border-bottom: 1px solid #e5e7eb;
+
+                padding-bottom: 10px;
+            }
+
+            .dato label {
+                display: block;
+
+                font-size: 11px;
+
+                font-weight: bold;
+
+                color: #64748b;
+
+                margin-bottom: 6px;
+
+                text-transform: uppercase;
+            }
+
+            .dato span {
+                font-size: 14px;
+
+                color: #1f2937;
+            }
+
+            .completo {
+                grid-column: 1 / -1;
+            }
+
+            .sin-dato {
+                color: #94a3b8 !important;
+                font-style: italic;
+            }
+
+
+            /* =====================================================
+               HISTORIAL
+               ===================================================== */
+
+            .historial-seccion {
+                margin-top: 35px;
+            }
+
+            .historial-seccion h3 {
+                margin-bottom: 20px;
+
+                border-bottom: 1px solid #e5e7eb;
+
+                padding-bottom: 10px;
+
+                color: #16374f;
+            }
+
+            .timeline {
+                display: flex;
+
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+            .movimiento {
+                background: #f8fafc;
+
+                border-left: 4px solid #0f5ca8;
+
+                padding: 14px 16px;
+
+                border-radius: 5px;
+            }
+
+            .fecha {
+                font-size: 12px;
+
+                color: #64748b;
+
+                margin-bottom: 7px;
+            }
+
+            .cambio {
+                font-weight: bold;
+
+                margin-bottom: 7px;
+            }
+
+            .estado-anterior {
+                color: #475569;
+            }
+
+            .flecha {
+                margin: 0 8px;
+
+                color: #64748b;
+            }
+
+            .estado-nuevo {
+                color: #0f5ca8;
+            }
+
+            .comentario {
+                font-size: 13px;
+
+                color: #475569;
+            }
+
+            .sin-historial {
+                background: #f8fafc;
+
+                padding: 15px;
+
+                border-radius: 6px;
+
+                color: #64748b;
+            }
+
+
+            /* =====================================================
+               BOTONES
+               ===================================================== */
+
+            .botones {
+                display: flex;
+
+                justify-content: flex-end;
+
+                gap: 10px;
+
+                margin-top: 30px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+
+                border-radius: 6px;
+
+                text-decoration: none;
+
+                font-weight: bold;
+
+                font-size: 14px;
+            }
+
+            .btn-volver {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .btn-volver:hover {
+                background: #d1d5db;
+            }
+
+            .btn-editar {
+                background: #0f5ca8;
+                color: white;
+            }
+
+            .btn-editar:hover {
+                background: #0b4a88;
+            }
+
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 750px) {
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .usuario-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .completo {
+                    grid-column: auto;
+                }
+
+                .titulo {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Detalle del activo tecnológico
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}"
+                   class="activo">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <main class="contenedor">
+
+            <div class="tarjeta">
+
+
+                <!-- =================================================
+                     TÍTULO
+                     ================================================= -->
+
+                <div class="titulo">
+
+                    <div>
+
+                        <h2
+                            th:text="${activo.numeroInventario}">
+
+                            INV-0001
+
+                        </h2>
+
+                        <small
+                            th:text="${activo.numeroSerie != null
+                            ? 'Serie: ' + activo.numeroSerie
+                            : 'Sin número de serie'}">
+
+                            Serie
+
+                        </small>
+
+                    </div>
+
+
+                    <span
+                        class="estado"
+
+                        th:text="${activo.estado != null
+                        ? activo.estado.nombreEstado
+                        : '-'}"
+
+                        th:classappend="${
+
+                        activo.estado != null
+                        and activo.estado.nombreEstado == 'DISPONIBLE'
+                        ? ' disponible'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'ASIGNADO_EN_USO'
+                        ? ' asignado'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'MANTENIMIENTO'
+                        ? ' mantenimiento'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'RENOVACION_POR_DEVOLVER'
+                        ? ' renovacion'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'CESADO_POR_DEVOLVER'
+                        ? ' cesado'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'PRESTAMO_POR_GARANTIA'
+                        ? ' prestamo'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'BACKUP'
+                        ? ' backup'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'GARANTIA'
+                        ? ' garantia'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'DEVUELTO_PENDIENTE_REVISION'
+                        ? ' pendiente'
+
+                        : activo.estado != null
+                        and activo.estado.nombreEstado == 'BAJA'
+                        ? ' baja'
+
+                        : ''
+                        }">
+
+                        DISPONIBLE
+
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     IDENTIFICACIÓN
+                     ================================================= -->
+
+                <h3 class="subtitulo">
+                    Identificación
+                </h3>
+
+
+                <div class="grid">
+
+
+                    <div class="dato">
+
+                        <label>
+                            N.º de inventario
+                        </label>
+
+                        <span
+                            th:text="${activo.numeroInventario}">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            N.º de serie
+                        </label>
+
+                        <span
+                            th:text="${activo.numeroSerie != null
+                            ? activo.numeroSerie
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Tipo de equipo
+                        </label>
+
+                        <span
+                            th:text="${activo.tipoEquipo != null
+                            ? activo.tipoEquipo.nombreTipo
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Marca
+                        </label>
+
+                        <span
+                            th:text="${activo.marca != null
+                            ? activo.marca.nombreMarca
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato completo">
+
+                        <label>
+                            Modelo
+                        </label>
+
+                        <span
+                            th:text="${activo.modelo != null
+                            ? activo.modelo
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     INFORMACIÓN TÉCNICA
+                     ================================================= -->
+
+                <h3 class="subtitulo">
+                    Características técnicas
+                </h3>
+
+
+                <div class="grid">
+
+
+                    <div class="dato">
+
+                        <label>
+                            Procesador
+                        </label>
+
+                        <span
+                            th:if="${activo.procesador != null}"
+                            th:text="${activo.procesador}">
+                        </span>
+
+                        <span
+                            th:if="${activo.procesador == null}"
+                            class="sin-dato">
+
+                            Pendiente
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Generación del procesador
+                        </label>
+
+                        <span
+                            th:if="${activo.generacionProcesador != null}"
+                            th:text="${activo.generacionProcesador + 'ª generación'}">
+                        </span>
+
+                        <span
+                            th:if="${activo.generacionProcesador == null}"
+                            class="sin-dato">
+
+                            Pendiente
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            RAM
+                        </label>
+
+                        <span
+                            th:text="${activo.ramGb != null
+                            ? activo.ramGb + ' GB'
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Almacenamiento
+                        </label>
+
+                        <span
+                            th:text="${activo.almacenamientoGb != null
+                            ? activo.almacenamientoGb + ' GB'
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     UBICACIÓN
+                     ================================================= -->
+
+                <h3 class="subtitulo">
+                    Estado y ubicación
+                </h3>
+
+
+                <div class="grid">
+
+
+                    <div class="dato">
+
+                        <label>
+                            Estado
+                        </label>
+
+                        <span
+                            th:text="${activo.estado != null
+                            ? activo.estado.nombreEstado
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Sede
+                        </label>
+
+                        <span
+                            th:text="${activo.sede != null
+                            ? activo.sede.nombreSede
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Ubicación
+                        </label>
+
+                        <span
+                            th:text="${activo.ubicacion != null
+                            ? activo.ubicacion.nombreUbicacion
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Centro de costo
+                        </label>
+
+                        <span
+                            th:if="${activo.centroCosto != null}"
+                            th:text="${activo.centroCosto.codigo}">
+                        </span>
+
+                        <span
+                            th:if="${activo.centroCosto == null}"
+                            class="sin-dato">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FECHAS
+                     ================================================= -->
+
+                <h3 class="subtitulo">
+                    Compra y garantía
+                </h3>
+
+
+                <div class="grid">
+
+
+                    <div class="dato">
+
+                        <label>
+                            Fecha de compra
+                        </label>
+
+                        <span
+                            th:text="${activo.fechaCompra != null
+                            ? #temporals.format(
+                            activo.fechaCompra,
+                            'dd/MM/yyyy'
+                            )
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Vencimiento de garantía
+                        </label>
+
+                        <span
+                            th:text="${activo.fechaVencimientoGarantia != null
+                            ? #temporals.format(
+                            activo.fechaVencimientoGarantia,
+                            'dd/MM/yyyy'
+                            )
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     OBSERVACIONES
+                     ================================================= -->
+
+                <h3 class="subtitulo">
+                    Observaciones
+                </h3>
+
+
+                <div class="grid">
+
+                    <div class="dato completo">
+
+                        <span
+                            th:text="${activo.observaciones != null
+                            and !activo.observaciones.isBlank()
+                            ? activo.observaciones
+                            : 'Sin observaciones'}">
+
+                            Sin observaciones
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     HISTORIAL
+                     ================================================= -->
+
+                <div class="historial-seccion">
+
+                    <h3>
+                        Historial del activo
+                    </h3>
+
+
+                    <div
+                        th:if="${#lists.isEmpty(historial)}"
+                        class="sin-historial">
+
+                        No existen movimientos registrados
+                        para este activo.
+
+                    </div>
+
+
+                    <div
+                        th:if="${!#lists.isEmpty(historial)}"
+                        class="timeline">
+
+
+                        <div
+                            th:each="movimiento : ${historial}"
+                            class="movimiento">
+
+
+                            <div class="fecha">
+
+                                <span
+                                    th:text="${movimiento.fechaCambio != null
+                                    ? #temporals.format(
+                                    movimiento.fechaCambio,
+                                    'dd/MM/yyyy HH:mm'
+                                    )
+                                    : '-'}">
+                                </span>
+
+                            </div>
+
+
+                            <div class="cambio">
+
+                                <span
+                                    class="estado-anterior"
+
+                                    th:text="${movimiento.estadoAnterior != null
+                                    ? movimiento.estadoAnterior.nombreEstado
+                                    : 'SIN ESTADO'}">
+                                </span>
+
+
+                                <span class="flecha">
+                                    →
+                                </span>
+
+
+                                <span
+                                    class="estado-nuevo"
+
+                                    th:text="${movimiento.estadoNuevo != null
+                                    ? movimiento.estadoNuevo.nombreEstado
+                                    : '-'}">
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="comentario"
+
+                                th:if="${movimiento.comentario != null
+                                and !movimiento.comentario.isBlank()}">
+
+                                <span
+                                    th:text="${movimiento.comentario}">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     BOTONES
+                     ================================================= -->
+
+                <div class="botones">
+
+
+                    <a
+                        th:href="@{/inventario}"
+                        class="btn btn-volver">
+
+                        Volver
+
+                    </a>
+
+
+                    <a
+                        th:if="${puedeGestionar}"
+
+                        th:href="@{/inventario/editar/{id}
+                        (id=${activo.idActivo})}"
+
+                        class="btn btn-editar">
+
+                        Editar activo
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+    </body>
+
+</html>

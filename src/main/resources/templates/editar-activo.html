@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Editar activo</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+
+            /* =====================================================
+               NAVEGACIÓN
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 95%;
+                max-width: 1050px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+
+                border: 1px solid #e0e5e8;
+                border-radius: 8px;
+
+                padding: 25px;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            .tarjeta h2 {
+                margin-top: 0;
+                color: #16374f;
+            }
+
+            .descripcion {
+                color: #607d8b;
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+
+            /* =====================================================
+               FORMULARIO
+               ===================================================== */
+
+            .grid {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 18px;
+            }
+
+            .campo {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .campo-completo {
+                grid-column: 1 / -1;
+            }
+
+            label {
+                margin-bottom: 7px;
+
+                font-weight: bold;
+
+                font-size: 14px;
+            }
+
+            input,
+            select,
+            textarea {
+                width: 100%;
+
+                padding: 11px 12px;
+
+                border: 1px solid #cfd8dc;
+                border-radius: 5px;
+
+                font-size: 14px;
+
+                background: white;
+            }
+
+            input:focus,
+            select:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            textarea {
+                min-height: 90px;
+                resize: vertical;
+            }
+
+            .ayuda {
+                margin-top: 6px;
+
+                color: #78909c;
+
+                font-size: 12px;
+
+                line-height: 1.4;
+            }
+
+
+            /* =====================================================
+               ESTADO SOLO LECTURA
+               ===================================================== */
+
+            .estado-actual {
+                width: 100%;
+
+                padding: 11px 12px;
+
+                border: 1px solid #d9e1e5;
+
+                border-radius: 5px;
+
+                background: #f7f9fa;
+
+                color: #37474f;
+
+                font-size: 14px;
+
+                font-weight: bold;
+            }
+
+            .estado-ayuda {
+                margin-top: 6px;
+
+                color: #607d8b;
+
+                font-size: 12px;
+
+                line-height: 1.4;
+            }
+
+
+            /* =====================================================
+               SUBTÍTULOS
+               ===================================================== */
+
+            .subtitulo {
+                grid-column: 1 / -1;
+
+                margin-top: 5px;
+
+                padding-bottom: 8px;
+
+                border-bottom: 1px solid #e5eaed;
+
+                color: #16374f;
+
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+
+            /* =====================================================
+               BOTONES
+               ===================================================== */
+
+            .acciones {
+                display: flex;
+
+                justify-content: flex-end;
+
+                gap: 10px;
+
+                margin-top: 25px;
+            }
+
+            .btn {
+                border: none;
+                border-radius: 5px;
+
+                padding: 11px 18px;
+
+                font-size: 14px;
+
+                text-decoration: none;
+
+                cursor: pointer;
+
+                display: inline-block;
+            }
+
+            .btn-guardar {
+                background: #0f5ca8;
+                color: white;
+            }
+
+            .btn-guardar:hover {
+                background: #0b4a88;
+            }
+
+            .btn-cancelar {
+                background: #eceff1;
+                color: #37474f;
+            }
+
+            .btn-cancelar:hover {
+                background: #dfe3e6;
+            }
+
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 750px) {
+
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .campo-completo,
+                .subtitulo {
+                    grid-column: auto;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Actualización de activos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}"
+                   class="activo">
+
+                    Inventario
+
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+
+                    Usuarios
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <div class="contenedor">
+
+            <div class="tarjeta">
+
+
+                <h2>
+                    Editar activo
+                </h2>
+
+
+                <p class="descripcion">
+
+                    Actualice la información general,
+                    ubicación y características técnicas
+                    del activo tecnológico.
+
+                </p>
+
+
+                <form
+                    method="post"
+                    th:action="@{/inventario/guardar}"
+                    th:object="${activo}">
+
+
+                    <!-- ID -->
+
+                    <input
+                        type="hidden"
+                        th:field="*{idActivo}">
+
+
+                    <div class="grid">
+
+
+                        <!-- =================================================
+                             IDENTIFICACIÓN
+                             ================================================= -->
+
+                        <div class="subtitulo">
+                            Identificación
+                        </div>
+
+
+                        <!-- NÚMERO DE INVENTARIO -->
+
+                        <div class="campo">
+
+                            <label>
+                                Número de inventario *
+                            </label>
+
+                            <input
+                                type="text"
+                                th:field="*{numeroInventario}"
+                                required>
+
+                        </div>
+
+
+                        <!-- NÚMERO DE SERIE -->
+
+                        <div class="campo">
+
+                            <label>
+                                Número de serie
+                            </label>
+
+                            <input
+                                type="text"
+                                th:field="*{numeroSerie}">
+
+                        </div>
+
+
+                        <!-- TIPO -->
+
+                        <div class="campo">
+
+                            <label>
+                                Tipo de equipo *
+                            </label>
+
+                            <select
+                                th:field="*{tipoEquipo.idTipoEquipo}"
+                                required>
+
+                                <option value="">
+                                    -- Seleccione --
+                                </option>
+
+                                <option
+                                    th:each="tipo : ${tiposEquipo}"
+                                    th:value="${tipo.idTipoEquipo}"
+                                    th:text="${tipo.nombreTipo}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- MARCA -->
+
+                        <div class="campo">
+
+                            <label>
+                                Marca *
+                            </label>
+
+                            <select
+                                th:field="*{marca.idMarca}"
+                                required>
+
+                                <option value="">
+                                    -- Seleccione --
+                                </option>
+
+                                <option
+                                    th:each="marcaItem : ${marcas}"
+                                    th:value="${marcaItem.idMarca}"
+                                    th:text="${marcaItem.nombreMarca}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- MODELO -->
+
+                        <div class="campo campo-completo">
+
+                            <label>
+                                Modelo
+                            </label>
+
+                            <input
+                                type="text"
+                                th:field="*{modelo}"
+                                placeholder="Ej. ThinkPad T14 Gen 2">
+
+                        </div>
+
+
+                        <!-- =================================================
+                             CARACTERÍSTICAS TÉCNICAS
+                             ================================================= -->
+
+                        <div class="subtitulo">
+                            Características técnicas
+                        </div>
+
+
+                        <!-- PROCESADOR -->
+
+                        <div class="campo">
+
+                            <label>
+                                Procesador
+                            </label>
+
+                            <input
+                                type="text"
+                                th:field="*{procesador}"
+                                placeholder="Ej. Intel Core i7">
+
+                            <div class="ayuda">
+
+                                Para los perfiles tecnológicos actuales,
+                                los equipos se evalúan principalmente
+                                por procesador y generación.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- GENERACIÓN -->
+
+                        <div class="campo">
+
+                            <label>
+                                Generación del procesador
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{generacionProcesador}"
+                                min="1"
+                                max="30"
+                                placeholder="Ej. 11">
+
+                            <div class="ayuda">
+
+                                Puede completar este dato después de
+                                verificar la información técnica del equipo.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RAM -->
+
+                        <div class="campo">
+
+                            <label>
+                                RAM (GB)
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{ramGb}"
+                                min="1"
+                                placeholder="Ej. 16">
+
+                        </div>
+
+
+                        <!-- ALMACENAMIENTO -->
+
+                        <div class="campo">
+
+                            <label>
+                                Almacenamiento (GB)
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{almacenamientoGb}"
+                                min="1"
+                                placeholder="Ej. 512">
+
+                        </div>
+
+
+                        <!-- =================================================
+                             ESTADO Y UBICACIÓN
+                             ================================================= -->
+
+                        <div class="subtitulo">
+                            Estado y ubicación
+                        </div>
+
+
+                        <!-- ESTADO SOLO LECTURA -->
+
+                        <div class="campo">
+
+                            <label>
+                                Estado actual
+                            </label>
+
+                            <div
+                                class="estado-actual"
+
+                                th:text="${activo.estado != null
+                                ? activo.estado.nombreEstado
+                                : '-'}">
+
+                                -
+
+                            </div>
+
+                            <div class="estado-ayuda">
+
+                                El estado no se modifica desde esta pantalla.
+                                Los cambios de estado se gestionan mediante
+                                asignaciones, devoluciones y revisión técnica.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEDE -->
+
+                        <div class="campo">
+
+                            <label>
+                                Sede
+                            </label>
+
+                            <select
+                                th:field="*{sede.idSede}">
+
+                                <option value="">
+                                    -- Sin sede --
+                                </option>
+
+                                <option
+                                    th:each="sedeItem : ${sedes}"
+                                    th:value="${sedeItem.idSede}"
+                                    th:text="${sedeItem.nombreSede}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- UBICACIÓN -->
+
+                        <div class="campo">
+
+                            <label>
+                                Ubicación
+                            </label>
+
+                            <select
+                                th:field="*{ubicacion.idUbicacion}">
+
+                                <option value="">
+                                    -- Sin ubicación --
+                                </option>
+
+                                <option
+                                    th:each="ubicacionItem : ${ubicaciones}"
+                                    th:value="${ubicacionItem.idUbicacion}"
+                                    th:text="${ubicacionItem.nombreUbicacion}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CENTRO DE COSTO -->
+
+                        <div class="campo">
+
+                            <label>
+                                Centro de costo
+                            </label>
+
+                            <select
+                                th:field="*{centroCosto.idCentroCosto}">
+
+                                <option value="">
+                                    -- Sin centro de costo --
+                                </option>
+
+                                <option
+                                    th:each="centro : ${centrosCosto}"
+                                    th:value="${centro.idCentroCosto}"
+                                    th:text="${centro.codigo}">
+                                </option>
+
+                            </select>
+
+                            <div class="ayuda">
+
+                                Seleccione el centro de costo asociado
+                                al activo.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             COMPRA Y GARANTÍA
+                             ================================================= -->
+
+                        <div class="subtitulo">
+                            Compra y garantía
+                        </div>
+
+
+                        <!-- FECHA DE COMPRA -->
+
+                        <div class="campo">
+
+                            <label>
+                                Fecha de compra
+                            </label>
+
+                            <input
+                                type="date"
+                                th:field="*{fechaCompra}">
+
+                        </div>
+
+
+                        <!-- GARANTÍA -->
+
+                        <div class="campo">
+
+                            <label>
+                                Vencimiento de garantía
+                            </label>
+
+                            <input
+                                type="date"
+                                th:field="*{fechaVencimientoGarantia}">
+
+                        </div>
+
+
+                        <!-- =================================================
+                             OBSERVACIONES
+                             ================================================= -->
+
+                        <div class="campo campo-completo">
+
+                            <label>
+                                Observaciones
+                            </label>
+
+                            <textarea
+                                th:field="*{observaciones}"
+                                placeholder="Ingrese observaciones adicionales del activo...">
+                            </textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ACCIONES
+                         ================================================= -->
+
+                    <div class="acciones">
+
+                        <a
+                            th:href="@{/inventario}"
+                            class="btn btn-cancelar">
+
+                            Cancelar
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-guardar">
+
+                            Guardar cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Usuarios del sistema</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            /*
+             * =====================================================
+             * CABECERA
+             * =====================================================
+             */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            /*
+             * =====================================================
+             * NAVEGACIÓN
+             * =====================================================
+             */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                padding: 13px 16px;
+                display: block;
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            /*
+             * =====================================================
+             * CONTENIDO
+             * =====================================================
+             */
+
+            .contenedor {
+                width: 95%;
+                max-width: 1400px;
+                margin: 30px auto;
+            }
+
+            .encabezado-pagina {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .encabezado-pagina h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            /*
+             * =====================================================
+             * TABLA
+             * =====================================================
+             */
+
+            .tabla-contenedor {
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid #e0e5e8;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th {
+                background: #f7f9fa;
+                text-align: left;
+                padding: 14px;
+                font-size: 13px;
+                border-bottom: 1px solid #dfe3e6;
+                color: #37474f;
+            }
+
+            td {
+                padding: 14px;
+                border-bottom: 1px solid #eceff1;
+                font-size: 14px;
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            /*
+             * =====================================================
+             * ESTADOS
+             * =====================================================
+             */
+
+            .estado {
+                display: inline-block;
+                padding: 5px 10px;
+                border-radius: 15px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            .estado-activo {
+                background: #d8f5e8;
+                color: #08784f;
+            }
+
+            .estado-inactivo {
+                background: #eceff1;
+                color: #546e7a;
+            }
+
+            /*
+             * =====================================================
+             * BOTONES
+             * =====================================================
+             */
+
+            .btn {
+                text-decoration: none;
+                border-radius: 5px;
+                padding: 10px 16px;
+                font-size: 14px;
+                display: inline-block;
+            }
+
+            .btn-nuevo {
+                background: #158a54;
+                color: white;
+                font-weight: bold;
+            }
+
+            .btn-nuevo:hover {
+                background: #107044;
+            }
+
+            .accion {
+                color: #0f5ca8;
+                text-decoration: none;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .accion:hover {
+                text-decoration: underline;
+            }
+
+            /*
+             * =====================================================
+             * VACÍO
+             * =====================================================
+             */
+
+            .sin-datos {
+                padding: 25px;
+                text-align: center;
+                color: #607d8b;
+            }
+
+            /*
+             * =====================================================
+             * RESPONSIVE
+             * =====================================================
+             */
+
+            @media(max-width: 900px) {
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .tabla-contenedor {
+                    overflow-x: auto;
+                }
+
+                table {
+                    min-width: 900px;
+                }
+
+                .encabezado-pagina {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 15px;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <h1>
+                    Sistema de Control de Activos TI
+                </h1>
+
+                <p>
+                    Gestión de usuarios y roles del sistema
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a th:href="@{/usuarios}"
+                   class="activo">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <div class="contenedor">
+
+            <div class="encabezado-pagina">
+
+                <h2>
+                    Usuarios del sistema
+                </h2>
+
+                <a th:href="@{/usuarios/nuevo}"
+                   class="btn btn-nuevo">
+
+                    + Nuevo usuario
+
+                </a>
+
+            </div>
+
+
+            <div class="tabla-contenedor">
+
+                <table th:if="${usuarios != null and !usuarios.isEmpty()}">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Usuario</th>
+
+                            <th>Nombre completo</th>
+
+                            <th>Correo</th>
+
+                            <th>Rol</th>
+
+                            <th>Estado</th>
+
+                            <th>Fecha de creación</th>
+
+                            <th>Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr th:each="usuario : ${usuarios}">
+
+                            <td
+                                th:text="${usuario.idUsuario}">
+                            </td>
+
+
+                            <td
+                                th:text="${usuario.nombreUsuario}">
+                            </td>
+
+
+                            <td
+                                th:text="${usuario.nombreCompleto}">
+                            </td>
+
+
+                            <td
+                                th:text="${usuario.correo != null
+                                ? usuario.correo
+                                : '-'}">
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    th:text="${usuario.rol != null
+                                    ? usuario.rol.nombre
+                                    : 'Sin rol'}">
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="estado estado-activo"
+
+                                    th:if="${usuario.estado == true}">
+
+                                    ACTIVO
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-inactivo"
+
+                                    th:if="${usuario.estado == false
+                                    or usuario.estado == null}">
+
+                                    INACTIVO
+
+                                </span>
+
+                            </td>
+
+
+                            <td
+                                th:text="${usuario.fechaCreacion != null
+                                ? #temporals.format(
+                                usuario.fechaCreacion,
+                                'dd/MM/yyyy HH:mm'
+                                )
+                                : '-'}">
+                            </td>
+
+
+                            <td>
+
+                                <a
+                                    th:href="@{/usuarios/editar/{id}
+                                    (id=${usuario.idUsuario})}"
+
+                                    class="accion">
+
+                                    Editar
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div
+                    class="sin-datos"
+
+                    th:if="${usuarios == null or usuarios.isEmpty()}">
+
+                    No existen usuarios registrados.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

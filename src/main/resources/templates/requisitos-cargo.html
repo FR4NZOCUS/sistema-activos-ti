@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Requisitos por cargo</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+            /* =====================================================
+               NAVEGACIÓN
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 96%;
+                max-width: 1450px;
+
+                margin: 30px auto;
+            }
+
+            .encabezado-pagina {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 20px;
+
+                margin-bottom: 20px;
+            }
+
+            .encabezado-pagina h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            .encabezado-pagina p {
+                margin: 6px 0 0;
+
+                color: #607d8b;
+
+                font-size: 14px;
+            }
+
+            /* =====================================================
+               BOTONES
+               ===================================================== */
+
+            .btn {
+                display: inline-block;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+
+                text-decoration: none;
+
+                cursor: pointer;
+            }
+
+            .btn-nuevo {
+                background: #158a54;
+                color: white;
+
+                font-weight: bold;
+            }
+
+            .btn-nuevo:hover {
+                background: #107044;
+            }
+
+            .btn-editar {
+                background: #0f5ca8;
+                color: white;
+            }
+
+            .btn-editar:hover {
+                background: #0b4a88;
+            }
+
+            /* =====================================================
+               TABLA
+               ===================================================== */
+
+            .tabla-contenedor {
+                background: white;
+
+                border-radius: 8px;
+
+                border: 1px solid #e0e5e8;
+
+                overflow-x: auto;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            table {
+                width: 100%;
+
+                border-collapse: collapse;
+
+                min-width: 1200px;
+            }
+
+            thead {
+                background: #eef3f6;
+            }
+
+            th,
+            td {
+                padding: 12px 11px;
+
+                text-align: left;
+
+                border-bottom: 1px solid #e5eaed;
+
+                font-size: 13px;
+
+                vertical-align: middle;
+            }
+
+            th {
+                color: #37474f;
+                font-weight: bold;
+            }
+
+            tbody tr:hover {
+                background: #f8fafb;
+            }
+
+            /* =====================================================
+               ETIQUETAS
+               ===================================================== */
+
+            .badge {
+                display: inline-block;
+
+                border-radius: 12px;
+
+                padding: 5px 9px;
+
+                font-size: 11px;
+                font-weight: bold;
+            }
+
+            .badge-principal {
+                background: #e3f2fd;
+                color: #1565c0;
+            }
+
+            .badge-complementario {
+                background: #fff3e0;
+                color: #e65100;
+            }
+
+            .dato-no-definido {
+                color: #90a4ae;
+            }
+
+            .solo-consulta {
+                color: #78909c;
+
+                font-size: 12px;
+                font-style: italic;
+            }
+
+            /* =====================================================
+               ESTADO VACÍO
+               ===================================================== */
+
+            .sin-registros {
+                padding: 35px;
+
+                text-align: center;
+
+                color: #78909c;
+            }
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 850px) {
+
+                .cabecera-contenido,
+                .encabezado-pagina {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Configuración de requisitos tecnológicos por cargo
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form method="post"
+                          th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}"
+                   class="activo">
+                    Requisitos
+                </a>
+
+                <a th:if="${esAdministrador}"
+                   th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <div class="contenedor">
+
+
+            <div class="encabezado-pagina">
+
+                <div>
+
+                    <h2>
+                        Requisitos por cargo
+                    </h2>
+
+                    <p>
+                        Reglas utilizadas para determinar qué activos
+                        tecnológicos cumplen los requisitos de cada puesto.
+                    </p>
+
+                </div>
+
+
+                <a th:if="${puedeGestionar}"
+                   th:href="@{/requisitos-cargo/nuevo}"
+                   class="btn btn-nuevo">
+
+                    + Nuevo requisito
+
+                </a>
+
+            </div>
+
+
+            <!-- =====================================================
+                 TABLA
+                 ===================================================== -->
+
+            <div class="tabla-contenedor">
+
+
+                <table th:if="${requisitos != null and !requisitos.isEmpty()}">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Cargo
+                            </th>
+
+                            <th>
+                                Tipo de equipo
+                            </th>
+
+                            <th>
+                                Tipo requisito
+                            </th>
+
+                            <th>
+                                Procesador mínimo
+                            </th>
+
+                            <th>
+                                Generación mínima
+                            </th>
+
+                            <th>
+                                RAM
+                            </th>
+
+                            <th>
+                                Almacenamiento
+                            </th>
+
+                            <th>
+                                Prioridad
+                            </th>
+
+                            <th>
+                                Observaciones
+                            </th>
+
+                            <th>
+                                Acción
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr th:each="item : ${requisitos}">
+
+
+                            <!-- CARGO -->
+
+                            <td
+                                th:text="${item.cargo != null
+                                ? item.cargo.nombreCargo
+                                : '-'}">
+
+                                -
+
+                            </td>
+
+
+                            <!-- TIPO DE EQUIPO -->
+
+                            <td
+                                th:text="${item.tipoEquipo != null
+                                ? item.tipoEquipo.nombreTipo
+                                : '-'}">
+
+                                -
+
+                            </td>
+
+
+                            <!-- TIPO DE REQUISITO -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.tipoRequisito == 'PRINCIPAL'}"
+                                    class="badge badge-principal">
+
+                                    PRINCIPAL
+
+                                </span>
+
+
+                                <span
+                                    th:if="${item.tipoRequisito == 'COMPLEMENTARIO'}"
+                                    class="badge badge-complementario">
+
+                                    COMPLEMENTARIO
+
+                                </span>
+
+
+                                <span
+                                    th:if="${item.tipoRequisito == null}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- PROCESADOR -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.procesadorMinimo != null
+                                    and !item.procesadorMinimo.isBlank()}"
+                                    th:text="${item.procesadorMinimo}">
+                                </span>
+
+                                <span
+                                    th:unless="${item.procesadorMinimo != null
+                                    and !item.procesadorMinimo.isBlank()}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- GENERACIÓN -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.generacionMinima != null}"
+                                    th:text="${item.generacionMinima}">
+                                </span>
+
+                                <span
+                                    th:unless="${item.generacionMinima != null}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- RAM -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.ramMinimaGb != null}"
+                                    th:text="${item.ramMinimaGb + ' GB'}">
+                                </span>
+
+                                <span
+                                    th:unless="${item.ramMinimaGb != null}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- ALMACENAMIENTO -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.almacenamientoMinimoGb != null}"
+                                    th:text="${item.almacenamientoMinimoGb + ' GB'}">
+                                </span>
+
+                                <span
+                                    th:unless="${item.almacenamientoMinimoGb != null}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- PRIORIDAD -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.prioridad != null}"
+                                    th:text="${item.prioridad}">
+                                </span>
+
+                                <span
+                                    th:unless="${item.prioridad != null}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- OBSERVACIONES -->
+
+                            <td>
+
+                                <span
+                                    th:if="${item.observaciones != null
+                                    and !item.observaciones.isBlank()}"
+                                    th:text="${item.observaciones}">
+                                </span>
+
+                                <span
+                                    th:unless="${item.observaciones != null
+                                    and !item.observaciones.isBlank()}"
+                                    class="dato-no-definido">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td>
+
+                                <a
+                                    th:if="${puedeGestionar}"
+                                    th:href="@{/requisitos-cargo/editar/{id}
+                                    (id=${item.idRequisito})}"
+                                    class="btn btn-editar">
+
+                                    Editar
+
+                                </a>
+
+
+                                <span
+                                    th:unless="${puedeGestionar}"
+                                    class="solo-consulta">
+
+                                    Solo consulta
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <!-- SIN REGISTROS -->
+
+                <div
+                    th:if="${requisitos == null or requisitos.isEmpty()}"
+                    class="sin-registros">
+
+                    No existen requisitos registrados.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Alertas de garantía</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+            /* =====================================================
+               NAVEGACIÓN
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 95%;
+                max-width: 1400px;
+                margin: 30px auto;
+            }
+
+            .encabezado-pagina {
+                margin-bottom: 22px;
+            }
+
+            .encabezado-pagina h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            .encabezado-pagina p {
+                margin: 6px 0 0;
+                color: #607d8b;
+                font-size: 14px;
+            }
+
+            /* =====================================================
+               RESUMEN
+               ===================================================== */
+
+            .resumen {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(auto-fit, minmax(220px, 1fr));
+
+                gap: 16px;
+
+                margin-bottom: 25px;
+            }
+
+            .resumen-card {
+                background: white;
+
+                border-radius: 8px;
+
+                padding: 20px;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            .resumen-card .numero {
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .resumen-card .texto {
+                margin-top: 6px;
+                color: #607d8b;
+                font-size: 13px;
+            }
+
+            .vencidas .numero {
+                color: #c62828;
+            }
+
+            .proximas .numero {
+                color: #b26a00;
+            }
+
+            /* =====================================================
+               SECCIONES
+               ===================================================== */
+
+            .seccion {
+                margin-bottom: 28px;
+            }
+
+            .seccion h3 {
+                margin: 0 0 14px;
+                color: #16374f;
+            }
+
+            /* =====================================================
+               TABLAS
+               ===================================================== */
+
+            .tabla-contenedor {
+                width: 100%;
+
+                background: white;
+
+                border-radius: 8px;
+
+                overflow-x: auto;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 1000px;
+            }
+
+            th {
+                background: #f7f9fa;
+
+                text-align: left;
+
+                padding: 13px;
+
+                border-bottom: 1px solid #dfe3e6;
+
+                font-size: 13px;
+
+                color: #37474f;
+            }
+
+            td {
+                padding: 13px;
+
+                border-bottom: 1px solid #eceff1;
+
+                font-size: 13px;
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            /* =====================================================
+               GARANTÍA
+               ===================================================== */
+
+            .estado-garantia {
+                display: inline-block;
+
+                padding: 5px 9px;
+
+                border-radius: 14px;
+
+                font-size: 11px;
+
+                font-weight: bold;
+            }
+
+            .garantia-vencida {
+                background: #fdeaea;
+                color: #a12828;
+            }
+
+            .garantia-proxima {
+                background: #fff1cd;
+                color: #8a6700;
+            }
+
+            .accion {
+                color: #0f5ca8;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+            .accion:hover {
+                text-decoration: underline;
+            }
+
+            .sin-datos {
+                padding: 25px;
+
+                text-align: center;
+
+                color: #607d8b;
+            }
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 900px) {
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .usuario-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Seguimiento de garantías de activos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}"
+                   class="activo">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <div class="contenedor">
+
+            <div class="encabezado-pagina">
+
+                <h2>
+                    Alertas de garantía
+                </h2>
+
+                <p>
+                    Consulte los activos con garantía vencida o próxima a vencer.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 RESUMEN
+                 ================================================= -->
+
+            <div class="resumen">
+
+
+                <div class="resumen-card vencidas">
+
+                    <div
+                        class="numero"
+                        th:text="${activosVencidos != null
+                        ? activosVencidos.size()
+                        : 0}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Garantías vencidas
+                    </div>
+
+                </div>
+
+
+                <div class="resumen-card proximas">
+
+                    <div
+                        class="numero"
+                        th:text="${activosProximos != null
+                        ? activosProximos.size()
+                        : 0}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Próximas a vencer
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 VENCIDAS
+                 ================================================= -->
+
+            <div class="seccion">
+
+                <h3>
+                    Garantías vencidas
+                </h3>
+
+
+                <div class="tabla-contenedor">
+
+                    <table
+                        th:if="${activosVencidos != null
+                        and !activosVencidos.isEmpty()}">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Inventario</th>
+
+                                <th>Tipo</th>
+
+                                <th>Marca</th>
+
+                                <th>Modelo</th>
+
+                                <th>Serie</th>
+
+                                <th>Vencimiento</th>
+
+                                <th>Estado</th>
+
+                                <th>Acción</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr
+                                th:each="activo : ${activosVencidos}">
+
+
+                                <td
+                                    th:text="${activo.numeroInventario}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.tipoEquipo != null
+                                    ? activo.tipoEquipo.nombreTipo
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.marca != null
+                                    ? activo.marca.nombreMarca
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.modelo != null
+                                    ? activo.modelo
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.numeroSerie != null
+                                    ? activo.numeroSerie
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.fechaVencimientoGarantia != null
+                                    ? #temporals.format(
+                                    activo.fechaVencimientoGarantia,
+                                    'dd/MM/yyyy'
+                                    )
+                                    : '-'}">
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="estado-garantia garantia-vencida">
+
+                                        VENCIDA
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        th:href="@{/inventario/ver/{id}
+                                        (id=${activo.idActivo})}"
+
+                                        class="accion">
+
+                                        Ver activo
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <div
+                        class="sin-datos"
+
+                        th:if="${activosVencidos == null
+                        or activosVencidos.isEmpty()}">
+
+                        No existen activos con garantía vencida.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PRÓXIMAS
+                 ================================================= -->
+
+            <div class="seccion">
+
+                <h3>
+                    Garantías próximas a vencer
+                </h3>
+
+
+                <div class="tabla-contenedor">
+
+                    <table
+                        th:if="${activosProximos != null
+                        and !activosProximos.isEmpty()}">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Inventario</th>
+
+                                <th>Tipo</th>
+
+                                <th>Marca</th>
+
+                                <th>Modelo</th>
+
+                                <th>Serie</th>
+
+                                <th>Vencimiento</th>
+
+                                <th>Estado</th>
+
+                                <th>Acción</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr
+                                th:each="activo : ${activosProximos}">
+
+
+                                <td
+                                    th:text="${activo.numeroInventario}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.tipoEquipo != null
+                                    ? activo.tipoEquipo.nombreTipo
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.marca != null
+                                    ? activo.marca.nombreMarca
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.modelo != null
+                                    ? activo.modelo
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.numeroSerie != null
+                                    ? activo.numeroSerie
+                                    : '-'}">
+                                </td>
+
+
+                                <td
+                                    th:text="${activo.fechaVencimientoGarantia != null
+                                    ? #temporals.format(
+                                    activo.fechaVencimientoGarantia,
+                                    'dd/MM/yyyy'
+                                    )
+                                    : '-'}">
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="estado-garantia garantia-proxima">
+
+                                        PRÓXIMA
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        th:href="@{/inventario/ver/{id}
+                                        (id=${activo.idActivo})}"
+
+                                        class="accion">
+
+                                        Ver activo
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <div
+                        class="sin-datos"
+
+                        th:if="${activosProximos == null
+                        or activosProximos.isEmpty()}">
+
+                        No existen garantías próximas a vencer
+                        dentro del periodo evaluado.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

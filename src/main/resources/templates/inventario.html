@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Inventario</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1600px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+
+            /* =====================================================
+               NAVEGACIÓN
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1600px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 96%;
+                max-width: 1750px;
+                margin: 28px auto 40px;
+            }
+
+            .encabezado-pagina {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                margin-bottom: 20px;
+
+                gap: 20px;
+            }
+
+            .encabezado-pagina h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            .encabezado-pagina p {
+                margin: 6px 0 0;
+
+                color: #607d8b;
+
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+               BOTONES
+               ===================================================== */
+
+            .btn {
+                text-decoration: none;
+
+                border: none;
+
+                border-radius: 5px;
+
+                padding: 10px 16px;
+
+                font-size: 14px;
+
+                display: inline-block;
+
+                cursor: pointer;
+            }
+
+            .btn-nuevo {
+                background: #158a54;
+                color: white;
+                font-weight: bold;
+            }
+
+            .btn-nuevo:hover {
+                background: #107044;
+            }
+
+            .btn-limpiar {
+                background: #e5e7eb;
+                color: #374151;
+                font-weight: bold;
+            }
+
+            .btn-limpiar:hover {
+                background: #d1d5db;
+            }
+
+
+            /* =====================================================
+               FILTROS
+               ===================================================== */
+
+            .panel-filtros {
+                background: white;
+
+                border: 1px solid #dfe5ea;
+
+                border-radius: 8px;
+
+                padding: 18px;
+
+                margin-bottom: 18px;
+
+                box-shadow:
+                    0 2px 5px rgba(0, 0, 0, .04);
+            }
+
+            .titulo-filtros {
+                margin: 0 0 14px;
+
+                color: #16374f;
+
+                font-size: 16px;
+            }
+
+            .filtros {
+                display: grid;
+
+                grid-template-columns:
+                    minmax(250px, 2fr)
+                    repeat(5, minmax(140px, 1fr));
+
+                gap: 12px;
+
+                align-items: end;
+            }
+
+            .campo-filtro {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .campo-filtro label {
+                font-size: 12px;
+
+                color: #607d8b;
+
+                font-weight: bold;
+
+                margin-bottom: 6px;
+            }
+
+            .campo-filtro input,
+            .campo-filtro select {
+                width: 100%;
+
+                padding: 10px 11px;
+
+                border: 1px solid #cbd5e1;
+
+                border-radius: 5px;
+
+                background: white;
+
+                font-size: 13px;
+
+                color: #263238;
+            }
+
+            .campo-filtro input:focus,
+            .campo-filtro select:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            .acciones-filtros {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                margin-top: 14px;
+
+                gap: 15px;
+            }
+
+            .contador {
+                font-size: 13px;
+                color: #607d8b;
+            }
+
+            .contador strong {
+                color: #0f5ca8;
+            }
+
+
+            /* =====================================================
+               TABLA
+               ===================================================== */
+
+            .tabla-contenedor {
+                width: 100%;
+
+                background: white;
+
+                border-radius: 8px;
+
+                overflow-x: auto;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            table {
+                width: 100%;
+
+                border-collapse: collapse;
+
+                min-width: 1750px;
+            }
+
+            th {
+                background: #f7f9fa;
+
+                text-align: left;
+
+                padding: 12px;
+
+                border-bottom: 1px solid #dfe3e6;
+
+                font-size: 12px;
+
+                color: #37474f;
+
+                white-space: nowrap;
+            }
+
+            td {
+                padding: 12px;
+
+                border-bottom: 1px solid #eceff1;
+
+                font-size: 12px;
+
+                vertical-align: middle;
+            }
+
+            tbody tr:hover {
+                background: #fafcfd;
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+
+            /* =====================================================
+               ESTADOS
+               ===================================================== */
+
+            .estado {
+                display: inline-block;
+
+                padding: 5px 9px;
+
+                border-radius: 14px;
+
+                font-size: 10px;
+
+                font-weight: bold;
+
+                white-space: nowrap;
+            }
+
+            .estado-disponible {
+                background: #d8f5e8;
+                color: #08784f;
+            }
+
+            .estado-asignado {
+                background: #e7f1fc;
+                color: #0f5ca8;
+            }
+
+            .estado-mantenimiento {
+                background: #fff1cd;
+                color: #8a6700;
+            }
+
+            .estado-baja {
+                background: #eceff1;
+                color: #546e7a;
+            }
+
+            .estado-renovacion {
+                background: #fef3c7;
+                color: #92400e;
+            }
+
+            .estado-cesado {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .estado-prestamo {
+                background: #ede9fe;
+                color: #6d28d9;
+            }
+
+            .estado-backup {
+                background: #cffafe;
+                color: #0e7490;
+            }
+
+            .estado-pendiente {
+                background: #ffedd5;
+                color: #9a3412;
+            }
+
+            .estado-garantia {
+                background: #f3e8ff;
+                color: #7e22ce;
+            }
+
+            .estado-otro {
+                background: #f1f3f5;
+                color: #455a64;
+            }
+
+
+            /* =====================================================
+               DATOS FALTANTES
+               ===================================================== */
+
+            .sin-dato {
+                color: #94a3b8;
+                font-style: italic;
+            }
+
+
+            /* =====================================================
+               ACCIONES
+               ===================================================== */
+
+            .acciones-tabla {
+                white-space: nowrap;
+            }
+
+            .accion {
+                color: #0f5ca8;
+
+                text-decoration: none;
+
+                font-weight: bold;
+
+                margin-right: 10px;
+            }
+
+            .accion:hover {
+                text-decoration: underline;
+            }
+
+            .accion-editar {
+                color: #b26a00;
+            }
+
+
+            /* =====================================================
+               SIN DATOS
+               ===================================================== */
+
+            .sin-datos,
+            .sin-resultados {
+                padding: 30px;
+
+                text-align: center;
+
+                color: #607d8b;
+
+                background: white;
+            }
+
+            .sin-resultados {
+                display: none;
+            }
+
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 1250px) {
+
+                .filtros {
+                    grid-template-columns:
+                        repeat(3, minmax(180px, 1fr));
+                }
+            }
+
+            @media(max-width: 900px) {
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .usuario-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .encabezado-pagina {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .filtros {
+                    grid-template-columns: 1fr;
+                }
+
+                .acciones-filtros {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Inventario de activos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}"
+                   class="activo">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+
+                    Usuarios
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <div class="contenedor">
+
+
+            <!-- =================================================
+                 ENCABEZADO
+                 ================================================= -->
+
+            <div class="encabezado-pagina">
+
+                <div>
+
+                    <h2>
+                        Inventario de activos
+                    </h2>
+
+                    <p>
+                        Consulte y filtre los activos tecnológicos
+                        registrados en el sistema.
+                    </p>
+
+                </div>
+
+
+                <a
+                    th:if="${puedeGestionar}"
+                    th:href="@{/inventario/nuevo}"
+                    class="btn btn-nuevo">
+
+                    + Nuevo activo
+
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 FILTROS
+                 ================================================= -->
+
+            <div
+                class="panel-filtros"
+                th:if="${activos != null and !activos.isEmpty()}">
+
+                <h3 class="titulo-filtros">
+                    🔎 Buscar y filtrar activos
+                </h3>
+
+
+                <div class="filtros">
+
+
+                    <!-- BÚSQUEDA -->
+
+                    <div class="campo-filtro">
+
+                        <label for="busquedaGeneral">
+                            Buscar
+                        </label>
+
+                        <input
+                            type="text"
+                            id="busquedaGeneral"
+                            placeholder="Inventario, serie, modelo, ubicación...">
+
+                    </div>
+
+
+                    <!-- TIPO -->
+
+                    <div class="campo-filtro">
+
+                        <label for="filtroTipo">
+                            Tipo
+                        </label>
+
+                        <select id="filtroTipo">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="LAPTOP">
+                                Laptop
+                            </option>
+
+                            <option value="DESKTOP">
+                                Desktop
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MARCA -->
+
+                    <div class="campo-filtro">
+
+                        <label for="filtroMarca">
+                            Marca
+                        </label>
+
+                        <select id="filtroMarca">
+
+                            <option value="">
+                                Todas
+                            </option>
+
+                            <option value="LENOVO">
+                                Lenovo
+                            </option>
+
+                            <option value="DELL">
+                                Dell
+                            </option>
+
+                            <option value="MICROSOFT">
+                                Microsoft
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="campo-filtro">
+
+                        <label for="filtroEstado">
+                            Estado
+                        </label>
+
+                        <select id="filtroEstado">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option value="DISPONIBLE">
+                                Disponible
+                            </option>
+
+                            <option value="ASIGNADO_EN_USO">
+                                Asignado en uso
+                            </option>
+
+                            <option value="RENOVACION_POR_DEVOLVER">
+                                Renovación por devolver
+                            </option>
+
+                            <option value="CESADO_POR_DEVOLVER">
+                                Cesado por devolver
+                            </option>
+
+                            <option value="PRESTAMO_POR_GARANTIA">
+                                Préstamo por garantía
+                            </option>
+
+                            <option value="BACKUP">
+                                Backup
+                            </option>
+
+                            <option value="MANTENIMIENTO">
+                                Mantenimiento
+                            </option>
+
+                            <option value="GARANTIA">
+                                Garantía
+                            </option>
+
+                            <option value="DEVUELTO_PENDIENTE_REVISION">
+                                Devuelto pendiente de revisión
+                            </option>
+
+                            <option value="BAJA">
+                                Baja
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SEDE -->
+
+                    <div class="campo-filtro">
+
+                        <label for="filtroSede">
+                            Sede
+                        </label>
+
+                        <select id="filtroSede">
+
+                            <option value="">
+                                Todas
+                            </option>
+
+                            <option
+                                th:each="activo : ${activos}"
+                                th:if="${activo.sede != null}"
+                                th:value="${activo.sede.nombreSede}"
+                                th:text="${activo.sede.nombreSede}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CENTRO DE COSTO -->
+
+                    <div class="campo-filtro">
+
+                        <label for="filtroCentroCosto">
+                            Centro de costo
+                        </label>
+
+                        <select id="filtroCentroCosto">
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option
+                                th:each="activo : ${activos}"
+                                th:if="${activo.centroCosto != null}"
+                                th:value="${activo.centroCosto.codigo}"
+                                th:text="${activo.centroCosto.codigo}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONTADOR -->
+
+                <div class="acciones-filtros">
+
+                    <div class="contador">
+
+                        Mostrando
+
+                        <strong id="cantidadVisible">
+                            0
+                        </strong>
+
+                        de
+
+                        <strong
+                            id="cantidadTotal"
+                            th:text="${activos.size()}">
+
+                            0
+
+                        </strong>
+
+                        activos
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="btnLimpiar"
+                        class="btn btn-limpiar">
+
+                        Limpiar filtros
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TABLA
+                 ================================================= -->
+
+            <div class="tabla-contenedor">
+
+
+                <table
+                    id="tablaInventario"
+                    th:if="${activos != null and !activos.isEmpty()}">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Inventario</th>
+
+                            <th>Serie</th>
+
+                            <th>Tipo</th>
+
+                            <th>Marca</th>
+
+                            <th>Modelo</th>
+
+                            <th>Procesador</th>
+
+                            <th>Generación</th>
+
+                            <th>RAM</th>
+
+                            <th>Almacenamiento</th>
+
+                            <th>Estado</th>
+
+                            <th>Sede</th>
+
+                            <th>Ubicación</th>
+
+                            <th>Centro de costo</th>
+
+                            <th>Garantía</th>
+
+                            <th>Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr
+                            th:each="activo : ${activos}"
+
+                            class="fila-activo"
+
+                            th:attr="
+                            data-tipo=${activo.tipoEquipo != null
+                            ? activo.tipoEquipo.nombreTipo
+                            : ''},
+
+                            data-marca=${activo.marca != null
+                            ? activo.marca.nombreMarca
+                            : ''},
+
+                            data-estado=${activo.estado != null
+                            ? activo.estado.nombreEstado
+                            : ''},
+
+                            data-sede=${activo.sede != null
+                            ? activo.sede.nombreSede
+                            : ''},
+
+                            data-centro=${activo.centroCosto != null
+                            ? activo.centroCosto.codigo
+                            : ''}">
+
+
+                            <!-- ID -->
+
+                            <td
+                                th:text="${activo.idActivo}">
+                            </td>
+
+
+                            <!-- INVENTARIO -->
+
+                            <td
+                                th:text="${activo.numeroInventario}">
+                            </td>
+
+
+                            <!-- SERIE -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.numeroSerie != null}"
+                                    th:text="${activo.numeroSerie}">
+                                </span>
+
+                                <span
+                                    th:if="${activo.numeroSerie == null}"
+                                    class="sin-dato">
+                                    -
+                                </span>
+
+                            </td>
+
+
+                            <!-- TIPO -->
+
+                            <td
+                                th:text="${activo.tipoEquipo != null
+                                ? activo.tipoEquipo.nombreTipo
+                                : '-'}">
+                            </td>
+
+
+                            <!-- MARCA -->
+
+                            <td
+                                th:text="${activo.marca != null
+                                ? activo.marca.nombreMarca
+                                : '-'}">
+                            </td>
+
+
+                            <!-- MODELO -->
+
+                            <td
+                                th:text="${activo.modelo != null
+                                ? activo.modelo
+                                : '-'}">
+                            </td>
+
+
+                            <!-- PROCESADOR -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.procesador != null}"
+                                    th:text="${activo.procesador}">
+                                </span>
+
+                                <span
+                                    th:if="${activo.procesador == null}"
+                                    class="sin-dato">
+
+                                    Pendiente
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- GENERACIÓN -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.generacionProcesador != null}"
+
+                                    th:text="${activo.generacionProcesador
+                                    + 'ª Gen'}">
+                                </span>
+
+
+                                <span
+                                    th:if="${activo.generacionProcesador == null}"
+                                    class="sin-dato">
+
+                                    Pendiente
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- RAM -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.ramGb != null}"
+                                    th:text="${activo.ramGb + ' GB'}">
+                                </span>
+
+                                <span
+                                    th:if="${activo.ramGb == null}"
+                                    class="sin-dato">
+                                    -
+                                </span>
+
+                            </td>
+
+
+                            <!-- ALMACENAMIENTO -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.almacenamientoGb != null}"
+                                    th:text="${activo.almacenamientoGb + ' GB'}">
+                                </span>
+
+                                <span
+                                    th:if="${activo.almacenamientoGb == null}"
+                                    class="sin-dato">
+                                    -
+                                </span>
+
+                            </td>
+
+
+                            <!-- =================================================
+                                 ESTADO
+                                 ================================================= -->
+
+                            <td>
+
+
+                                <span
+                                    class="estado estado-disponible"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'DISPONIBLE'}">
+
+                                    DISPONIBLE
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-asignado"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'ASIGNADO_EN_USO'}">
+
+                                    ASIGNADO EN USO
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-renovacion"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'RENOVACION_POR_DEVOLVER'}">
+
+                                    RENOVACIÓN POR DEVOLVER
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-cesado"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'CESADO_POR_DEVOLVER'}">
+
+                                    CESADO POR DEVOLVER
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-prestamo"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'PRESTAMO_POR_GARANTIA'}">
+
+                                    PRÉSTAMO POR GARANTÍA
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-backup"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'BACKUP'}">
+
+                                    BACKUP
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-mantenimiento"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'MANTENIMIENTO'}">
+
+                                    MANTENIMIENTO
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-garantia"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'GARANTIA'}">
+
+                                    GARANTÍA
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-pendiente"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'DEVUELTO_PENDIENTE_REVISION'}">
+
+                                    PENDIENTE DE REVISIÓN
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-baja"
+
+                                    th:if="${activo.estado != null
+                                    and activo.estado.nombreEstado
+                                    == 'BAJA'}">
+
+                                    BAJA
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-otro"
+
+                                    th:if="${activo.estado == null
+                                    or (
+                                    activo.estado.nombreEstado
+                                    != 'DISPONIBLE'
+                                    and activo.estado.nombreEstado
+                                    != 'ASIGNADO_EN_USO'
+                                    and activo.estado.nombreEstado
+                                    != 'RENOVACION_POR_DEVOLVER'
+                                    and activo.estado.nombreEstado
+                                    != 'CESADO_POR_DEVOLVER'
+                                    and activo.estado.nombreEstado
+                                    != 'PRESTAMO_POR_GARANTIA'
+                                    and activo.estado.nombreEstado
+                                    != 'BACKUP'
+                                    and activo.estado.nombreEstado
+                                    != 'MANTENIMIENTO'
+                                    and activo.estado.nombreEstado
+                                    != 'GARANTIA'
+                                    and activo.estado.nombreEstado
+                                    != 'DEVUELTO_PENDIENTE_REVISION'
+                                    and activo.estado.nombreEstado
+                                    != 'BAJA'
+                                    )}"
+
+                                    th:text="${activo.estado != null
+                                    ? activo.estado.nombreEstado
+                                    : '-'}">
+                                </span>
+
+                            </td>
+
+
+                            <!-- SEDE -->
+
+                            <td
+                                th:text="${activo.sede != null
+                                ? activo.sede.nombreSede
+                                : '-'}">
+                            </td>
+
+
+                            <!-- UBICACIÓN -->
+
+                            <td
+                                th:text="${activo.ubicacion != null
+                                ? activo.ubicacion.nombreUbicacion
+                                : '-'}">
+                            </td>
+
+
+                            <!-- CENTRO DE COSTO -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.centroCosto != null}"
+                                    th:text="${activo.centroCosto.codigo}">
+                                </span>
+
+                                <span
+                                    th:if="${activo.centroCosto == null}"
+                                    class="sin-dato">
+                                    -
+                                </span>
+
+                            </td>
+
+
+                            <!-- GARANTÍA -->
+
+                            <td>
+
+                                <span
+                                    th:if="${activo.fechaVencimientoGarantia != null}"
+
+                                    th:text="${#temporals.format(
+                                    activo.fechaVencimientoGarantia,
+                                    'dd/MM/yyyy'
+                                    )}">
+                                </span>
+
+
+                                <span
+                                    th:if="${activo.fechaVencimientoGarantia == null}"
+                                    class="sin-dato">
+                                    -
+                                </span>
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td class="acciones-tabla">
+
+                                <a
+                                    th:href="@{/inventario/ver/{id}
+                                    (id=${activo.idActivo})}"
+
+                                    class="accion">
+
+                                    Ver
+
+                                </a>
+
+
+                                <a
+                                    th:if="${puedeGestionar}"
+
+                                    th:href="@{/inventario/editar/{id}
+                                    (id=${activo.idActivo})}"
+
+                                    class="accion accion-editar">
+
+                                    Editar
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <!-- SIN ACTIVOS -->
+
+                <div
+                    class="sin-datos"
+
+                    th:if="${activos == null or activos.isEmpty()}">
+
+                    No existen activos registrados.
+
+                </div>
+
+
+                <!-- SIN RESULTADOS -->
+
+                <div
+                    id="sinResultados"
+                    class="sin-resultados">
+
+                    No se encontraron activos que coincidan
+                    con los filtros seleccionados.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             FILTROS JAVASCRIPT
+             ===================================================== -->
+
+        <script>
+
+            document.addEventListener(
+                    "DOMContentLoaded",
+                    function () {
+
+
+                        const buscador =
+                                document.getElementById(
+                                        "busquedaGeneral"
+                                        );
+
+
+                        const filtroTipo =
+                                document.getElementById(
+                                        "filtroTipo"
+                                        );
+
+
+                        const filtroMarca =
+                                document.getElementById(
+                                        "filtroMarca"
+                                        );
+
+
+                        const filtroEstado =
+                                document.getElementById(
+                                        "filtroEstado"
+                                        );
+
+
+                        const filtroSede =
+                                document.getElementById(
+                                        "filtroSede"
+                                        );
+
+
+                        const filtroCentroCosto =
+                                document.getElementById(
+                                        "filtroCentroCosto"
+                                        );
+
+
+                        const btnLimpiar =
+                                document.getElementById(
+                                        "btnLimpiar"
+                                        );
+
+
+                        const cantidadVisible =
+                                document.getElementById(
+                                        "cantidadVisible"
+                                        );
+
+
+                        const sinResultados =
+                                document.getElementById(
+                                        "sinResultados"
+                                        );
+
+
+                        const filas =
+                                Array.from(
+                                        document.querySelectorAll(
+                                                ".fila-activo"
+                                                )
+                                        );
+
+
+                        /*
+                         * =================================================
+                         * ELIMINAR OPCIONES REPETIDAS
+                         * =================================================
+                         */
+
+                        function eliminarDuplicados(select) {
+
+                            if (!select) {
+                                return;
+                            }
+
+
+                            const vistos =
+                                    new Set();
+
+
+                            Array.from(
+                                    select.options
+                                    ).forEach(
+                                    function (opcion) {
+
+
+                                        if (opcion.value === "") {
+                                            return;
+                                        }
+
+
+                                        const valor =
+                                                opcion.value
+                                                .trim()
+                                                .toUpperCase();
+
+
+                                        if (vistos.has(valor)) {
+
+                                            opcion.remove();
+
+                                        } else {
+
+                                            vistos.add(valor);
+                                        }
+
+                                    }
+                            );
+                        }
+
+
+                        eliminarDuplicados(
+                                filtroSede
+                                );
+
+
+                        eliminarDuplicados(
+                                filtroCentroCosto
+                                );
+
+
+                        /*
+                         * =================================================
+                         * APLICAR FILTROS
+                         * =================================================
+                         */
+
+                        function aplicarFiltros() {
+
+
+                            const textoBusqueda =
+                                    buscador
+                                    ? buscador.value
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            const tipoSeleccionado =
+                                    filtroTipo
+                                    ? filtroTipo.value
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            const marcaSeleccionada =
+                                    filtroMarca
+                                    ? filtroMarca.value
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            const estadoSeleccionado =
+                                    filtroEstado
+                                    ? filtroEstado.value
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            const sedeSeleccionada =
+                                    filtroSede
+                                    ? filtroSede.value
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            const centroSeleccionado =
+                                    filtroCentroCosto
+                                    ? filtroCentroCosto.value
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            let visibles = 0;
+
+
+                            filas.forEach(
+                                    function (fila) {
+
+
+                                        const textoFila =
+                                                fila.innerText
+                                                .toUpperCase();
+
+
+                                        const tipo =
+                                                (
+                                                        fila.dataset.tipo || ""
+                                                        )
+                                                .trim()
+                                                .toUpperCase();
+
+
+                                        const marca =
+                                                (
+                                                        fila.dataset.marca || ""
+                                                        )
+                                                .trim()
+                                                .toUpperCase();
+
+
+                                        const estado =
+                                                (
+                                                        fila.dataset.estado || ""
+                                                        )
+                                                .trim()
+                                                .toUpperCase();
+
+
+                                        const sede =
+                                                (
+                                                        fila.dataset.sede || ""
+                                                        )
+                                                .trim()
+                                                .toUpperCase();
+
+
+                                        const centro =
+                                                (
+                                                        fila.dataset.centro || ""
+                                                        )
+                                                .trim()
+                                                .toUpperCase();
+
+
+                                        const coincideTexto =
+                                                textoBusqueda === ""
+                                                || textoFila.includes(
+                                                        textoBusqueda
+                                                        );
+
+
+                                        const coincideTipo =
+                                                tipoSeleccionado === ""
+                                                || tipo === tipoSeleccionado;
+
+
+                                        const coincideMarca =
+                                                marcaSeleccionada === ""
+                                                || marca === marcaSeleccionada;
+
+
+                                        const coincideEstado =
+                                                estadoSeleccionado === ""
+                                                || estado === estadoSeleccionado;
+
+
+                                        const coincideSede =
+                                                sedeSeleccionada === ""
+                                                || sede === sedeSeleccionada;
+
+
+                                        const coincideCentro =
+                                                centroSeleccionado === ""
+                                                || centro === centroSeleccionado;
+
+
+                                        const mostrar =
+                                                coincideTexto
+                                                && coincideTipo
+                                                && coincideMarca
+                                                && coincideEstado
+                                                && coincideSede
+                                                && coincideCentro;
+
+
+                                        if (mostrar) {
+
+                                            fila.style.display = "";
+
+                                            visibles++;
+
+                                        } else {
+
+                                            fila.style.display = "none";
+                                        }
+
+                                    }
+                            );
+
+
+                            if (cantidadVisible) {
+
+                                cantidadVisible.textContent =
+                                        visibles;
+                            }
+
+
+                            if (sinResultados) {
+
+                                sinResultados.style.display =
+                                        visibles === 0
+                                        ? "block"
+                                        : "none";
+                            }
+
+                        }
+
+
+                        /*
+                         * =================================================
+                         * EVENTOS
+                         * =================================================
+                         */
+
+                        if (buscador) {
+
+                            buscador.addEventListener(
+                                    "input",
+                                    aplicarFiltros
+                                    );
+                        }
+
+
+                        if (filtroTipo) {
+
+                            filtroTipo.addEventListener(
+                                    "change",
+                                    aplicarFiltros
+                                    );
+                        }
+
+
+                        if (filtroMarca) {
+
+                            filtroMarca.addEventListener(
+                                    "change",
+                                    aplicarFiltros
+                                    );
+                        }
+
+
+                        if (filtroEstado) {
+
+                            filtroEstado.addEventListener(
+                                    "change",
+                                    aplicarFiltros
+                                    );
+                        }
+
+
+                        if (filtroSede) {
+
+                            filtroSede.addEventListener(
+                                    "change",
+                                    aplicarFiltros
+                                    );
+                        }
+
+
+                        if (filtroCentroCosto) {
+
+                            filtroCentroCosto.addEventListener(
+                                    "change",
+                                    aplicarFiltros
+                                    );
+                        }
+
+
+                        /*
+                         * =================================================
+                         * LIMPIAR FILTROS
+                         * =================================================
+                         */
+
+                        if (btnLimpiar) {
+
+                            btnLimpiar.addEventListener(
+                                    "click",
+                                    function () {
+
+
+                                        if (buscador) {
+                                            buscador.value = "";
+                                        }
+
+
+                                        if (filtroTipo) {
+                                            filtroTipo.value = "";
+                                        }
+
+
+                                        if (filtroMarca) {
+                                            filtroMarca.value = "";
+                                        }
+
+
+                                        if (filtroEstado) {
+                                            filtroEstado.value = "";
+                                        }
+
+
+                                        if (filtroSede) {
+                                            filtroSede.value = "";
+                                        }
+
+
+                                        if (filtroCentroCosto) {
+                                            filtroCentroCosto.value = "";
+                                        }
+
+
+                                        aplicarFiltros();
+
+                                    }
+                            );
+                        }
+
+
+                        /*
+                         * Estado inicial.
+                         */
+                        aplicarFiltros();
+
+                    }
+            );
+
+        </script>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Detalle de asignación</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f4f6f8;
+                color: #1f2937;
+            }
+
+            .header {
+                background: #0f3d63;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header p {
+                margin: 5px 0 0;
+                opacity: 0.85;
+            }
+
+            .contenedor {
+                width: 90%;
+                max-width: 950px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            .cabecera {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            .cabecera h2 {
+                margin: 0;
+            }
+
+            .estado {
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            .activa {
+                background: #d1fae5;
+                color: #065f46;
+            }
+
+            .finalizada {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .seccion {
+                margin-top: 25px;
+            }
+
+            .seccion h3 {
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 8px;
+                margin-bottom: 15px;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px 30px;
+            }
+
+            .dato {
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 10px;
+            }
+
+            .dato label {
+                display: block;
+                color: #64748b;
+                font-size: 12px;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 5px;
+            }
+
+            .dato span {
+                font-size: 15px;
+            }
+
+            .completo {
+                grid-column: 1 / -1;
+            }
+
+            .botones {
+                margin-top: 30px;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+            .btn-volver {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header class="header">
+
+            <h1>Sistema de Control de Activos TI</h1>
+
+            <p>Detalle de asignación</p>
+
+        </header>
+
+
+        <main class="contenedor">
+
+            <div class="tarjeta">
+
+
+                <div class="cabecera">
+
+                    <h2>
+                        Asignación #
+                        <span th:text="${asignacion.idAsignacion}">
+                            1
+                        </span>
+                    </h2>
+
+                    <span class="estado"
+                          th:text="${asignacion.estadoAsignacion}"
+                          th:classappend="${asignacion.estadoAsignacion == 'ACTIVA'
+                          ? ' activa'
+                          : ' finalizada'}">
+
+                        ACTIVA
+
+                    </span>
+
+                </div>
+
+
+                <div class="seccion">
+
+                    <h3>Colaborador</h3>
+
+                    <div class="grid">
+
+                        <div class="dato">
+
+                            <label>Nombre completo</label>
+
+                            <span th:text="${asignacion.colaborador != null
+                                  ? asignacion.colaborador.nombreCompleto
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Código de usuario</label>
+
+                            <span th:text="${asignacion.colaborador != null
+                                  ? asignacion.colaborador.codigoUsuario
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Cargo</label>
+
+                            <span th:text="${asignacion.colaborador != null
+                                  && asignacion.colaborador.cargo != null
+                                  ? asignacion.colaborador.cargo.nombreCargo
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Sede</label>
+
+                            <span th:text="${asignacion.colaborador != null
+                                  && asignacion.colaborador.sede != null
+                                  ? asignacion.colaborador.sede.nombreSede
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="seccion">
+
+                    <h3>Activo asignado</h3>
+
+                    <div class="grid">
+
+
+                        <div class="dato">
+
+                            <label>N.º de inventario</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  ? asignacion.activo.numeroInventario
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Serie</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  ? asignacion.activo.numeroSerie
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Equipo</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  && asignacion.activo.tipoEquipo != null
+                                  ? asignacion.activo.tipoEquipo.nombreTipo
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Marca</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  && asignacion.activo.marca != null
+                                  ? asignacion.activo.marca.nombreMarca
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Modelo</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  ? asignacion.activo.modelo
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Procesador</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  && asignacion.activo.procesador != null
+                                  ? asignacion.activo.procesador
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>RAM</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  && asignacion.activo.ramGb != null
+                                  ? asignacion.activo.ramGb + ' GB'
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato">
+
+                            <label>Almacenamiento</label>
+
+                            <span th:text="${asignacion.activo != null
+                                  && asignacion.activo.almacenamientoGb != null
+                                  ? asignacion.activo.almacenamientoGb + ' GB'
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="seccion">
+
+                    <h3>Información de la asignación</h3>
+
+                    <div class="grid">
+
+                        <div class="dato">
+
+                            <label>Fecha</label>
+
+                            <span th:text="${asignacion.fechaAsignacion != null
+                                  ? #temporals.format(
+                                  asignacion.fechaAsignacion,
+                                  'dd/MM/yyyy HH:mm'
+                                  )
+                                  : '-'}">
+                                -
+                            </span>
+
+                        </div>
+
+
+                        <div class="dato completo">
+
+                            <label>Observaciones</label>
+
+                            <span th:text="${asignacion.observaciones != null
+                                  && !asignacion.observaciones.isBlank()
+                                  ? asignacion.observaciones
+                                  : 'Sin observaciones'}">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="botones">
+
+                    <a th:href="@{/asignaciones}"
+                       class="btn btn-volver">
+                        Volver
+                    </a>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </body>
+</html>

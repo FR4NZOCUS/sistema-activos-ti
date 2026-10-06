@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Editar colaborador</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f4f6f8;
+                color: #1f2937;
+            }
+
+            .header {
+                background: #0f3d63;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .header-contenido {
+                max-width: 1200px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header p {
+                margin: 5px 0 0;
+                opacity: 0.85;
+            }
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #0f3d63;
+
+                border: none;
+                border-radius: 6px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1200px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                padding: 13px 16px;
+                display: block;
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 90%;
+                max-width: 1000px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            .tarjeta h2 {
+                margin-top: 0;
+                margin-bottom: 10px;
+            }
+
+            .descripcion {
+                margin-top: 0;
+                margin-bottom: 25px;
+                color: #64748b;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .campo {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .subtitulo {
+                grid-column: 1 / -1;
+                margin-top: 5px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #e5e7eb;
+                color: #0f3d63;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            label {
+                font-weight: bold;
+                margin-bottom: 7px;
+                font-size: 14px;
+            }
+
+            input,
+            select {
+                padding: 10px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 14px;
+                background: white;
+            }
+
+            input:focus,
+            select:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            .ayuda {
+                margin-top: 6px;
+                color: #64748b;
+                font-size: 12px;
+                line-height: 1.4;
+            }
+
+            .botones {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                margin-top: 30px;
+            }
+
+            .btn {
+                border: none;
+                padding: 11px 20px;
+                border-radius: 6px;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn-guardar {
+                background: #198754;
+                color: white;
+            }
+
+            .btn-guardar:hover {
+                background: #157347;
+            }
+
+            .btn-cancelar {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .btn-cancelar:hover {
+                background: #d1d5db;
+            }
+
+            @media(max-width: 800px) {
+
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .subtitulo {
+                    grid-column: auto;
+                }
+
+                .header-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header class="header">
+
+            <div class="header-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Edición de colaboradores
+                    </p>
+
+                </div>
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+                    <form method="post"
+                          th:action="@{/logout}">
+
+                        <button type="submit"
+                                class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}"
+                   class="activo">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a th:if="${esAdministrador}"
+                   th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <main class="contenedor">
+
+            <div class="tarjeta">
+
+                <h2>
+                    Editar colaborador
+                </h2>
+
+                <p class="descripcion">
+
+                    Actualice los datos del colaborador, su puesto real
+                    dentro de la organización y el perfil tecnológico
+                    utilizado para la asignación automática de activos.
+
+                </p>
+
+                <form th:action="@{/colaboradores/guardar}"
+                      th:object="${colaborador}"
+                      method="post">
+
+                    <input type="hidden"
+                           th:field="*{idColaborador}">
+
+
+                    <div class="form-grid">
+
+
+                        <!-- DATOS DEL COLABORADOR -->
+
+                        <div class="subtitulo">
+                            Datos del colaborador
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Código de usuario *
+                            </label>
+
+                            <input type="text"
+                                   th:field="*{codigoUsuario}"
+                                   placeholder="Ej. USR005"
+                                   required>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Nombres *
+                            </label>
+
+                            <input type="text"
+                                   th:field="*{nombres}"
+                                   required>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Apellido paterno *
+                            </label>
+
+                            <input type="text"
+                                   th:field="*{apellidoPaterno}"
+                                   required>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Apellido materno
+                            </label>
+
+                            <input type="text"
+                                   th:field="*{apellidoMaterno}">
+
+                        </div>
+
+
+                        <!-- PUESTO Y PERFIL -->
+
+                        <div class="subtitulo">
+                            Puesto y perfil tecnológico
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Puesto real
+                            </label>
+
+                            <select th:field="*{puesto.idPuesto}">
+
+                                <option value="">
+                                    -- Sin asignar --
+                                </option>
+
+                                <option
+                                    th:each="puesto : ${puestos}"
+                                    th:value="${puesto.idPuesto}"
+                                    th:text="${puesto.nombrePuesto}">
+                                </option>
+
+                            </select>
+
+                            <div class="ayuda">
+
+                                Representa el puesto real del colaborador
+                                registrado en la organización.
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Perfil tecnológico *
+                            </label>
+
+                            <select th:field="*{cargo.idCargo}"
+                                    required>
+
+                                <option value="">
+                                    -- Seleccione un perfil --
+                                </option>
+
+                                <option
+                                    th:each="cargo : ${cargos}"
+                                    th:value="${cargo.idCargo}"
+                                    th:text="${cargo.nombreCargo}">
+                                </option>
+
+                            </select>
+
+                            <div class="ayuda">
+
+                                Este perfil determina los requisitos
+                                tecnológicos utilizados por la asignación
+                                automática de equipos.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN ORGANIZACIONAL -->
+
+                        <div class="subtitulo">
+                            Información organizacional
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Centro de costo
+                            </label>
+
+                            <select
+                                th:field="*{centroCosto.idCentroCosto}">
+
+                                <option value="">
+                                    Sin asignar
+                                </option>
+
+                                <option
+                                    th:each="centro : ${centrosCosto}"
+                                    th:value="${centro.idCentroCosto}"
+                                    th:text="${centro.codigo
+                                    + (centro.descripcion != null
+                                    and !centro.descripcion.isBlank()
+                                    ? ' - ' + centro.descripcion
+                                    : '')}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Estado
+                            </label>
+
+                            <select th:field="*{estadoColaborador}">
+
+                                <option value="ACTIVO">
+                                    ACTIVO
+                                </option>
+
+                                <option value="INACTIVO">
+                                    INACTIVO
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Sede
+                            </label>
+
+                            <select th:field="*{sede.idSede}">
+
+                                <option value="">
+                                    -- Sin asignar --
+                                </option>
+
+                                <option
+                                    th:each="sede : ${sedes}"
+                                    th:value="${sede.idSede}"
+                                    th:text="${sede.nombreSede}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Ubicación
+                            </label>
+
+                            <select th:field="*{ubicacion.idUbicacion}">
+
+                                <option value="">
+                                    -- Sin asignar --
+                                </option>
+
+                                <option
+                                    th:each="ubicacion : ${ubicaciones}"
+                                    th:value="${ubicacion.idUbicacion}"
+                                    th:text="${ubicacion.nombreUbicacion}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="botones">
+
+                        <a th:href="@{/colaboradores}"
+                           class="btn btn-cancelar">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-guardar">
+
+                            Guardar cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </body>
+</html>

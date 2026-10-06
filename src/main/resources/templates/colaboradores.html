@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Colaboradores</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1500px;
+                margin: 0 auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+                border: none;
+                border-radius: 5px;
+                padding: 9px 14px;
+                font-size: 13px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1500px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                padding: 13px 16px;
+                display: block;
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 96%;
+                max-width: 1600px;
+                margin: 30px auto;
+            }
+
+            .encabezado-pagina {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                gap: 20px;
+            }
+
+            .encabezado-pagina h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            .encabezado-pagina p {
+                margin: 6px 0 0;
+                color: #607d8b;
+                font-size: 14px;
+            }
+
+            .btn {
+                text-decoration: none;
+                border-radius: 5px;
+                padding: 10px 16px;
+                font-size: 14px;
+                display: inline-block;
+            }
+
+            .btn-nuevo {
+                background: #158a54;
+                color: white;
+                font-weight: bold;
+            }
+
+            .btn-nuevo:hover {
+                background: #107044;
+            }
+
+            .tabla-contenedor {
+                width: 100%;
+                background: white;
+                border-radius: 8px;
+                overflow-x: auto;
+                border: 1px solid #e0e5e8;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 1450px;
+            }
+
+            th {
+                background: #f7f9fa;
+                text-align: left;
+                padding: 13px;
+                border-bottom: 1px solid #dfe3e6;
+                font-size: 13px;
+                color: #37474f;
+            }
+
+            td {
+                padding: 13px;
+                border-bottom: 1px solid #eceff1;
+                font-size: 13px;
+                vertical-align: middle;
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            tbody tr:hover {
+                background: #fafcfd;
+            }
+
+            .estado {
+                display: inline-block;
+                padding: 5px 9px;
+                border-radius: 14px;
+                font-size: 11px;
+                font-weight: bold;
+            }
+
+            .estado-activo {
+                background: #d8f5e8;
+                color: #08784f;
+            }
+
+            .estado-inactivo {
+                background: #eceff1;
+                color: #546e7a;
+            }
+
+            .perfil {
+                display: inline-block;
+                padding: 5px 9px;
+                border-radius: 12px;
+                background: #e7f1fc;
+                color: #0f5ca8;
+                font-size: 11px;
+                font-weight: bold;
+            }
+
+            .sin-asignar {
+                color: #90a4ae;
+                font-style: italic;
+            }
+
+            .acciones-tabla {
+                white-space: nowrap;
+            }
+
+            .accion {
+                color: #0f5ca8;
+                text-decoration: none;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .accion:hover {
+                text-decoration: underline;
+            }
+
+            .accion-editar {
+                color: #b26a00;
+            }
+
+            .sin-datos {
+                padding: 25px;
+                text-align: center;
+                color: #607d8b;
+            }
+
+            @media(max-width: 900px) {
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .usuario-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .encabezado-pagina {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Gestión de colaboradores
+                    </p>
+
+                </div>
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}"
+                   class="activo">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="contenedor">
+
+            <div class="encabezado-pagina">
+
+                <div>
+
+                    <h2>
+                        Colaboradores
+                    </h2>
+
+                    <p>
+                        Consulte el puesto real y el perfil tecnológico
+                        utilizado para la asignación automática de activos.
+                    </p>
+
+                </div>
+
+                <a
+                    th:if="${puedeGestionar}"
+                    th:href="@{/colaboradores/nuevo}"
+                    class="btn btn-nuevo">
+
+                    + Nuevo colaborador
+
+                </a>
+
+            </div>
+
+
+            <div class="tabla-contenedor">
+
+                <table
+                    th:if="${colaboradores != null
+                    and !colaboradores.isEmpty()}">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Código</th>
+
+                            <th>Nombre completo</th>
+
+                            <th>Puesto real</th>
+
+                            <th>Perfil tecnológico</th>
+
+                            <th>Centro de costo</th>
+
+                            <th>Sede</th>
+
+                            <th>Ubicación</th>
+
+                            <th>Estado</th>
+
+                            <th>Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr
+                            th:each="colaborador : ${colaboradores}">
+
+
+                            <td
+                                th:text="${colaborador.idColaborador}">
+                            </td>
+
+
+                            <td
+                                th:text="${colaborador.codigoUsuario}">
+                            </td>
+
+
+                            <td
+                                th:text="${colaborador.nombreCompleto}">
+                            </td>
+
+
+                            <!-- PUESTO REAL -->
+
+                            <td>
+
+                                <span
+                                    th:if="${colaborador.puesto != null}"
+                                    th:text="${colaborador.puesto.nombrePuesto}">
+                                </span>
+
+                                <span
+                                    th:if="${colaborador.puesto == null}"
+                                    class="sin-asignar">
+
+                                    Sin asignar
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- PERFIL TECNOLÓGICO -->
+
+                            <td>
+
+                                <span
+                                    th:if="${colaborador.cargo != null}"
+                                    class="perfil"
+                                    th:text="${colaborador.cargo.nombreCargo}">
+                                </span>
+
+                                <span
+                                    th:if="${colaborador.cargo == null}"
+                                    class="sin-asignar">
+
+                                    Sin perfil
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- CENTRO COSTO -->
+
+                            <td
+                                th:text="${colaborador.centroCosto != null
+                                ? colaborador.centroCosto.codigo
+                                : '-'}">
+                            </td>
+
+
+                            <!-- SEDE -->
+
+                            <td
+                                th:text="${colaborador.sede != null
+                                ? colaborador.sede.nombreSede
+                                : '-'}">
+                            </td>
+
+
+                            <!-- UBICACIÓN -->
+
+                            <td
+                                th:text="${colaborador.ubicacion != null
+                                ? colaborador.ubicacion.nombreUbicacion
+                                : '-'}">
+                            </td>
+
+
+                            <!-- ESTADO -->
+
+                            <td>
+
+                                <span
+                                    class="estado estado-activo"
+
+                                    th:if="${colaborador.estadoColaborador != null
+                                    and colaborador.estadoColaborador == 'ACTIVO'}">
+
+                                    ACTIVO
+
+                                </span>
+
+
+                                <span
+                                    class="estado estado-inactivo"
+
+                                    th:if="${colaborador.estadoColaborador == null
+                                    or colaborador.estadoColaborador != 'ACTIVO'}"
+
+                                    th:text="${colaborador.estadoColaborador != null
+                                    ? colaborador.estadoColaborador
+                                    : 'INACTIVO'}">
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td class="acciones-tabla">
+
+
+                                <a
+                                    th:href="@{/colaboradores/ver/{id}
+                                    (id=${colaborador.idColaborador})}"
+
+                                    class="accion">
+
+                                    Ver
+
+                                </a>
+
+
+                                <a
+                                    th:if="${puedeGestionar}"
+
+                                    th:href="@{/colaboradores/editar/{id}
+                                    (id=${colaborador.idColaborador})}"
+
+                                    class="accion accion-editar">
+
+                                    Editar
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div
+                    class="sin-datos"
+
+                    th:if="${colaboradores == null
+                    or colaboradores.isEmpty()}">
+
+                    No existen colaboradores registrados.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Detalle del colaborador</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f4f6f8;
+                color: #1f2937;
+            }
+
+            .header {
+                background: #0f3d63;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .header-contenido {
+                max-width: 1100px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header p {
+                margin: 5px 0 0;
+                opacity: 0.85;
+            }
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #0f3d63;
+
+                border: none;
+                border-radius: 6px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1100px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                padding: 13px 16px;
+                display: block;
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 90%;
+                max-width: 900px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            .cabecera-detalle {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                margin-bottom: 25px;
+            }
+
+            .cabecera-detalle h2 {
+                margin: 0;
+                color: #16374f;
+            }
+
+            .estado {
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            .activo {
+                background: #d1fae5;
+                color: #065f46;
+            }
+
+            .inactivo {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px 30px;
+            }
+
+            .subtitulo {
+                grid-column: 1 / -1;
+                margin-top: 10px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #e5e7eb;
+                color: #0f3d63;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .dato {
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 10px;
+            }
+
+            .dato label {
+                display: block;
+                font-size: 12px;
+                font-weight: bold;
+                color: #64748b;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+            }
+
+            .dato span {
+                font-size: 15px;
+            }
+
+            .perfil {
+                display: inline-block;
+                padding: 5px 9px;
+                border-radius: 12px;
+                background: #e7f1fc;
+                color: #0f5ca8;
+                font-size: 12px !important;
+                font-weight: bold;
+            }
+
+            .sin-asignar {
+                color: #94a3b8;
+                font-style: italic;
+            }
+
+            .botones {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 30px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-block;
+            }
+
+            .btn-volver {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .btn-volver:hover {
+                background: #d1d5db;
+            }
+
+            .btn-editar {
+                background: #0f5ca8;
+                color: white;
+            }
+
+            .btn-editar:hover {
+                background: #0b4a88;
+            }
+
+            @media(max-width: 750px) {
+
+                .header-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .subtitulo {
+                    grid-column: auto;
+                }
+
+                .cabecera-detalle {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .botones {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    text-align: center;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header class="header">
+
+            <div class="header-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Detalle del colaborador
+                    </p>
+
+                </div>
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+                    <form method="post"
+                          th:action="@{/logout}">
+
+                        <button type="submit"
+                                class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}"
+                   class="activo">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a th:if="${esAdministrador}"
+                   th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <main class="contenedor">
+
+            <div class="tarjeta">
+
+                <div class="cabecera-detalle">
+
+                    <h2 th:text="${colaborador.nombreCompleto}">
+                        Nombre del colaborador
+                    </h2>
+
+                    <span
+                        class="estado"
+
+                        th:text="${colaborador.estadoColaborador != null
+                        ? colaborador.estadoColaborador
+                        : 'INACTIVO'}"
+
+                        th:classappend="${colaborador.estadoColaborador == 'ACTIVO'
+                        ? ' activo'
+                        : ' inactivo'}">
+
+                        ACTIVO
+
+                    </span>
+
+                </div>
+
+
+                <div class="grid">
+
+
+                    <!-- DATOS DEL COLABORADOR -->
+
+                    <div class="subtitulo">
+                        Datos del colaborador
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Código de usuario
+                        </label>
+
+                        <span th:text="${colaborador.codigoUsuario}">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Nombres
+                        </label>
+
+                        <span
+                            th:text="${colaborador.nombres != null
+                            ? colaborador.nombres
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Apellido paterno
+                        </label>
+
+                        <span
+                            th:text="${colaborador.apellidoPaterno != null
+                            ? colaborador.apellidoPaterno
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Apellido materno
+                        </label>
+
+                        <span
+                            th:text="${colaborador.apellidoMaterno != null
+                            ? colaborador.apellidoMaterno
+                            : '-'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- PUESTO Y PERFIL -->
+
+                    <div class="subtitulo">
+                        Puesto y perfil tecnológico
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Puesto real
+                        </label>
+
+                        <span
+                            th:if="${colaborador.puesto != null}"
+                            th:text="${colaborador.puesto.nombrePuesto}">
+
+                            -
+
+                        </span>
+
+                        <span
+                            th:if="${colaborador.puesto == null}"
+                            class="sin-asignar">
+
+                            Sin asignar
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Perfil tecnológico
+                        </label>
+
+                        <span
+                            th:if="${colaborador.cargo != null}"
+                            class="perfil"
+                            th:text="${colaborador.cargo.nombreCargo}">
+
+                            -
+
+                        </span>
+
+                        <span
+                            th:if="${colaborador.cargo == null}"
+                            class="sin-asignar">
+
+                            Sin perfil
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- INFORMACIÓN ORGANIZACIONAL -->
+
+                    <div class="subtitulo">
+                        Información organizacional
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Centro de costo
+                        </label>
+
+                        <span
+                            th:text="${colaborador.centroCosto != null
+                            ? colaborador.centroCosto.codigo
+                            : 'Sin asignar'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Sede
+                        </label>
+
+                        <span
+                            th:text="${colaborador.sede != null
+                            ? colaborador.sede.nombreSede
+                            : 'Sin asignar'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Ubicación
+                        </label>
+
+                        <span
+                            th:text="${colaborador.ubicacion != null
+                            ? colaborador.ubicacion.nombreUbicacion
+                            : 'Sin asignar'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="dato">
+
+                        <label>
+                            Estado del colaborador
+                        </label>
+
+                        <span
+                            th:text="${colaborador.estadoColaborador != null
+                            ? colaborador.estadoColaborador
+                            : 'INACTIVO'}">
+
+                            -
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="botones">
+
+                    <a th:href="@{/colaboradores}"
+                       class="btn btn-volver">
+
+                        Volver
+
+                    </a>
+
+                    <a
+                        th:if="${puedeGestionar}"
+
+                        th:href="@{/colaboradores/editar/{id}
+                        (id=${colaborador.idColaborador})}"
+
+                        class="btn btn-editar">
+
+                        Editar colaborador
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </body>
+
+</html>

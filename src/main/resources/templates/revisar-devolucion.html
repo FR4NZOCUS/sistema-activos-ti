@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Revisar devolución</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f4f6f8;
+                color: #1f2937;
+            }
+
+            .header {
+                background: #0f3d63;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header p {
+                margin: 5px 0 0;
+                opacity: 0.85;
+            }
+
+            .contenedor {
+                width: 90%;
+                max-width: 850px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            .tarjeta h2 {
+                margin-top: 0;
+                margin-bottom: 25px;
+            }
+
+            .info {
+                background: #eff6ff;
+                border-left: 4px solid #0f5ca8;
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 25px;
+            }
+
+            .info p {
+                margin: 7px 0;
+            }
+
+            .campo {
+                margin-bottom: 20px;
+            }
+
+            label {
+                display: block;
+                font-weight: bold;
+                font-size: 14px;
+                margin-bottom: 7px;
+            }
+
+            select,
+            textarea {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 14px;
+            }
+
+            select:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+            .advertencia {
+                background: #fef3c7;
+                color: #92400e;
+                padding: 13px;
+                border-radius: 6px;
+                margin-top: 15px;
+            }
+
+            .botones {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                margin-top: 25px;
+            }
+
+            .btn {
+                padding: 11px 18px;
+                border: none;
+                border-radius: 6px;
+                font-weight: bold;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .btn-finalizar {
+                background: #198754;
+                color: white;
+            }
+
+            .btn-cancelar {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+        </style>
+
+    </head>
+
+
+    <body>
+
+        <header class="header">
+
+            <h1>Sistema de Control de Activos TI</h1>
+
+            <p>Revisión de activos devueltos</p>
+
+        </header>
+
+
+        <main class="contenedor">
+
+            <div class="tarjeta">
+
+                <h2>Revisión de devolución</h2>
+
+
+                <div class="info">
+
+                    <p>
+                        <strong>Colaborador:</strong>
+
+                        <span th:text="${devolucion.asignacion.colaborador.nombreCompleto}">
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Activo:</strong>
+
+                        <span th:text="${devolucion.asignacion.activo.numeroInventario}">
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Equipo:</strong>
+
+                        <span th:text="${devolucion.asignacion.activo.tipoEquipo.nombreTipo}">
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Marca:</strong>
+
+                        <span th:text="${devolucion.asignacion.activo.marca != null
+                              ? devolucion.asignacion.activo.marca.nombreMarca
+                              : '-'}">
+                        </span>
+                    </p>
+
+
+                    <p>
+                        <strong>Modelo:</strong>
+
+                        <span th:text="${devolucion.asignacion.activo.modelo}">
+                        </span>
+                    </p>
+
+                </div>
+
+
+                <form th:action="@{/devoluciones/revisar}"
+                      method="post">
+
+                    <input type="hidden"
+                           name="idDevolucion"
+                           th:value="${devolucion.idDevolucion}">
+
+
+                    <div class="campo">
+
+                        <label>
+                            Resultado de la revisión
+                        </label>
+
+                        <select name="nuevoEstado"
+                                required>
+
+                            <option value="">
+                                Seleccionar resultado
+                            </option>
+
+                            <option value="DISPONIBLE">
+                                Disponible
+                            </option>
+
+                            <option value="MANTENIMIENTO">
+                                Mantenimiento
+                            </option>
+
+                            <option value="BAJA">
+                                Baja
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label>
+                            Observaciones de la revisión
+                        </label>
+
+                        <textarea
+                            name="observaciones"
+                            placeholder="Ej. Equipo operativo, cargador entregado y sin daños visibles...">
+                        </textarea>
+
+                    </div>
+
+
+                    <div class="advertencia">
+
+                        El estado seleccionado determinará si el activo
+                        puede volver a utilizarse en futuras asignaciones.
+
+                    </div>
+
+
+                    <div class="botones">
+
+                        <a th:href="@{/devoluciones}"
+                           class="btn btn-cancelar">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-finalizar">
+
+                            Finalizar revisión
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </body>
+</html>

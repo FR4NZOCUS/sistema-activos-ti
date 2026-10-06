@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Nuevo requisito por cargo</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f4f6f8;
+                color: #1f2937;
+            }
+
+            .header {
+                background: #0f3d63;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header p {
+                margin: 5px 0 0;
+                opacity: 0.85;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                padding: 13px 16px;
+                display: block;
+                font-size: 14px;
+                transition: background 0.2s;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 90%;
+                max-width: 1000px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            .tarjeta h2 {
+                margin-top: 0;
+                margin-bottom: 25px;
+            }
+
+            .descripcion {
+                background: #eff6ff;
+                border-left: 4px solid #0f5ca8;
+                padding: 14px 16px;
+                border-radius: 5px;
+                margin-bottom: 25px;
+                color: #475569;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .campo {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .campo-completo {
+                grid-column: 1 / -1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            label {
+                font-weight: bold;
+                margin-bottom: 7px;
+                font-size: 14px;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 10px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 14px;
+                background: white;
+            }
+
+            input:focus,
+            select:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+            .ayuda {
+                margin-top: 6px;
+                color: #64748b;
+                font-size: 12px;
+            }
+
+            .botones {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                margin-top: 30px;
+            }
+
+            .btn {
+                border: none;
+                padding: 11px 20px;
+                border-radius: 6px;
+                font-weight: bold;
+                cursor: pointer;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .btn-guardar {
+                background: #198754;
+                color: white;
+            }
+
+            .btn-guardar:hover {
+                background: #146c43;
+            }
+
+            .btn-cancelar {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .btn-cancelar:hover {
+                background: #d1d5db;
+            }
+
+            @media (max-width: 700px) {
+
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .campo-completo {
+                    grid-column: auto;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header class="header">
+
+            <h1>Sistema de Control de Activos TI</h1>
+
+            <p>Registro de requisitos tecnológicos por cargo</p>
+
+        </header>
+
+
+        <nav class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}"
+                   class="activo">
+                    Requisitos
+                </a>
+
+            </div>
+
+        </nav>
+
+
+        <main class="contenedor">
+
+            <div class="tarjeta">
+
+                <h2>Nuevo requisito</h2>
+
+                <div class="descripcion">
+
+                    Configura las características mínimas que debe cumplir
+                    un activo tecnológico para ser recomendado a un
+                    colaborador según su cargo.
+
+                </div>
+
+
+                <form th:action="@{/requisitos-cargo/guardar}"
+                      th:object="${requisito}"
+                      method="post">
+
+                    <div class="form-grid">
+
+
+                        <div class="campo">
+
+                            <label>Cargo</label>
+
+                            <select th:field="*{cargo.idCargo}"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar cargo
+                                </option>
+
+                                <option th:each="cargo : ${cargos}"
+                                        th:value="${cargo.idCargo}"
+                                        th:text="${cargo.nombreCargo}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>Tipo de equipo</label>
+
+                            <select th:field="*{tipoEquipo.idTipoEquipo}"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar tipo de equipo
+                                </option>
+
+                                <option th:each="tipo : ${tiposEquipo}"
+                                        th:value="${tipo.idTipoEquipo}"
+                                        th:text="${tipo.nombreTipo}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="campo">
+
+                            <label>Tipo de requisito</label>
+
+                            <select th:field="*{tipoRequisito}"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar
+                                </option>
+
+                                <option value="PRINCIPAL">
+                                    Principal
+                                </option>
+
+                                <option value="COMPLEMENTARIO">
+                                    Complementario
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>Procesador mínimo</label>
+
+                            <input type="text"
+                                   th:field="*{procesadorMinimo}"
+                                   placeholder="Ej. Intel Core i5">
+
+                            <span class="ayuda">
+                                Déjalo vacío para equipos que no requieren procesador.
+                            </span>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>RAM mínima (GB)</label>
+
+                            <input type="number"
+                                   th:field="*{ramMinimaGb}"
+                                   min="0"
+                                   placeholder="Ej. 16">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>Almacenamiento mínimo (GB)</label>
+
+                            <input type="number"
+                                   th:field="*{almacenamientoMinimoGb}"
+                                   min="0"
+                                   placeholder="Ej. 512">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>Prioridad</label>
+
+                            <input type="number"
+                                   th:field="*{prioridad}"
+                                   min="1"
+                                   value="1">
+
+                            <span class="ayuda">
+                                Un valor menor puede representar mayor prioridad.
+                            </span>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>¿Requiere monitor?</label>
+
+                            <select th:field="*{requiereMonitor}">
+
+                                <option value="">
+                                    Seleccionar
+                                </option>
+
+                                <option th:value="true">
+                                    Sí
+                                </option>
+
+                                <option th:value="false">
+                                    No
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>¿Requiere móvil?</label>
+
+                            <select th:field="*{requiereMovil}">
+
+                                <option value="">
+                                    Seleccionar
+                                </option>
+
+                                <option th:value="true">
+                                    Sí
+                                </option>
+
+                                <option th:value="false">
+                                    No
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo-completo">
+
+                            <label>Observaciones</label>
+
+                            <textarea th:field="*{observaciones}"
+                                      placeholder="Ej. Priorizar equipos recientes y con buen rendimiento.">
+                            </textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="botones">
+
+                        <a th:href="@{/requisitos-cargo}"
+                           class="btn btn-cancelar">
+
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-guardar">
+
+                            Guardar requisito
+
+                        </button>
+
+                    </div>
+
+
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </body>
+
+</html>

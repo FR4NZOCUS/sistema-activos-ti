@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Nuevo usuario</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+                padding: 13px 16px;
+                display: block;
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 95%;
+                max-width: 900px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+                border-radius: 8px;
+                padding: 25px;
+                border: 1px solid #e0e5e8;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04);
+            }
+
+            .tarjeta h2 {
+                margin-top: 0;
+                color: #16374f;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+            }
+
+            .campo {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .campo-completo {
+                grid-column: 1 / -1;
+            }
+
+            label {
+                margin-bottom: 7px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            input,
+            select {
+                width: 100%;
+                padding: 11px 12px;
+                border: 1px solid #cfd8dc;
+                border-radius: 5px;
+                font-size: 14px;
+                background: white;
+            }
+
+            input:focus,
+            select:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            .check-contenedor {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 8px;
+            }
+
+            .check-contenedor input {
+                width: auto;
+            }
+
+            .acciones {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 25px;
+            }
+
+            .btn {
+                border: none;
+                border-radius: 5px;
+                padding: 11px 18px;
+                font-size: 14px;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn-primario {
+                background: #158a54;
+                color: white;
+            }
+
+            .btn-primario:hover {
+                background: #107044;
+            }
+
+            .btn-secundario {
+                background: #eceff1;
+                color: #37474f;
+            }
+
+            .btn-secundario:hover {
+                background: #dfe3e6;
+            }
+
+            @media(max-width: 700px) {
+
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .campo-completo {
+                    grid-column: auto;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <h1>
+                    Sistema de Control de Activos TI
+                </h1>
+
+                <p>
+                    Registro de usuarios del sistema
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a th:href="@{/usuarios}"
+                   class="activo">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="contenedor">
+
+            <div class="tarjeta">
+
+                <h2>
+                    Nuevo usuario
+                </h2>
+
+                <form
+                    method="post"
+                    th:action="@{/usuarios/guardar}">
+
+                    <div class="grid">
+
+                        <div class="campo">
+
+                            <label>
+                                Nombre de usuario
+                            </label>
+
+                            <input
+                                type="text"
+                                name="nombreUsuario"
+                                required
+                                maxlength="100"
+                                placeholder="Ej. soporte01">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Rol
+                            </label>
+
+                            <select
+                                name="idRol"
+                                required>
+
+                                <option value="">
+                                    -- Seleccione un rol --
+                                </option>
+
+                                <option
+                                    th:each="rol : ${roles}"
+                                    th:value="${rol.idRol}"
+                                    th:text="${rol.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo campo-completo">
+
+                            <label>
+                                Nombre completo
+                            </label>
+
+                            <input
+                                type="text"
+                                name="nombreCompleto"
+                                required
+                                maxlength="200"
+                                placeholder="Ingrese el nombre completo">
+
+                        </div>
+
+
+                        <div class="campo campo-completo">
+
+                            <label>
+                                Correo
+                            </label>
+
+                            <input
+                                type="email"
+                                name="correo"
+                                maxlength="200"
+                                placeholder="usuario@empresa.com">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Contraseña
+                            </label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                required
+                                minlength="6"
+                                placeholder="Ingrese una contraseña">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Estado
+                            </label>
+
+                            <div class="check-contenedor">
+
+                                <input
+                                    type="checkbox"
+                                    name="estado"
+                                    value="true"
+                                    checked>
+
+                                <span>
+                                    Usuario activo
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="acciones">
+
+                        <a
+                            th:href="@{/usuarios}"
+                            class="btn btn-secundario">
+
+                            Cancelar
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primario">
+
+                            Guardar usuario
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

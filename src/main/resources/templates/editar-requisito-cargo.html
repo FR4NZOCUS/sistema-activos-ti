@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Editar requisito por cargo</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 30px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 30px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+            .contenedor {
+                width: 95%;
+                max-width: 1000px;
+                margin: 30px auto;
+            }
+
+            .tarjeta {
+                background: white;
+
+                border-radius: 8px;
+
+                padding: 25px;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+            .tarjeta h2 {
+                margin-top: 0;
+                color: #16374f;
+            }
+
+            .descripcion {
+                color: #607d8b;
+                font-size: 14px;
+                margin-bottom: 25px;
+                line-height: 1.5;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+            }
+
+            .campo {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .campo-completo {
+                grid-column: 1 / -1;
+            }
+
+            .subtitulo {
+                grid-column: 1 / -1;
+
+                margin-top: 5px;
+
+                padding-bottom: 8px;
+
+                border-bottom: 1px solid #e5eaed;
+
+                color: #16374f;
+
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            label {
+                margin-bottom: 7px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            input,
+            select,
+            textarea {
+                width: 100%;
+
+                padding: 11px 12px;
+
+                border: 1px solid #cfd8dc;
+
+                border-radius: 5px;
+
+                font-size: 14px;
+
+                background: white;
+            }
+
+            input:focus,
+            select:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            textarea {
+                min-height: 100px;
+                resize: vertical;
+            }
+
+            .ayuda {
+                margin-top: 6px;
+
+                color: #78909c;
+
+                font-size: 12px;
+
+                line-height: 1.4;
+            }
+
+            .check-contenedor {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                margin-top: 6px;
+            }
+
+            .check-contenedor input {
+                width: auto;
+            }
+
+            .acciones {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+
+                margin-top: 25px;
+            }
+
+            .btn {
+                border: none;
+
+                border-radius: 5px;
+
+                padding: 11px 18px;
+
+                font-size: 14px;
+
+                text-decoration: none;
+
+                cursor: pointer;
+
+                display: inline-block;
+            }
+
+            .btn-guardar {
+                background: #0f5ca8;
+                color: white;
+            }
+
+            .btn-guardar:hover {
+                background: #0b4a88;
+            }
+
+            .btn-cancelar {
+                background: #eceff1;
+                color: #37474f;
+            }
+
+            .btn-cancelar:hover {
+                background: #dfe3e6;
+            }
+
+            @media(max-width: 750px) {
+
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .campo-completo,
+                .subtitulo {
+                    grid-column: auto;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Actualización de requisitos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}"
+                   class="activo">
+                    Requisitos
+                </a>
+
+                <a th:if="${esAdministrador}"
+                   th:href="@{/usuarios}">
+                    Usuarios
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="contenedor">
+
+            <div class="tarjeta">
+
+                <h2>
+                    Editar requisito por cargo
+                </h2>
+
+                <p class="descripcion">
+
+                    Actualice las características técnicas mínimas
+                    requeridas para la asignación de activos
+                    tecnológicos al cargo seleccionado.
+
+                </p>
+
+
+                <form
+                    method="post"
+                    th:action="@{/requisitos-cargo/guardar}"
+                    th:object="${requisito}">
+
+
+                    <input
+                        type="hidden"
+                        th:field="*{idRequisito}">
+
+
+                    <div class="grid">
+
+
+                        <div class="subtitulo">
+                            Configuración general
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Cargo *
+                            </label>
+
+                            <select
+                                th:field="*{cargo.idCargo}"
+                                required>
+
+                                <option
+                                    th:each="cargoItem : ${cargos}"
+                                    th:value="${cargoItem.idCargo}"
+                                    th:text="${cargoItem.nombreCargo}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Tipo de equipo *
+                            </label>
+
+                            <select
+                                th:field="*{tipoEquipo.idTipoEquipo}"
+                                required>
+
+                                <option
+                                    th:each="tipo : ${tiposEquipo}"
+                                    th:value="${tipo.idTipoEquipo}"
+                                    th:text="${tipo.nombreTipo}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Tipo de requisito *
+                            </label>
+
+                            <select
+                                th:field="*{tipoRequisito}"
+                                required>
+
+                                <option value="PRINCIPAL">
+                                    PRINCIPAL
+                                </option>
+
+                                <option value="COMPLEMENTARIO">
+                                    COMPLEMENTARIO
+                                </option>
+
+                            </select>
+
+                            <div class="ayuda">
+
+                                PRINCIPAL corresponde al equipo base,
+                                por ejemplo una laptop.
+
+                                COMPLEMENTARIO se utiliza para equipos
+                                adicionales como monitor o mouse.
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Prioridad
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{prioridad}"
+                                min="1">
+
+                        </div>
+
+
+                        <div class="subtitulo">
+                            Requisitos técnicos mínimos
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Procesador mínimo
+                            </label>
+
+                            <input
+                                type="text"
+                                th:field="*{procesadorMinimo}"
+                                placeholder="Ej. Intel Core i7">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Generación mínima
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{generacionMinima}"
+                                min="1"
+                                max="30"
+                                placeholder="Ej. 11">
+
+                            <div class="ayuda">
+
+                                Define la generación mínima que debe tener
+                                la laptop para ser considerada compatible
+                                con el cargo.
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                RAM mínima (GB)
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{ramMinimaGb}"
+                                min="1">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Almacenamiento mínimo (GB)
+                            </label>
+
+                            <input
+                                type="number"
+                                th:field="*{almacenamientoMinimoGb}"
+                                min="1">
+
+                        </div>
+
+
+                        <div class="subtitulo">
+                            Indicadores complementarios
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Monitor
+                            </label>
+
+                            <div class="check-contenedor">
+
+                                <input
+                                    type="checkbox"
+                                    th:field="*{requiereMonitor}">
+
+                                <span>
+                                    El cargo requiere monitor
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Dispositivo móvil
+                            </label>
+
+                            <div class="check-contenedor">
+
+                                <input
+                                    type="checkbox"
+                                    th:field="*{requiereMovil}">
+
+                                <span>
+                                    El cargo requiere dispositivo móvil
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="campo campo-completo">
+
+                            <label>
+                                Observaciones
+                            </label>
+
+                            <textarea
+                                th:field="*{observaciones}"
+                                placeholder="Información adicional sobre el requisito...">
+                            </textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="acciones">
+
+                        <a
+                            th:href="@{/requisitos-cargo}"
+                            class="btn btn-cancelar">
+
+                            Cancelar
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-guardar">
+
+                            Guardar cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

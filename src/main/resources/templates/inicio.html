@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Inicio</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+
+            /* =====================================================
+               CABECERA
+               ===================================================== */
+
+            .cabecera {
+                background: #14476b;
+                color: white;
+                padding: 18px 28px;
+            }
+
+            .cabecera-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .cabecera h1 {
+                margin: 0;
+                font-size: 25px;
+            }
+
+            .cabecera p {
+                margin: 5px 0 0;
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+               USUARIO
+               ===================================================== */
+
+            .usuario-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .usuario-info {
+                text-align: right;
+            }
+
+            .usuario-info strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .usuario-info span {
+                font-size: 12px;
+                opacity: .85;
+            }
+
+            .btn-logout {
+                background: white;
+                color: #14476b;
+
+                border: none;
+                border-radius: 5px;
+
+                padding: 9px 14px;
+
+                font-size: 13px;
+                font-weight: bold;
+
+                cursor: pointer;
+            }
+
+            .btn-logout:hover {
+                background: #e8edf1;
+            }
+
+
+            /* =====================================================
+               NAVEGACIÓN
+               ===================================================== */
+
+            .nav {
+                background: #0b2f4a;
+                padding: 0 28px;
+            }
+
+            .nav-contenido {
+                max-width: 1400px;
+                margin: 0 auto;
+
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .nav a {
+                color: white;
+                text-decoration: none;
+
+                padding: 13px 16px;
+
+                display: block;
+
+                font-size: 14px;
+            }
+
+            .nav a:hover {
+                background: #164f78;
+            }
+
+            .nav a.activo {
+                background: #0f5ca8;
+                font-weight: bold;
+            }
+
+
+            /* =====================================================
+               CONTENIDO
+               ===================================================== */
+
+            .contenedor {
+                width: 96%;
+                max-width: 1400px;
+                margin: 26px auto 40px;
+            }
+
+            .bienvenida {
+                margin-bottom: 22px;
+            }
+
+            .bienvenida h2 {
+                margin: 0 0 6px;
+                color: #16374f;
+                font-size: 23px;
+            }
+
+            .bienvenida p {
+                margin: 0;
+                color: #607d8b;
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+               INDICADORES
+               ===================================================== */
+
+            .indicadores {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(auto-fit, minmax(190px, 1fr));
+
+                gap: 15px;
+
+                margin-bottom: 28px;
+            }
+
+            .indicador {
+                background: white;
+
+                border-radius: 8px;
+
+                padding: 18px;
+
+                border: 1px solid #dce3e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0, 0, 0, .04);
+            }
+
+            .indicador .numero {
+                font-size: 28px;
+                font-weight: bold;
+                color: #0f5ca8;
+            }
+
+            .indicador .texto {
+                margin-top: 6px;
+
+                color: #607d8b;
+
+                font-size: 13px;
+
+                line-height: 1.25;
+            }
+
+
+            /* =====================================================
+               TÍTULO DE MÓDULOS
+               ===================================================== */
+
+            .titulo-modulos {
+                margin-bottom: 15px;
+            }
+
+            .titulo-modulos h3 {
+                margin: 0;
+                color: #16374f;
+                font-size: 18px;
+            }
+
+
+            /* =====================================================
+               MÓDULOS
+               ===================================================== */
+
+            .modulos {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(auto-fit, minmax(245px, 1fr));
+
+                gap: 16px;
+            }
+
+            .modulo {
+                background: white;
+
+                border: 1px solid #dce3e8;
+
+                border-left: 4px solid #0f5ca8;
+
+                border-radius: 8px;
+
+                padding: 20px;
+
+                text-decoration: none;
+
+                color: inherit;
+
+                min-height: 150px;
+
+                box-shadow:
+                    0 2px 5px rgba(0, 0, 0, .03);
+
+                transition:
+                    transform .15s ease,
+                    box-shadow .15s ease,
+                    border-color .15s ease;
+            }
+
+            .modulo:hover {
+                transform: translateY(-2px);
+
+                box-shadow:
+                    0 5px 14px rgba(0, 0, 0, .08);
+            }
+
+            .modulo-icono {
+                display: block;
+
+                font-size: 28px;
+
+                margin-bottom: 10px;
+            }
+
+            .modulo h4 {
+                margin: 0 0 8px;
+
+                color: #16374f;
+
+                font-size: 17px;
+            }
+
+            .modulo p {
+                margin: 0;
+
+                color: #607d8b;
+
+                font-size: 13px;
+
+                line-height: 1.5;
+            }
+
+
+            /* =====================================================
+               COLORES DE LOS MÓDULOS
+               ===================================================== */
+
+            .modulo-inventario {
+                border-left-color: #0f5ca8;
+            }
+
+            .modulo-colaboradores {
+                border-left-color: #6f42c1;
+            }
+
+            .modulo-asignaciones {
+                border-left-color: #198754;
+            }
+
+            .modulo-devoluciones {
+                border-left-color: #e67e22;
+            }
+
+            .modulo-garantias {
+                border-left-color: #e0a800;
+            }
+
+            .modulo-requisitos {
+                border-left-color: #17a2b8;
+            }
+
+            /*
+             * Barra morada para Usuarios.
+             */
+            .modulo-usuarios {
+                border-left-color: #7b5bb8;
+            }
+
+
+            /* =====================================================
+               RESPONSIVE
+               ===================================================== */
+
+            @media(max-width: 800px) {
+
+                .cabecera-contenido {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .usuario-info {
+                    text-align: left;
+                }
+
+                .usuario-area {
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .nav-contenido {
+                    flex-wrap: wrap;
+                }
+
+                .contenedor {
+                    width: 92%;
+                }
+
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
+
+        <div class="cabecera">
+
+            <div class="cabecera-contenido">
+
+                <div>
+
+                    <h1>
+                        Sistema de Control de Activos TI
+                    </h1>
+
+                    <p>
+                        Gestión y asignación automatizada de activos tecnológicos
+                    </p>
+
+                </div>
+
+
+                <!-- USUARIO AUTENTICADO -->
+
+                <div class="usuario-area">
+
+                    <div class="usuario-info">
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN
+             ===================================================== -->
+
+        <div class="nav">
+
+            <div class="nav-contenido">
+
+                <a th:href="@{/}"
+                   class="activo">
+
+                    Inicio
+
+                </a>
+
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+
+                <a th:href="@{/asignaciones}">
+                    Asignaciones
+                </a>
+
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+
+                    Usuarios
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
+        <div class="contenedor">
+
+
+            <!-- =================================================
+                 BIENVENIDA
+                 ================================================= -->
+
+            <div class="bienvenida">
+
+                <h2>
+                    Panel principal
+                </h2>
+
+                <p>
+
+                    Consulte el estado general de los activos,
+                    colaboradores, asignaciones y devoluciones
+                    registradas en el sistema.
+
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 INDICADORES
+                 ================================================= -->
+
+            <div class="indicadores">
+
+
+                <!-- TOTAL ACTIVOS -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${totalActivos}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Total de activos
+                    </div>
+
+                </div>
+
+
+                <!-- DISPONIBLES -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${activosDisponibles}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Activos disponibles
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIVOS EN USO -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${activosEnUso}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Activos en uso
+                    </div>
+
+                </div>
+
+
+                <!-- PENDIENTES DE DEVOLUCIÓN -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${activosPendientesDevolucion}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Pendientes de devolución
+                    </div>
+
+                </div>
+
+
+                <!-- MANTENIMIENTO -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${activosMantenimiento}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        En mantenimiento
+                    </div>
+
+                </div>
+
+
+                <!-- COLABORADORES -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${colaboradoresActivos}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Colaboradores activos
+                    </div>
+
+                </div>
+
+
+                <!-- ASIGNACIONES -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${asignacionesActivas}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Asignaciones activas
+                    </div>
+
+                </div>
+
+
+                <!-- DEVOLUCIONES PENDIENTES -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${devolucionesPendientes}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Devoluciones pendientes de revisión
+                    </div>
+
+                </div>
+
+
+                <!-- GARANTÍAS -->
+
+                <div class="indicador">
+
+                    <div
+                        class="numero"
+                        th:text="${garantiasProximas}">
+
+                        0
+
+                    </div>
+
+                    <div class="texto">
+                        Garantías próximas a vencer
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MÓDULOS
+                 ================================================= -->
+
+            <div class="titulo-modulos">
+
+                <h3>
+                    Módulos del sistema
+                </h3>
+
+            </div>
+
+
+            <div class="modulos">
+
+
+                <!-- =================================================
+                     INVENTARIO
+                     ================================================= -->
+
+                <a
+                    th:href="@{/inventario}"
+                    class="modulo modulo-inventario">
+
+                    <span class="modulo-icono">
+                        💻
+                    </span>
+
+                    <h4>
+                        Inventario
+                    </h4>
+
+                    <p>
+                        Consulta y control de los activos tecnológicos,
+                        su estado, ubicación y disponibilidad.
+                    </p>
+
+                </a>
+
+
+                <!-- =================================================
+                     COLABORADORES
+                     ================================================= -->
+
+                <a
+                    th:href="@{/colaboradores}"
+                    class="modulo modulo-colaboradores">
+
+                    <span class="modulo-icono">
+                        👥
+                    </span>
+
+                    <h4>
+                        Colaboradores
+                    </h4>
+
+                    <p>
+                        Gestión de colaboradores, puestos reales,
+                        perfiles tecnológicos, centros de costo,
+                        sedes y ubicaciones.
+                    </p>
+
+                </a>
+
+
+                <!-- =================================================
+                     ASIGNACIONES
+                     ================================================= -->
+
+                <a
+                    th:href="@{/asignaciones}"
+                    class="modulo modulo-asignaciones">
+
+                    <span class="modulo-icono">
+                        🔄
+                    </span>
+
+                    <h4>
+                        Asignaciones
+                    </h4>
+
+                    <p>
+                        Asignación y seguimiento de activos tecnológicos
+                        asociados a los colaboradores.
+                    </p>
+
+                </a>
+
+
+                <!-- =================================================
+                     DEVOLUCIONES
+                     ================================================= -->
+
+                <a
+                    th:href="@{/devoluciones}"
+                    class="modulo modulo-devoluciones">
+
+                    <span class="modulo-icono">
+                        ↩️
+                    </span>
+
+                    <h4>
+                        Devoluciones
+                    </h4>
+
+                    <p>
+                        Registro, revisión y seguimiento de activos
+                        devueltos o pendientes de devolución.
+                    </p>
+
+                </a>
+
+
+                <!-- =================================================
+                     GARANTÍAS
+                     ================================================= -->
+
+                <a
+                    th:href="@{/alertas-garantia}"
+                    class="modulo modulo-garantias">
+
+                    <span class="modulo-icono">
+                        ⚠️
+                    </span>
+
+                    <h4>
+                        Garantías
+                    </h4>
+
+                    <p>
+                        Consulta de activos con garantías próximas
+                        a vencer o vencidas.
+                    </p>
+
+                </a>
+
+
+                <!-- =================================================
+                     REQUISITOS
+                     ================================================= -->
+
+                <a
+                    th:href="@{/requisitos-cargo}"
+                    class="modulo modulo-requisitos">
+
+                    <span class="modulo-icono">
+                        📋
+                    </span>
+
+                    <h4>
+                        Perfiles y requisitos tecnológicos
+                    </h4>
+
+                    <p>
+                        Consulta de los requisitos mínimos de procesador
+                        y generación utilizados por la asignación
+                        automática de equipos.
+                    </p>
+
+                </a>
+
+
+                <!-- =================================================
+                     USUARIOS DEL SISTEMA
+                     ================================================= -->
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}"
+                    class="modulo modulo-usuarios">
+
+                    <span class="modulo-icono">
+                        👤
+                    </span>
+
+                    <h4>
+                        Usuarios del sistema
+                    </h4>
+
+                    <p>
+                        Administración de usuarios,
+                        roles y estados de acceso.
+                    </p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+    </body>
+
+</html>

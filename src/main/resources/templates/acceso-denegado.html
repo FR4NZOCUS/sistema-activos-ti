@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Acceso denegado</title>
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                min-height: 100vh;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background: #f4f6f8;
+                color: #263238;
+            }
+
+            .contenedor {
+
+                width: 100%;
+                max-width: 520px;
+
+                padding: 20px;
+            }
+
+            .tarjeta {
+
+                background: white;
+
+                border-radius: 10px;
+
+                padding: 35px;
+
+                text-align: center;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 5px 18px rgba(0,0,0,.08);
+            }
+
+            .codigo {
+
+                font-size: 64px;
+
+                font-weight: bold;
+
+                color: #c62828;
+
+                margin-bottom: 10px;
+            }
+
+            h1 {
+
+                margin: 0 0 12px;
+
+                color: #16374f;
+            }
+
+            p {
+
+                color: #607d8b;
+
+                font-size: 14px;
+
+                line-height: 1.6;
+
+                margin-bottom: 25px;
+            }
+
+            .usuario {
+
+                background: #f5f8fa;
+
+                border-radius: 6px;
+
+                padding: 12px;
+
+                margin-bottom: 25px;
+
+                font-size: 13px;
+
+                color: #455a64;
+            }
+
+            .acciones {
+
+                display: flex;
+
+                justify-content: center;
+
+                gap: 10px;
+
+                flex-wrap: wrap;
+            }
+
+            .btn {
+
+                text-decoration: none;
+
+                border-radius: 5px;
+
+                padding: 11px 18px;
+
+                font-size: 14px;
+
+                display: inline-block;
+
+                border: none;
+
+                cursor: pointer;
+            }
+
+            .btn-inicio {
+
+                background: #0f5ca8;
+
+                color: white;
+            }
+
+            .btn-inicio:hover {
+                background: #0b4a88;
+            }
+
+            .btn-logout {
+
+                background: #eceff1;
+
+                color: #37474f;
+            }
+
+            .btn-logout:hover {
+                background: #dfe3e6;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="contenedor">
+
+            <div class="tarjeta">
+
+                <div class="codigo">
+                    403
+                </div>
+
+
+                <h1>
+                    Acceso denegado
+                </h1>
+
+
+                <p>
+
+                    El usuario autenticado no cuenta con los
+                    permisos necesarios para acceder a esta
+                    funcionalidad del sistema.
+
+                </p>
+
+
+                <div class="usuario">
+
+                    Usuario:
+
+                    <strong
+                        th:text="${usuarioAutenticado != null
+                        ? usuarioAutenticado
+                        : 'Usuario'}">
+                    </strong>
+
+
+                    <span th:if="${esAdministrador}">
+                        — Administrador
+                    </span>
+
+                    <span th:if="${esSoporte}">
+                        — Soporte TI
+                    </span>
+
+                    <span th:if="${esConsulta}">
+                        — Consulta
+                    </span>
+
+                </div>
+
+
+                <div class="acciones">
+
+                    <a
+                        th:href="@{/}"
+                        class="btn btn-inicio">
+
+                        Volver al inicio
+
+                    </a>
+
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

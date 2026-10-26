@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org">
 
@@ -9,7 +10,10 @@
         <meta name="viewport"
               content="width=device-width, initial-scale=1.0">
 
-        <title>Colaboradores</title>
+        <title>
+            Colaboradores
+        </title>
+
 
         <style>
 
@@ -18,11 +22,19 @@
                 font-family: Arial, Helvetica, sans-serif;
             }
 
+
             body {
                 margin: 0;
                 background: #f4f6f8;
                 color: #263238;
             }
+
+
+            /*
+             * =====================================================
+             * CABECERA
+             * =====================================================
+             */
 
             .cabecera {
                 background: #14476b;
@@ -30,24 +42,36 @@
                 padding: 18px 30px;
             }
 
+
             .cabecera-contenido {
-                max-width: 1500px;
+                max-width: 1400px;
                 margin: 0 auto;
+
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
                 gap: 20px;
             }
+
 
             .cabecera h1 {
                 margin: 0;
                 font-size: 25px;
             }
 
+
             .cabecera p {
                 margin: 5px 0 0;
                 font-size: 14px;
             }
+
+
+            /*
+             * =====================================================
+             * USUARIO
+             * =====================================================
+             */
 
             .usuario-area {
                 display: flex;
@@ -55,229 +79,624 @@
                 gap: 15px;
             }
 
+
             .usuario-info {
                 text-align: right;
             }
+
 
             .usuario-info strong {
                 display: block;
                 font-size: 14px;
             }
 
+
             .usuario-info span {
                 font-size: 12px;
                 opacity: .85;
             }
 
+
             .btn-logout {
                 background: white;
                 color: #14476b;
+
                 border: none;
                 border-radius: 5px;
+
                 padding: 9px 14px;
+
                 font-size: 13px;
                 font-weight: bold;
+
                 cursor: pointer;
             }
+
 
             .btn-logout:hover {
                 background: #e8edf1;
             }
+
+
+            /*
+             * =====================================================
+             * MENÚ
+             * =====================================================
+             */
 
             .nav {
                 background: #0b2f4a;
                 padding: 0 30px;
             }
 
+
             .nav-contenido {
-                max-width: 1500px;
+                max-width: 1400px;
                 margin: 0 auto;
+
                 display: flex;
                 align-items: center;
+
                 gap: 5px;
             }
+
 
             .nav a {
                 color: white;
                 text-decoration: none;
+
                 padding: 13px 16px;
+
                 display: block;
+
                 font-size: 14px;
             }
+
 
             .nav a:hover {
                 background: #164f78;
             }
+
 
             .nav a.activo {
                 background: #0f5ca8;
                 font-weight: bold;
             }
 
+
+            /*
+             * =====================================================
+             * CONTENIDO
+             * =====================================================
+             */
+
             .contenedor {
-                width: 96%;
-                max-width: 1600px;
+                width: 95%;
+                max-width: 1400px;
+
                 margin: 30px auto;
             }
 
+
             .encabezado-pagina {
+
                 display: flex;
+
                 justify-content: space-between;
                 align-items: center;
+
+                gap: 15px;
+
                 margin-bottom: 20px;
-                gap: 20px;
             }
+
 
             .encabezado-pagina h2 {
                 margin: 0;
                 color: #16374f;
             }
 
+
             .encabezado-pagina p {
+
                 margin: 6px 0 0;
+
                 color: #607d8b;
+
                 font-size: 14px;
             }
+
+
+            /*
+             * =====================================================
+             * BOTONES
+             * =====================================================
+             */
 
             .btn {
+
                 text-decoration: none;
+
+                border: none;
                 border-radius: 5px;
+
                 padding: 10px 16px;
-                font-size: 14px;
+
+                font-size: 13px;
+
                 display: inline-block;
+
+                cursor: pointer;
             }
 
+
             .btn-nuevo {
+
                 background: #158a54;
+
                 color: white;
+
                 font-weight: bold;
             }
+
 
             .btn-nuevo:hover {
                 background: #107044;
             }
 
-            .tabla-contenedor {
-                width: 100%;
+
+            /*
+             * =====================================================
+             * FILTROS
+             * =====================================================
+             */
+
+            .filtros {
+
                 background: white;
-                border-radius: 8px;
-                overflow-x: auto;
+
                 border: 1px solid #e0e5e8;
-                box-shadow: 0 2px 5px rgba(0,0,0,.04);
+
+                border-radius: 8px;
+
+                padding: 18px;
+
+                margin-bottom: 20px;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
             }
 
-            table {
+
+            .filtros-grid {
+
+                display: grid;
+
+                grid-template-columns:
+                    minmax(240px, 2fr)
+                    minmax(130px, 1fr)
+                    minmax(180px, 1.4fr)
+                    minmax(150px, 1fr)
+                    110px
+                    auto
+                    auto;
+
+                gap: 12px;
+
+                align-items: end;
+            }
+
+
+            .campo-filtro label {
+
+                display: block;
+
+                margin-bottom: 6px;
+
+                color: #455a64;
+
+                font-size: 12px;
+
+                font-weight: bold;
+            }
+
+
+            .campo-filtro input,
+            .campo-filtro select {
+
                 width: 100%;
-                border-collapse: collapse;
-                min-width: 1450px;
-            }
 
-            th {
-                background: #f7f9fa;
-                text-align: left;
-                padding: 13px;
-                border-bottom: 1px solid #dfe3e6;
+                height: 40px;
+
+                padding: 8px 10px;
+
+                border: 1px solid #cfd8dc;
+
+                border-radius: 5px;
+
+                background: white;
+
                 font-size: 13px;
+
                 color: #37474f;
             }
 
-            td {
-                padding: 13px;
-                border-bottom: 1px solid #eceff1;
+
+            .campo-filtro input:focus,
+            .campo-filtro select:focus {
+
+                outline: none;
+
+                border-color: #0f5ca8;
+            }
+
+
+            .btn-filtro {
+
+                height: 40px;
+
+                padding: 0 17px;
+
+                background: #0f5ca8;
+
+                color: white;
+
+                border: none;
+
+                border-radius: 5px;
+
+                cursor: pointer;
+
                 font-size: 13px;
+
+                font-weight: bold;
+            }
+
+
+            .btn-filtro:hover {
+                background: #0b4a88;
+            }
+
+
+            .btn-limpiar {
+
+                height: 40px;
+
+                padding: 11px 16px;
+
+                background: #eceff1;
+
+                color: #37474f;
+
+                text-decoration: none;
+
+                border-radius: 5px;
+
+                font-size: 13px;
+
+                text-align: center;
+            }
+
+
+            .btn-limpiar:hover {
+                background: #dfe3e6;
+            }
+
+
+            /*
+             * =====================================================
+             * TABLA
+             * =====================================================
+             */
+
+            .tabla-contenedor {
+
+                width: 100%;
+
+                background: white;
+
+                border-radius: 8px;
+
+                overflow-x: auto;
+
+                border: 1px solid #e0e5e8;
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
+            }
+
+
+            table {
+
+                width: 100%;
+
+                border-collapse: collapse;
+
+                min-width: 1200px;
+            }
+
+
+            th {
+
+                background: #f7f9fa;
+
+                text-align: left;
+
+                padding: 13px;
+
+                border-bottom:
+                    1px solid #dfe3e6;
+
+                font-size: 13px;
+
+                color: #37474f;
+            }
+
+
+            td {
+
+                padding: 13px;
+
+                border-bottom:
+                    1px solid #eceff1;
+
+                font-size: 13px;
+
                 vertical-align: middle;
             }
+
 
             tr:last-child td {
                 border-bottom: none;
             }
 
-            tbody tr:hover {
+
+            tbody tr:hover td {
                 background: #fafcfd;
             }
 
+
+            /*
+             * =====================================================
+             * ESTADOS
+             * =====================================================
+             */
+
             .estado {
+
                 display: inline-block;
+
                 padding: 5px 9px;
+
                 border-radius: 14px;
+
                 font-size: 11px;
+
                 font-weight: bold;
             }
 
+
             .estado-activo {
+
                 background: #d8f5e8;
+
                 color: #08784f;
             }
 
+
             .estado-inactivo {
+
                 background: #eceff1;
+
                 color: #546e7a;
             }
 
-            .perfil {
-                display: inline-block;
-                padding: 5px 9px;
-                border-radius: 12px;
-                background: #e7f1fc;
-                color: #0f5ca8;
-                font-size: 11px;
-                font-weight: bold;
-            }
 
-            .sin-asignar {
-                color: #90a4ae;
-                font-style: italic;
-            }
+            /*
+             * =====================================================
+             * ACCIONES
+             * =====================================================
+             */
 
             .acciones-tabla {
                 white-space: nowrap;
             }
 
+
             .accion {
+
                 color: #0f5ca8;
+
                 text-decoration: none;
+
                 font-weight: bold;
+
                 margin-right: 10px;
             }
+
 
             .accion:hover {
                 text-decoration: underline;
             }
 
+
             .accion-editar {
                 color: #b26a00;
             }
 
+
+            /*
+             * =====================================================
+             * SIN DATOS
+             * =====================================================
+             */
+
             .sin-datos {
-                padding: 25px;
+
+                padding: 35px;
+
                 text-align: center;
+
                 color: #607d8b;
             }
 
-            @media(max-width: 900px) {
+
+            /*
+             * =====================================================
+             * PAGINACIÓN
+             * =====================================================
+             */
+
+            .paginacion-barra {
+
+                margin-top: 18px;
+
+                display: flex;
+
+                justify-content: space-between;
+                align-items: center;
+
+                gap: 15px;
+
+                flex-wrap: wrap;
+            }
+
+
+            .paginacion-info {
+
+                color: #607d8b;
+
+                font-size: 13px;
+            }
+
+
+            .paginacion {
+
+                display: flex;
+
+                gap: 5px;
+
+                flex-wrap: wrap;
+            }
+
+
+            .pagina {
+
+                min-width: 36px;
+
+                height: 36px;
+
+                padding: 8px 10px;
+
+                border: 1px solid #cfd8dc;
+
+                border-radius: 5px;
+
+                background: white;
+
+                color: #37474f;
+
+                text-decoration: none;
+
+                text-align: center;
+
+                font-size: 13px;
+            }
+
+
+            .pagina:hover {
+
+                border-color: #0f5ca8;
+
+                color: #0f5ca8;
+            }
+
+
+            .pagina.activa {
+
+                background: #0f5ca8;
+
+                border-color: #0f5ca8;
+
+                color: white;
+
+                font-weight: bold;
+            }
+
+
+            .pagina.deshabilitada {
+
+                opacity: .45;
+
+                pointer-events: none;
+            }
+
+
+            /*
+             * =====================================================
+             * RESPONSIVE
+             * =====================================================
+             */
+
+            @media(max-width: 1100px) {
+
+                .filtros-grid {
+
+                    grid-template-columns:
+                        1fr
+                        1fr
+                        1fr;
+                }
+            }
+
+
+            @media(max-width: 750px) {
 
                 .cabecera-contenido {
+
                     flex-direction: column;
+
                     align-items: flex-start;
                 }
+
 
                 .usuario-info {
                     text-align: left;
                 }
 
+
                 .usuario-area {
+
                     width: 100%;
+
                     justify-content: space-between;
                 }
+
 
                 .nav-contenido {
                     flex-wrap: wrap;
                 }
 
+
                 .encabezado-pagina {
+
                     flex-direction: column;
+
                     align-items: flex-start;
-                    gap: 15px;
+                }
+
+
+                .filtros-grid {
+                    grid-template-columns: 1fr;
+                }
+
+
+                .btn-filtro,
+                .btn-limpiar {
+
+                    width: 100%;
+
+                    text-align: center;
                 }
             }
 
@@ -285,11 +704,18 @@
 
     </head>
 
+
     <body>
+
+
+        <!-- =====================================================
+             CABECERA
+             ===================================================== -->
 
         <div class="cabecera">
 
             <div class="cabecera-contenido">
+
 
                 <div>
 
@@ -303,7 +729,9 @@
 
                 </div>
 
+
                 <div class="usuario-area">
+
 
                     <div class="usuario-info">
 
@@ -311,15 +739,21 @@
                             th:text="${usuarioAutenticado != null
                             ? usuarioAutenticado
                             : 'Usuario'}">
+
+                            Usuario
+
                         </strong>
+
 
                         <span th:if="${esAdministrador}">
                             Administrador
                         </span>
 
+
                         <span th:if="${esSoporte}">
                             Soporte TI
                         </span>
+
 
                         <span th:if="${esConsulta}">
                             Consulta
@@ -327,9 +761,11 @@
 
                     </div>
 
+
                     <form
                         method="post"
                         th:action="@{/logout}">
+
 
                         <button
                             type="submit"
@@ -341,60 +777,86 @@
 
                     </form>
 
+
                 </div>
+
 
             </div>
 
         </div>
 
+
+        <!-- =====================================================
+             MENÚ
+             ===================================================== -->
 
         <div class="nav">
 
             <div class="nav-contenido">
 
+
                 <a th:href="@{/}">
                     Inicio
                 </a>
+
 
                 <a th:href="@{/inventario}">
                     Inventario
                 </a>
 
-                <a th:href="@{/colaboradores}"
-                   class="activo">
+
+                <a
+                    th:href="@{/colaboradores}"
+                    class="activo">
+
                     Colaboradores
+
                 </a>
+
 
                 <a th:href="@{/asignaciones}">
                     Asignaciones
                 </a>
 
+
                 <a th:href="@{/devoluciones}">
                     Devoluciones
                 </a>
+
 
                 <a th:href="@{/alertas-garantia}">
                     Garantías
                 </a>
 
+
                 <a th:href="@{/requisitos-cargo}">
                     Requisitos
                 </a>
 
+
                 <a
                     th:if="${esAdministrador}"
                     th:href="@{/usuarios}">
+
                     Usuarios
+
                 </a>
+
 
             </div>
 
         </div>
 
 
+        <!-- =====================================================
+             CONTENIDO
+             ===================================================== -->
+
         <div class="contenedor">
 
+
             <div class="encabezado-pagina">
+
 
                 <div>
 
@@ -403,11 +865,11 @@
                     </h2>
 
                     <p>
-                        Consulte el puesto real y el perfil tecnológico
-                        utilizado para la asignación automática de activos.
+                        Consulte y filtre los colaboradores registrados.
                     </p>
 
                 </div>
+
 
                 <a
                     th:if="${puedeGestionar}"
@@ -418,102 +880,337 @@
 
                 </a>
 
+
             </div>
 
 
+            <!-- =================================================
+                 FILTROS
+                 ================================================= -->
+
+            <form
+                class="filtros"
+                method="get"
+                th:action="@{/colaboradores}">
+
+
+                <div class="filtros-grid">
+
+
+                    <!-- BUSCAR -->
+
+                    <div class="campo-filtro">
+
+                        <label>
+                            Buscar
+                        </label>
+
+
+                        <input
+                            type="text"
+
+                            name="q"
+
+                            th:value="${q}"
+
+                            placeholder="Código o nombre del colaborador">
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="campo-filtro">
+
+                        <label>
+                            Estado
+                        </label>
+
+
+                        <select name="estado">
+
+
+                            <option value="">
+                                Todos
+                            </option>
+
+
+                            <option
+                                value="ACTIVO"
+
+                                th:selected="${estado == 'ACTIVO'}">
+
+                                ACTIVO
+
+                            </option>
+
+
+                            <option
+                                value="INACTIVO"
+
+                                th:selected="${estado == 'INACTIVO'}">
+
+                                INACTIVO
+
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CARGO -->
+
+                    <div class="campo-filtro">
+
+                        <label>
+                            Cargo
+                        </label>
+
+
+                        <select name="cargoId">
+
+
+                            <option value="">
+                                Todos
+                            </option>
+
+
+                            <option
+                                th:each="cargo : ${cargos}"
+
+                                th:value="${cargo.idCargo}"
+
+                                th:text="${cargo.nombreCargo}"
+
+                                th:selected="${cargoId != null
+                                and cargoId == cargo.idCargo}">
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SEDE -->
+
+                    <div class="campo-filtro">
+
+                        <label>
+                            Sede
+                        </label>
+
+
+                        <select name="sedeId">
+
+
+                            <option value="">
+                                Todas
+                            </option>
+
+
+                            <option
+                                th:each="sede : ${sedes}"
+
+                                th:value="${sede.idSede}"
+
+                                th:text="${sede.nombreSede}"
+
+                                th:selected="${sedeId != null
+                                and sedeId == sede.idSede}">
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CANTIDAD -->
+
+                    <div class="campo-filtro">
+
+                        <label>
+                            Por página
+                        </label>
+
+
+                        <select name="size">
+
+
+                            <option
+                                value="10"
+
+                                th:selected="${size == 10}">
+
+                                10
+
+                            </option>
+
+
+                            <option
+                                value="20"
+
+                                th:selected="${size == 20}">
+
+                                20
+
+                            </option>
+
+
+                            <option
+                                value="50"
+
+                                th:selected="${size == 50}">
+
+                                50
+
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- FILTRAR -->
+
+                    <button
+                        type="submit"
+                        class="btn-filtro">
+
+                        Filtrar
+
+                    </button>
+
+
+                    <!-- LIMPIAR -->
+
+                    <a
+                        th:href="@{/colaboradores}"
+                        class="btn-limpiar">
+
+                        Limpiar
+
+                    </a>
+
+
+                </div>
+
+
+            </form>
+
+
+            <!-- =================================================
+                 TABLA
+                 ================================================= -->
+
             <div class="tabla-contenedor">
+
 
                 <table
                     th:if="${colaboradores != null
                     and !colaboradores.isEmpty()}">
 
+
                     <thead>
+
 
                         <tr>
 
-                            <th>ID</th>
+                            <th>
+                                ID
+                            </th>
 
-                            <th>Código</th>
+                            <th>
+                                Código
+                            </th>
 
-                            <th>Nombre completo</th>
+                            <th>
+                                Nombre completo
+                            </th>
 
-                            <th>Puesto real</th>
+                            <th>
+                                Cargo
+                            </th>
 
-                            <th>Perfil tecnológico</th>
+                            <th>
+                                Centro de costo
+                            </th>
 
-                            <th>Centro de costo</th>
+                            <th>
+                                Sede
+                            </th>
 
-                            <th>Sede</th>
+                            <th>
+                                Ubicación
+                            </th>
 
-                            <th>Ubicación</th>
+                            <th>
+                                Estado
+                            </th>
 
-                            <th>Estado</th>
-
-                            <th>Acciones</th>
+                            <th>
+                                Acciones
+                            </th>
 
                         </tr>
+
 
                     </thead>
 
 
                     <tbody>
 
+
                         <tr
                             th:each="colaborador : ${colaboradores}">
 
 
+                            <!-- ID -->
+
                             <td
                                 th:text="${colaborador.idColaborador}">
+
+                                1
+
                             </td>
 
+
+                            <!-- CÓDIGO -->
 
                             <td
-                                th:text="${colaborador.codigoUsuario}">
+                                th:text="${colaborador.codigoUsuario != null
+                                ? colaborador.codigoUsuario
+                                : '-'}">
+
+                                Código
+
                             </td>
 
+
+                            <!-- NOMBRE -->
 
                             <td
-                                th:text="${colaborador.nombreCompleto}">
-                            </td>
+                                th:text="${colaborador.nombreCompleto != null
+                                ? colaborador.nombreCompleto
+                                : '-'}">
 
-
-                            <!-- PUESTO REAL -->
-
-                            <td>
-
-                                <span
-                                    th:if="${colaborador.puesto != null}"
-                                    th:text="${colaborador.puesto.nombrePuesto}">
-                                </span>
-
-                                <span
-                                    th:if="${colaborador.puesto == null}"
-                                    class="sin-asignar">
-
-                                    Sin asignar
-
-                                </span>
+                                Nombre
 
                             </td>
 
 
-                            <!-- PERFIL TECNOLÓGICO -->
+                            <!-- CARGO -->
 
-                            <td>
+                            <td
+                                th:text="${colaborador.cargo != null
+                                ? colaborador.cargo.nombreCargo
+                                : '-'}">
 
-                                <span
-                                    th:if="${colaborador.cargo != null}"
-                                    class="perfil"
-                                    th:text="${colaborador.cargo.nombreCargo}">
-                                </span>
-
-                                <span
-                                    th:if="${colaborador.cargo == null}"
-                                    class="sin-asignar">
-
-                                    Sin perfil
-
-                                </span>
+                                Cargo
 
                             </td>
 
@@ -524,6 +1221,9 @@
                                 th:text="${colaborador.centroCosto != null
                                 ? colaborador.centroCosto.codigo
                                 : '-'}">
+
+                                Centro de costo
+
                             </td>
 
 
@@ -533,6 +1233,9 @@
                                 th:text="${colaborador.sede != null
                                 ? colaborador.sede.nombreSede
                                 : '-'}">
+
+                                Sede
+
                             </td>
 
 
@@ -542,12 +1245,16 @@
                                 th:text="${colaborador.ubicacion != null
                                 ? colaborador.ubicacion.nombreUbicacion
                                 : '-'}">
+
+                                Ubicación
+
                             </td>
 
 
                             <!-- ESTADO -->
 
                             <td>
+
 
                                 <span
                                     class="estado estado-activo"
@@ -570,7 +1277,10 @@
                                     ? colaborador.estadoColaborador
                                     : 'INACTIVO'}">
 
+                                    INACTIVO
+
                                 </span>
+
 
                             </td>
 
@@ -603,14 +1313,20 @@
 
                                 </a>
 
+
                             </td>
+
 
                         </tr>
 
+
                     </tbody>
+
 
                 </table>
 
+
+                <!-- SIN RESULTADOS -->
 
                 <div
                     class="sin-datos"
@@ -618,13 +1334,228 @@
                     th:if="${colaboradores == null
                     or colaboradores.isEmpty()}">
 
-                    No existen colaboradores registrados.
+
+                    No se encontraron colaboradores
+                    con los filtros seleccionados.
+
 
                 </div>
 
+
             </div>
 
+
+            <!-- =================================================
+                 PAGINACIÓN
+                 ================================================= -->
+
+            <div
+                class="paginacion-barra"
+
+                th:if="${paginaColaboradores != null}">
+
+
+                <!-- INFORMACIÓN -->
+
+                <div class="paginacion-info">
+
+
+                    <span
+                        th:if="${paginaColaboradores.totalElements > 0}">
+
+
+                        Mostrando
+
+
+                        <strong
+                            th:text="${paginaColaboradores.number
+                            * paginaColaboradores.size + 1}">
+
+                            1
+
+                        </strong>
+
+
+                        -
+
+
+                        <strong
+                            th:text="${paginaColaboradores.number
+                            * paginaColaboradores.size
+                            + paginaColaboradores.numberOfElements}">
+
+                            10
+
+                        </strong>
+
+
+                        de
+
+
+                        <strong
+                            th:text="${paginaColaboradores.totalElements}">
+
+                            0
+
+                        </strong>
+
+
+                        colaboradores
+
+
+                    </span>
+
+
+                    <span
+                        th:if="${paginaColaboradores.totalElements == 0}">
+
+                        0 colaboradores encontrados
+
+                    </span>
+
+
+                </div>
+
+
+                <!-- BOTONES -->
+
+                <div
+                    class="paginacion"
+
+                    th:if="${paginaColaboradores.totalPages > 1}">
+
+
+                    <!-- PRIMERA -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaColaboradores.first}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/colaboradores(
+                        page=0,
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        cargoId=${cargoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        «
+
+                    </a>
+
+
+                    <!-- ANTERIOR -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaColaboradores.first}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/colaboradores(
+                        page=${paginaColaboradores.number - 1},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        cargoId=${cargoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        ‹
+
+                    </a>
+
+
+                    <!-- NÚMEROS -->
+
+                    <a
+                        class="pagina"
+
+                        th:each="i : ${#numbers.sequence(
+                        T(java.lang.Math).max(
+                        0,
+                        paginaColaboradores.number - 2
+                        ),
+                        T(java.lang.Math).min(
+                        paginaColaboradores.totalPages - 1,
+                        paginaColaboradores.number + 2
+                        )
+                        )}"
+
+                        th:classappend="${i == paginaColaboradores.number}
+                        ? ' activa'"
+
+                        th:text="${i + 1}"
+
+                        th:href="@{/colaboradores(
+                        page=${i},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        cargoId=${cargoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        1
+
+                    </a>
+
+
+                    <!-- SIGUIENTE -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaColaboradores.last}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/colaboradores(
+                        page=${paginaColaboradores.number + 1},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        cargoId=${cargoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        ›
+
+                    </a>
+
+
+                    <!-- ÚLTIMA -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaColaboradores.last}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/colaboradores(
+                        page=${paginaColaboradores.totalPages - 1},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        cargoId=${cargoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        »
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
         </div>
+
 
     </body>
 

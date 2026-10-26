@@ -5,9 +5,13 @@ import com.unimaq.sistemaactivos.model.Colaborador;
 import com.unimaq.sistemaactivos.repository.CargoRepository;
 import com.unimaq.sistemaactivos.repository.CentroCostoRepository;
 import com.unimaq.sistemaactivos.repository.ColaboradorRepository;
-import com.unimaq.sistemaactivos.repository.PuestoRepository;
 import com.unimaq.sistemaactivos.repository.SedeRepository;
 import com.unimaq.sistemaactivos.repository.UbicacionOperativaRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,46 +19,233 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ColaboradorController {
 
     private final ColaboradorRepository colaboradorRepository;
-    private final PuestoRepository puestoRepository;
+
     private final CargoRepository cargoRepository;
+
     private final CentroCostoRepository centroCostoRepository;
+
     private final SedeRepository sedeRepository;
-    private final UbicacionOperativaRepository ubicacionRepository;
+
+    private final UbicacionOperativaRepository ubicacionOperativaRepository;
 
     public ColaboradorController(
             ColaboradorRepository colaboradorRepository,
-            PuestoRepository puestoRepository,
             CargoRepository cargoRepository,
             CentroCostoRepository centroCostoRepository,
             SedeRepository sedeRepository,
-            UbicacionOperativaRepository ubicacionRepository) {
+            UbicacionOperativaRepository ubicacionOperativaRepository) {
 
-        this.colaboradorRepository = colaboradorRepository;
-        this.puestoRepository = puestoRepository;
-        this.cargoRepository = cargoRepository;
-        this.centroCostoRepository = centroCostoRepository;
-        this.sedeRepository = sedeRepository;
-        this.ubicacionRepository = ubicacionRepository;
+        this.colaboradorRepository
+                = colaboradorRepository;
+
+        this.cargoRepository
+                = cargoRepository;
+
+        this.centroCostoRepository
+                = centroCostoRepository;
+
+        this.sedeRepository
+                = sedeRepository;
+
+        this.ubicacionOperativaRepository
+                = ubicacionOperativaRepository;
     }
 
 
     /*
      * =====================================================
      * LISTADO DE COLABORADORES
+     * FILTROS + PAGINACIÓN
      * =====================================================
      */
     @GetMapping("/colaboradores")
     public String listarColaboradores(
+            @RequestParam(
+                    value = "q",
+                    required = false
+            ) String q,
+            @RequestParam(
+                    value = "estado",
+                    required = false
+            ) String estado,
+            @RequestParam(
+                    value = "cargoId",
+                    required = false
+            ) Integer cargoId,
+            @RequestParam(
+                    value = "sedeId",
+                    required = false
+            ) Integer sedeId,
+            @RequestParam(
+                    value = "page",
+                    defaultValue = "0"
+            ) int page,
+            @RequestParam(
+                    value = "size",
+                    defaultValue = "10"
+            ) int size,
             Model model) {
 
+
+        /*
+         * =================================================
+         * VALIDAR NÚMERO DE PÁGINA
+         * =================================================
+         */
+        if (page < 0) {
+
+            page = 0;
+        }
+
+
+        /*
+         * =================================================
+         * VALIDAR CANTIDAD DE REGISTROS
+         * =================================================
+         */
+        if (size != 10
+                && size != 20
+                && size != 50) {
+
+            size = 10;
+        }
+
+
+        /*
+         * =================================================
+         * CREAR PAGINACIÓN
+         * =================================================
+         *
+         * Los colaboradores se muestran
+         * ordenados alfabéticamente.
+         */
+        Pageable pageable
+                = PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(
+                                Sort.Direction.ASC,
+                                "nombreCompleto"
+                        )
+                );
+
+
+        /*
+         * =================================================
+         * CONSULTAR BASE DE DATOS
+         * =================================================
+         */
+        Page<Colaborador> paginaColaboradores
+                = colaboradorRepository
+                        .buscarConFiltros(
+                                q,
+                                estado,
+                                cargoId,
+                                sedeId,
+                                pageable
+                        );
+
+
+        /*
+         * =================================================
+         * VALIDAR PÁGINA EXISTENTE
+         * =================================================
+         */
+        if (paginaColaboradores.getTotalPages() > 0
+                && page
+                >= paginaColaboradores.getTotalPages()) {
+
+            page = 0;
+
+            pageable
+                    = PageRequest.of(
+                            0,
+                            size,
+                            Sort.by(
+                                    Sort.Direction.ASC,
+                                    "nombreCompleto"
+                            )
+                    );
+
+            paginaColaboradores
+                    = colaboradorRepository
+                            .buscarConFiltros(
+                                    q,
+                                    estado,
+                                    cargoId,
+                                    sedeId,
+                                    pageable
+                            );
+        }
+
+
+        /*
+         * =================================================
+         * RESULTADOS
+         * =================================================
+         */
         model.addAttribute(
                 "colaboradores",
-                colaboradorRepository.findAll()
+                paginaColaboradores.getContent()
+        );
+
+        model.addAttribute(
+                "paginaColaboradores",
+                paginaColaboradores
+        );
+
+
+        /*
+         * =================================================
+         * DATOS PARA LOS FILTROS
+         * =================================================
+         */
+        model.addAttribute(
+                "cargos",
+                cargoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "sedes",
+                sedeRepository.findAll()
+        );
+
+
+        /*
+         * =================================================
+         * CONSERVAR FILTROS
+         * =================================================
+         *
+         */
+        model.addAttribute(
+                "q",
+                q
+        );
+
+        model.addAttribute(
+                "estado",
+                estado
+        );
+
+        model.addAttribute(
+                "cargoId",
+                cargoId
+        );
+
+        model.addAttribute(
+                "sedeId",
+                sedeId
+        );
+
+        model.addAttribute(
+                "size",
+                size
         );
 
         return "colaboradores";
@@ -75,7 +266,8 @@ public class ColaboradorController {
 
 
         /*
-         * Estado inicial por defecto.
+         * Por defecto el colaborador
+         * se registra como ACTIVO.
          */
         colaborador.setEstadoColaborador(
                 "ACTIVO"
@@ -86,7 +278,9 @@ public class ColaboradorController {
                 colaborador
         );
 
-        cargarCatalogos(model);
+        cargarCatalogos(
+                model
+        );
 
         return "nuevo-colaborador";
     }
@@ -96,11 +290,6 @@ public class ColaboradorController {
      * =====================================================
      * GUARDAR COLABORADOR
      * =====================================================
-     *
-     * Este método se utiliza tanto para:
-     *
-     * - crear;
-     * - actualizar.
      */
     @PostMapping("/colaboradores/guardar")
     public String guardarColaborador(
@@ -109,33 +298,66 @@ public class ColaboradorController {
 
         /*
          * =================================================
-         * CONSTRUIR NOMBRE COMPLETO
+         * NOMBRE COMPLETO
          * =================================================
          */
-        if (colaborador.getNombres() != null) {
+        String nombres
+                = colaborador.getNombres() != null
+                ? colaborador
+                        .getNombres()
+                        .trim()
+                : "";
 
-            String nombreCompleto
-                    = colaborador.getNombres()
-                    + " "
-                    + (colaborador.getApellidoPaterno() != null
-                    ? colaborador.getApellidoPaterno()
-                    : "")
-                    + " "
-                    + (colaborador.getApellidoMaterno() != null
-                    ? colaborador.getApellidoMaterno()
-                    : "");
+        String apellidoPaterno
+                = colaborador.getApellidoPaterno() != null
+                ? colaborador
+                        .getApellidoPaterno()
+                        .trim()
+                : "";
 
-            colaborador.setNombreCompleto(
-                    nombreCompleto
+        String apellidoMaterno
+                = colaborador.getApellidoMaterno() != null
+                ? colaborador
+                        .getApellidoMaterno()
+                        .trim()
+                : "";
+
+        String nombreCompleto
+                = (nombres
+                        + " "
+                        + apellidoPaterno
+                        + " "
+                        + apellidoMaterno)
+                        .trim()
+                        .replaceAll(
+                                "\\s+",
+                                " "
+                        )
+                        .toUpperCase();
+
+        colaborador.setNombreCompleto(
+                nombreCompleto
+        );
+
+
+        /*
+         * =================================================
+         * CÓDIGO USUARIO
+         * =================================================
+         */
+        if (colaborador.getCodigoUsuario() != null) {
+
+            colaborador.setCodigoUsuario(
+                    colaborador
+                            .getCodigoUsuario()
                             .trim()
-                            .toUpperCase()
             );
         }
 
 
         /*
          * =================================================
-         * ESTADO POR DEFECTO
+         * ESTADO
          * =================================================
          */
         if (colaborador.getEstadoColaborador() == null
@@ -151,36 +373,33 @@ public class ColaboradorController {
 
         /*
          * =================================================
-         * PUESTO REAL
+         * CARGO
          * =================================================
-         *
-         * Si el formulario envía una relación vacía,
-         * se convierte en NULL.
-         */
-        if (colaborador.getPuesto() != null
-                && colaborador
-                        .getPuesto()
-                        .getIdPuesto() == null) {
-
-            colaborador.setPuesto(null);
-        }
-
-
-        /*
-         * =================================================
-         * PERFIL TECNOLÓGICO
-         * =================================================
-         *
-         * El Cargo representa actualmente el perfil
-         * tecnológico utilizado por el motor de
-         * asignación automática.
          */
         if (colaborador.getCargo() != null
                 && colaborador
                         .getCargo()
-                        .getIdCargo() == null) {
+                        .getIdCargo() != null) {
 
-            colaborador.setCargo(null);
+            colaborador.setCargo(
+                    cargoRepository
+                            .findById(
+                                    colaborador
+                                            .getCargo()
+                                            .getIdCargo()
+                            )
+                            .orElseThrow(()
+                                    -> new IllegalArgumentException(
+                                            "Cargo no encontrado."
+                                    )
+                            )
+            );
+
+        } else {
+
+            colaborador.setCargo(
+                    null
+            );
         }
 
 
@@ -192,9 +411,27 @@ public class ColaboradorController {
         if (colaborador.getCentroCosto() != null
                 && colaborador
                         .getCentroCosto()
-                        .getIdCentroCosto() == null) {
+                        .getIdCentroCosto() != null) {
 
-            colaborador.setCentroCosto(null);
+            colaborador.setCentroCosto(
+                    centroCostoRepository
+                            .findById(
+                                    colaborador
+                                            .getCentroCosto()
+                                            .getIdCentroCosto()
+                            )
+                            .orElseThrow(()
+                                    -> new IllegalArgumentException(
+                                            "Centro de costo no encontrado."
+                                    )
+                            )
+            );
+
+        } else {
+
+            colaborador.setCentroCosto(
+                    null
+            );
         }
 
 
@@ -206,9 +443,27 @@ public class ColaboradorController {
         if (colaborador.getSede() != null
                 && colaborador
                         .getSede()
-                        .getIdSede() == null) {
+                        .getIdSede() != null) {
 
-            colaborador.setSede(null);
+            colaborador.setSede(
+                    sedeRepository
+                            .findById(
+                                    colaborador
+                                            .getSede()
+                                            .getIdSede()
+                            )
+                            .orElseThrow(()
+                                    -> new IllegalArgumentException(
+                                            "Sede no encontrada."
+                                    )
+                            )
+            );
+
+        } else {
+
+            colaborador.setSede(
+                    null
+            );
         }
 
 
@@ -220,9 +475,27 @@ public class ColaboradorController {
         if (colaborador.getUbicacion() != null
                 && colaborador
                         .getUbicacion()
-                        .getIdUbicacion() == null) {
+                        .getIdUbicacion() != null) {
 
-            colaborador.setUbicacion(null);
+            colaborador.setUbicacion(
+                    ubicacionOperativaRepository
+                            .findById(
+                                    colaborador
+                                            .getUbicacion()
+                                            .getIdUbicacion()
+                            )
+                            .orElseThrow(()
+                                    -> new IllegalArgumentException(
+                                            "Ubicación no encontrada."
+                                    )
+                            )
+            );
+
+        } else {
+
+            colaborador.setUbicacion(
+                    null
+            );
         }
 
 
@@ -265,9 +538,11 @@ public class ColaboradorController {
                 colaborador
         );
 
-        cargarCatalogos(model);
+        cargarCatalogos(
+                model
+        );
 
-        return "editar-colaborador";
+        return "nuevo-colaborador";
     }
 
 
@@ -305,56 +580,28 @@ public class ColaboradorController {
      * =====================================================
      * CARGAR CATÁLOGOS
      * =====================================================
-     *
-     * Evitamos repetir las mismas consultas en los
-     * formularios nuevo y editar.
      */
     private void cargarCatalogos(
             Model model) {
 
-
-        /*
-         * Puestos reales.
-         */
-        model.addAttribute(
-                "puestos",
-                puestoRepository.findAll()
-        );
-
-
-        /*
-         * Perfiles tecnológicos.
-         */
         model.addAttribute(
                 "cargos",
                 cargoRepository.findAll()
         );
 
-
-        /*
-         * Centros de costo.
-         */
         model.addAttribute(
                 "centrosCosto",
                 centroCostoRepository.findAll()
         );
 
-
-        /*
-         * Sedes.
-         */
         model.addAttribute(
                 "sedes",
                 sedeRepository.findAll()
         );
 
-
-        /*
-         * Ubicaciones.
-         */
         model.addAttribute(
                 "ubicaciones",
-                ubicacionRepository.findAll()
+                ubicacionOperativaRepository.findAll()
         );
     }
 }

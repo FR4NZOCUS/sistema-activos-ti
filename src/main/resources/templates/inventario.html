@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org">
 
@@ -9,7 +10,10 @@
         <meta name="viewport"
               content="width=device-width, initial-scale=1.0">
 
-        <title>Inventario</title>
+        <title>
+            Inventario
+        </title>
+
 
         <style>
 
@@ -18,109 +22,161 @@
                 font-family: Arial, Helvetica, sans-serif;
             }
 
+
             body {
+
                 margin: 0;
+
                 background: #f4f6f8;
+
                 color: #263238;
             }
 
 
-            /* =====================================================
-               CABECERA
-               ===================================================== */
+            /*
+             * =====================================================
+             * CABECERA
+             * =====================================================
+             */
 
             .cabecera {
+
                 background: #14476b;
+
                 color: white;
+
                 padding: 18px 30px;
             }
 
+
             .cabecera-contenido {
-                max-width: 1600px;
+
+                max-width: 1400px;
+
                 margin: 0 auto;
 
                 display: flex;
+
                 justify-content: space-between;
+
                 align-items: center;
 
                 gap: 20px;
             }
 
+
             .cabecera h1 {
+
                 margin: 0;
+
                 font-size: 25px;
             }
 
+
             .cabecera p {
+
                 margin: 5px 0 0;
+
                 font-size: 14px;
             }
 
 
-            /* =====================================================
-               USUARIO
-               ===================================================== */
+            /*
+             * =====================================================
+             * USUARIO
+             * =====================================================
+             */
 
             .usuario-area {
+
                 display: flex;
+
                 align-items: center;
+
                 gap: 15px;
             }
 
+
             .usuario-info {
+
                 text-align: right;
             }
 
+
             .usuario-info strong {
+
                 display: block;
+
                 font-size: 14px;
             }
 
+
             .usuario-info span {
+
                 font-size: 12px;
+
                 opacity: .85;
             }
 
+
             .btn-logout {
+
                 background: white;
+
                 color: #14476b;
 
                 border: none;
+
                 border-radius: 5px;
 
                 padding: 9px 14px;
 
                 font-size: 13px;
+
                 font-weight: bold;
 
                 cursor: pointer;
             }
 
+
             .btn-logout:hover {
+
                 background: #e8edf1;
             }
 
 
-            /* =====================================================
-               NAVEGACIÓN
-               ===================================================== */
+            /*
+             * =====================================================
+             * MENÚ
+             * =====================================================
+             */
 
             .nav {
+
                 background: #0b2f4a;
+
                 padding: 0 30px;
             }
 
+
             .nav-contenido {
-                max-width: 1600px;
+
+                max-width: 1400px;
+
                 margin: 0 auto;
 
                 display: flex;
+
                 align-items: center;
+
                 gap: 5px;
             }
 
+
             .nav a {
+
                 color: white;
+
                 text-decoration: none;
 
                 padding: 13px 16px;
@@ -130,42 +186,61 @@
                 font-size: 14px;
             }
 
+
             .nav a:hover {
+
                 background: #164f78;
             }
 
+
             .nav a.activo {
+
                 background: #0f5ca8;
+
                 font-weight: bold;
             }
 
 
-            /* =====================================================
-               CONTENIDO
-               ===================================================== */
+            /*
+             * =====================================================
+             * CONTENIDO
+             * =====================================================
+             */
 
             .contenedor {
-                width: 96%;
-                max-width: 1750px;
-                margin: 28px auto 40px;
+
+                width: 95%;
+
+                max-width: 1500px;
+
+                margin: 30px auto;
             }
+
 
             .encabezado-pagina {
+
                 display: flex;
+
                 justify-content: space-between;
+
                 align-items: center;
 
-                margin-bottom: 20px;
+                gap: 15px;
 
-                gap: 20px;
+                margin-bottom: 20px;
             }
 
+
             .encabezado-pagina h2 {
+
                 margin: 0;
+
                 color: #16374f;
             }
 
+
             .encabezado-pagina p {
+
                 margin: 6px 0 0;
 
                 color: #607d8b;
@@ -174,14 +249,15 @@
             }
 
 
-            /* =====================================================
-               BOTONES
-               ===================================================== */
+            /*
+             * =====================================================
+             * BOTONES
+             * =====================================================
+             */
 
             .btn {
-                text-decoration: none;
 
-                border: none;
+                text-decoration: none;
 
                 border-radius: 5px;
 
@@ -190,133 +266,174 @@
                 font-size: 14px;
 
                 display: inline-block;
-
-                cursor: pointer;
             }
 
+
             .btn-nuevo {
+
                 background: #158a54;
+
                 color: white;
+
                 font-weight: bold;
             }
 
+
             .btn-nuevo:hover {
+
                 background: #107044;
             }
 
-            .btn-limpiar {
-                background: #e5e7eb;
-                color: #374151;
-                font-weight: bold;
-            }
 
-            .btn-limpiar:hover {
-                background: #d1d5db;
-            }
+            /*
+             * =====================================================
+             * FILTROS
+             * =====================================================
+             */
 
+            .filtros {
 
-            /* =====================================================
-               FILTROS
-               ===================================================== */
-
-            .panel-filtros {
                 background: white;
 
-                border: 1px solid #dfe5ea;
+                border: 1px solid #e0e5e8;
 
                 border-radius: 8px;
 
                 padding: 18px;
 
-                margin-bottom: 18px;
+                margin-bottom: 20px;
 
                 box-shadow:
-                    0 2px 5px rgba(0, 0, 0, .04);
+                    0 2px 5px rgba(0,0,0,.04);
             }
 
-            .titulo-filtros {
-                margin: 0 0 14px;
 
-                color: #16374f;
+            .filtros-grid {
 
-                font-size: 16px;
-            }
-
-            .filtros {
                 display: grid;
 
                 grid-template-columns:
-                    minmax(250px, 2fr)
-                    repeat(5, minmax(140px, 1fr));
+                    minmax(240px, 2fr)
+                    minmax(130px, 1fr)
+                    minmax(130px, 1fr)
+                    minmax(170px, 1.2fr)
+                    minmax(150px, 1fr)
+                    105px
+                    auto
+                    auto;
 
                 gap: 12px;
 
                 align-items: end;
             }
 
-            .campo-filtro {
-                display: flex;
-                flex-direction: column;
-            }
 
             .campo-filtro label {
-                font-size: 12px;
 
-                color: #607d8b;
-
-                font-weight: bold;
+                display: block;
 
                 margin-bottom: 6px;
+
+                color: #455a64;
+
+                font-size: 12px;
+
+                font-weight: bold;
             }
+
 
             .campo-filtro input,
             .campo-filtro select {
+
                 width: 100%;
 
-                padding: 10px 11px;
+                height: 40px;
 
-                border: 1px solid #cbd5e1;
+                padding: 8px 10px;
+
+                border: 1px solid #cfd8dc;
 
                 border-radius: 5px;
 
                 background: white;
 
-                font-size: 13px;
+                color: #37474f;
 
-                color: #263238;
+                font-size: 13px;
             }
+
 
             .campo-filtro input:focus,
             .campo-filtro select:focus {
+
                 outline: none;
+
                 border-color: #0f5ca8;
             }
 
-            .acciones-filtros {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
 
-                margin-top: 14px;
+            .btn-filtro {
 
-                gap: 15px;
-            }
+                height: 40px;
 
-            .contador {
+                padding: 0 17px;
+
+                background: #0f5ca8;
+
+                color: white;
+
+                border: none;
+
+                border-radius: 5px;
+
+                cursor: pointer;
+
                 font-size: 13px;
-                color: #607d8b;
-            }
 
-            .contador strong {
-                color: #0f5ca8;
+                font-weight: bold;
             }
 
 
-            /* =====================================================
-               TABLA
-               ===================================================== */
+            .btn-filtro:hover {
+
+                background: #0b4a88;
+            }
+
+
+            .btn-limpiar {
+
+                height: 40px;
+
+                padding: 11px 16px;
+
+                background: #eceff1;
+
+                color: #37474f;
+
+                text-decoration: none;
+
+                border-radius: 5px;
+
+                font-size: 13px;
+
+                text-align: center;
+            }
+
+
+            .btn-limpiar:hover {
+
+                background: #dfe3e6;
+            }
+
+
+            /*
+             * =====================================================
+             * TABLA
+             * =====================================================
+             */
 
             .tabla-contenedor {
+
                 width: 100%;
 
                 background: white;
@@ -331,142 +448,133 @@
                     0 2px 5px rgba(0,0,0,.04);
             }
 
+
             table {
+
                 width: 100%;
 
                 border-collapse: collapse;
 
-                min-width: 1750px;
+                min-width: 1350px;
             }
 
+
             th {
+
                 background: #f7f9fa;
 
                 text-align: left;
 
-                padding: 12px;
+                padding: 13px;
 
-                border-bottom: 1px solid #dfe3e6;
+                border-bottom:
+                    1px solid #dfe3e6;
 
-                font-size: 12px;
+                font-size: 13px;
 
                 color: #37474f;
-
-                white-space: nowrap;
             }
 
+
             td {
-                padding: 12px;
 
-                border-bottom: 1px solid #eceff1;
+                padding: 13px;
 
-                font-size: 12px;
+                border-bottom:
+                    1px solid #eceff1;
+
+                font-size: 13px;
 
                 vertical-align: middle;
             }
 
-            tbody tr:hover {
-                background: #fafcfd;
-            }
 
             tr:last-child td {
+
                 border-bottom: none;
             }
 
 
-            /* =====================================================
-               ESTADOS
-               ===================================================== */
+            tbody tr:hover td {
+
+                background: #fafcfd;
+            }
+
+
+            /*
+             * =====================================================
+             * ESTADOS
+             * =====================================================
+             */
 
             .estado {
+
                 display: inline-block;
 
                 padding: 5px 9px;
 
                 border-radius: 14px;
 
-                font-size: 10px;
+                font-size: 11px;
 
                 font-weight: bold;
-
-                white-space: nowrap;
             }
 
+
             .estado-disponible {
+
                 background: #d8f5e8;
+
                 color: #08784f;
             }
 
+
             .estado-asignado {
+
                 background: #e7f1fc;
+
                 color: #0f5ca8;
             }
 
+
             .estado-mantenimiento {
+
                 background: #fff1cd;
+
                 color: #8a6700;
             }
 
+
             .estado-baja {
+
                 background: #eceff1;
+
                 color: #546e7a;
             }
 
-            .estado-renovacion {
-                background: #fef3c7;
-                color: #92400e;
-            }
-
-            .estado-cesado {
-                background: #fee2e2;
-                color: #991b1b;
-            }
-
-            .estado-prestamo {
-                background: #ede9fe;
-                color: #6d28d9;
-            }
-
-            .estado-backup {
-                background: #cffafe;
-                color: #0e7490;
-            }
-
-            .estado-pendiente {
-                background: #ffedd5;
-                color: #9a3412;
-            }
-
-            .estado-garantia {
-                background: #f3e8ff;
-                color: #7e22ce;
-            }
 
             .estado-otro {
+
                 background: #f1f3f5;
+
                 color: #455a64;
             }
 
 
-            /* =====================================================
-               DATOS FALTANTES
-               ===================================================== */
-
-            .sin-dato {
-                color: #94a3b8;
-                font-style: italic;
-            }
-
-
-            /* =====================================================
-               ACCIONES
-               ===================================================== */
+            /*
+             * =====================================================
+             * ACCIONES
+             * =====================================================
+             */
 
             .acciones-tabla {
+
                 white-space: nowrap;
             }
 
+
             .accion {
+
                 color: #0f5ca8;
 
                 text-decoration: none;
@@ -476,86 +584,200 @@
                 margin-right: 10px;
             }
 
+
             .accion:hover {
+
                 text-decoration: underline;
             }
 
+
             .accion-editar {
+
                 color: #b26a00;
             }
 
 
-            /* =====================================================
-               SIN DATOS
-               ===================================================== */
+            /*
+             * =====================================================
+             * SIN RESULTADOS
+             * =====================================================
+             */
 
-            .sin-datos,
-            .sin-resultados {
-                padding: 30px;
+            .sin-datos {
+
+                padding: 35px;
 
                 text-align: center;
 
                 color: #607d8b;
+            }
+
+
+            /*
+             * =====================================================
+             * PAGINACIÓN
+             * =====================================================
+             */
+
+            .paginacion-barra {
+
+                margin-top: 18px;
+
+                display: flex;
+
+                justify-content: space-between;
+
+                align-items: center;
+
+                gap: 15px;
+
+                flex-wrap: wrap;
+            }
+
+
+            .paginacion-info {
+
+                color: #607d8b;
+
+                font-size: 13px;
+            }
+
+
+            .paginacion {
+
+                display: flex;
+
+                gap: 5px;
+
+                flex-wrap: wrap;
+            }
+
+
+            .pagina {
+
+                min-width: 36px;
+
+                height: 36px;
+
+                padding: 8px 10px;
+
+                border: 1px solid #cfd8dc;
+
+                border-radius: 5px;
 
                 background: white;
+
+                color: #37474f;
+
+                text-decoration: none;
+
+                text-align: center;
+
+                font-size: 13px;
             }
 
-            .sin-resultados {
-                display: none;
+
+            .pagina:hover {
+
+                border-color: #0f5ca8;
+
+                color: #0f5ca8;
             }
 
 
-            /* =====================================================
-               RESPONSIVE
-               ===================================================== */
+            .pagina.activa {
+
+                background: #0f5ca8;
+
+                border-color: #0f5ca8;
+
+                color: white;
+
+                font-weight: bold;
+            }
+
+
+            .pagina.deshabilitada {
+
+                opacity: .45;
+
+                pointer-events: none;
+            }
+
+
+            /*
+             * =====================================================
+             * RESPONSIVE
+             * =====================================================
+             */
 
             @media(max-width: 1250px) {
 
-                .filtros {
+                .filtros-grid {
+
                     grid-template-columns:
-                        repeat(3, minmax(180px, 1fr));
+                        repeat(3, 1fr);
                 }
             }
 
-            @media(max-width: 900px) {
+
+            @media(max-width: 750px) {
 
                 .cabecera-contenido {
+
                     flex-direction: column;
+
                     align-items: flex-start;
                 }
 
+
                 .usuario-info {
+
                     text-align: left;
                 }
 
+
                 .usuario-area {
+
                     width: 100%;
+
                     justify-content: space-between;
                 }
 
+
                 .nav-contenido {
+
                     flex-wrap: wrap;
                 }
 
+
                 .encabezado-pagina {
+
                     flex-direction: column;
+
                     align-items: flex-start;
-                    gap: 15px;
                 }
 
-                .filtros {
+
+                .filtros-grid {
+
                     grid-template-columns: 1fr;
                 }
 
-                .acciones-filtros {
-                    flex-direction: column;
-                    align-items: flex-start;
+
+                .btn-filtro,
+                .btn-limpiar {
+
+                    width: 100%;
+
+                    text-align: center;
                 }
             }
 
         </style>
 
     </head>
+
 
     <body>
 
@@ -568,6 +790,7 @@
 
             <div class="cabecera-contenido">
 
+
                 <div>
 
                     <h1>
@@ -575,7 +798,7 @@
                     </h1>
 
                     <p>
-                        Inventario de activos tecnológicos
+                        Gestión del inventario tecnológico
                     </p>
 
                 </div>
@@ -583,7 +806,9 @@
 
                 <div class="usuario-area">
 
+
                     <div class="usuario-info">
+
 
                         <strong
                             th:text="${usuarioAutenticado != null
@@ -594,17 +819,21 @@
 
                         </strong>
 
+
                         <span th:if="${esAdministrador}">
                             Administrador
                         </span>
+
 
                         <span th:if="${esSoporte}">
                             Soporte TI
                         </span>
 
+
                         <span th:if="${esConsulta}">
                             Consulta
                         </span>
+
 
                     </div>
 
@@ -612,6 +841,7 @@
                     <form
                         method="post"
                         th:action="@{/logout}">
+
 
                         <button
                             type="submit"
@@ -621,9 +851,12 @@
 
                         </button>
 
+
                     </form>
 
+
                 </div>
+
 
             </div>
 
@@ -638,34 +871,45 @@
 
             <div class="nav-contenido">
 
+
                 <a th:href="@{/}">
                     Inicio
                 </a>
 
-                <a th:href="@{/inventario}"
-                   class="activo">
+
+                <a
+                    th:href="@{/inventario}"
+                    class="activo">
+
                     Inventario
+
                 </a>
+
 
                 <a th:href="@{/colaboradores}">
                     Colaboradores
                 </a>
 
+
                 <a th:href="@{/asignaciones}">
                     Asignaciones
                 </a>
+
 
                 <a th:href="@{/devoluciones}">
                     Devoluciones
                 </a>
 
+
                 <a th:href="@{/alertas-garantia}">
                     Garantías
                 </a>
 
+
                 <a th:href="@{/requisitos-cargo}">
                     Requisitos
                 </a>
+
 
                 <a
                     th:if="${esAdministrador}"
@@ -674,6 +918,7 @@
                     Usuarios
 
                 </a>
+
 
             </div>
 
@@ -687,11 +932,8 @@
         <div class="contenedor">
 
 
-            <!-- =================================================
-                 ENCABEZADO
-                 ================================================= -->
-
             <div class="encabezado-pagina">
+
 
                 <div>
 
@@ -700,8 +942,7 @@
                     </h2>
 
                     <p>
-                        Consulte y filtre los activos tecnológicos
-                        registrados en el sistema.
+                        Consulte y filtre los activos tecnológicos registrados.
                     </p>
 
                 </div>
@@ -716,6 +957,7 @@
 
                 </a>
 
+
             </div>
 
 
@@ -723,30 +965,32 @@
                  FILTROS
                  ================================================= -->
 
-            <div
-                class="panel-filtros"
-                th:if="${activos != null and !activos.isEmpty()}">
-
-                <h3 class="titulo-filtros">
-                    🔎 Buscar y filtrar activos
-                </h3>
+            <form
+                class="filtros"
+                method="get"
+                th:action="@{/inventario}">
 
 
-                <div class="filtros">
+                <div class="filtros-grid">
 
 
-                    <!-- BÚSQUEDA -->
+                    <!-- BUSCAR -->
 
                     <div class="campo-filtro">
 
-                        <label for="busquedaGeneral">
+                        <label>
                             Buscar
                         </label>
 
+
                         <input
                             type="text"
-                            id="busquedaGeneral"
-                            placeholder="Inventario, serie, modelo, ubicación...">
+
+                            name="q"
+
+                            th:value="${q}"
+
+                            placeholder="Inventario, serie, modelo o procesador">
 
                     </div>
 
@@ -755,23 +999,30 @@
 
                     <div class="campo-filtro">
 
-                        <label for="filtroTipo">
+                        <label>
                             Tipo
                         </label>
 
-                        <select id="filtroTipo">
+
+                        <select name="tipoId">
+
 
                             <option value="">
                                 Todos
                             </option>
 
-                            <option value="LAPTOP">
-                                Laptop
+
+                            <option
+                                th:each="tipo : ${tiposEquipo}"
+
+                                th:value="${tipo.idTipoEquipo}"
+
+                                th:text="${tipo.nombreTipo}"
+
+                                th:selected="${tipoId != null
+                                and tipoId == tipo.idTipoEquipo}">
                             </option>
 
-                            <option value="DESKTOP">
-                                Desktop
-                            </option>
 
                         </select>
 
@@ -782,27 +1033,30 @@
 
                     <div class="campo-filtro">
 
-                        <label for="filtroMarca">
+                        <label>
                             Marca
                         </label>
 
-                        <select id="filtroMarca">
+
+                        <select name="marcaId">
+
 
                             <option value="">
                                 Todas
                             </option>
 
-                            <option value="LENOVO">
-                                Lenovo
+
+                            <option
+                                th:each="marca : ${marcas}"
+
+                                th:value="${marca.idMarca}"
+
+                                th:text="${marca.nombreMarca}"
+
+                                th:selected="${marcaId != null
+                                and marcaId == marca.idMarca}">
                             </option>
 
-                            <option value="DELL">
-                                Dell
-                            </option>
-
-                            <option value="MICROSOFT">
-                                Microsoft
-                            </option>
 
                         </select>
 
@@ -813,55 +1067,30 @@
 
                     <div class="campo-filtro">
 
-                        <label for="filtroEstado">
+                        <label>
                             Estado
                         </label>
 
-                        <select id="filtroEstado">
+
+                        <select name="estadoId">
+
 
                             <option value="">
                                 Todos
                             </option>
 
-                            <option value="DISPONIBLE">
-                                Disponible
+
+                            <option
+                                th:each="estado : ${estados}"
+
+                                th:value="${estado.idEstado}"
+
+                                th:text="${estado.nombreEstado}"
+
+                                th:selected="${estadoId != null
+                                and estadoId == estado.idEstado}">
                             </option>
 
-                            <option value="ASIGNADO_EN_USO">
-                                Asignado en uso
-                            </option>
-
-                            <option value="RENOVACION_POR_DEVOLVER">
-                                Renovación por devolver
-                            </option>
-
-                            <option value="CESADO_POR_DEVOLVER">
-                                Cesado por devolver
-                            </option>
-
-                            <option value="PRESTAMO_POR_GARANTIA">
-                                Préstamo por garantía
-                            </option>
-
-                            <option value="BACKUP">
-                                Backup
-                            </option>
-
-                            <option value="MANTENIMIENTO">
-                                Mantenimiento
-                            </option>
-
-                            <option value="GARANTIA">
-                                Garantía
-                            </option>
-
-                            <option value="DEVUELTO_PENDIENTE_REVISION">
-                                Devuelto pendiente de revisión
-                            </option>
-
-                            <option value="BAJA">
-                                Baja
-                            </option>
 
                         </select>
 
@@ -872,95 +1101,110 @@
 
                     <div class="campo-filtro">
 
-                        <label for="filtroSede">
+                        <label>
                             Sede
                         </label>
 
-                        <select id="filtroSede">
+
+                        <select name="sedeId">
+
 
                             <option value="">
                                 Todas
                             </option>
 
+
                             <option
-                                th:each="activo : ${activos}"
-                                th:if="${activo.sede != null}"
-                                th:value="${activo.sede.nombreSede}"
-                                th:text="${activo.sede.nombreSede}">
+                                th:each="sede : ${sedes}"
+
+                                th:value="${sede.idSede}"
+
+                                th:text="${sede.nombreSede}"
+
+                                th:selected="${sedeId != null
+                                and sedeId == sede.idSede}">
                             </option>
+
 
                         </select>
 
                     </div>
 
 
-                    <!-- CENTRO DE COSTO -->
+                    <!-- REGISTROS -->
 
                     <div class="campo-filtro">
 
-                        <label for="filtroCentroCosto">
-                            Centro de costo
+                        <label>
+                            Por página
                         </label>
 
-                        <select id="filtroCentroCosto">
 
-                            <option value="">
-                                Todos
-                            </option>
+                        <select name="size">
+
 
                             <option
-                                th:each="activo : ${activos}"
-                                th:if="${activo.centroCosto != null}"
-                                th:value="${activo.centroCosto.codigo}"
-                                th:text="${activo.centroCosto.codigo}">
+                                value="10"
+
+                                th:selected="${size == 10}">
+
+                                10
+
                             </option>
+
+
+                            <option
+                                value="20"
+
+                                th:selected="${size == 20}">
+
+                                20
+
+                            </option>
+
+
+                            <option
+                                value="50"
+
+                                th:selected="${size == 50}">
+
+                                50
+
+                            </option>
+
 
                         </select>
 
-                    </div>
-
-                </div>
-
-
-                <!-- CONTADOR -->
-
-                <div class="acciones-filtros">
-
-                    <div class="contador">
-
-                        Mostrando
-
-                        <strong id="cantidadVisible">
-                            0
-                        </strong>
-
-                        de
-
-                        <strong
-                            id="cantidadTotal"
-                            th:text="${activos.size()}">
-
-                            0
-
-                        </strong>
-
-                        activos
 
                     </div>
 
+
+                    <!-- FILTRAR -->
 
                     <button
-                        type="button"
-                        id="btnLimpiar"
-                        class="btn btn-limpiar">
+                        type="submit"
+                        class="btn-filtro">
 
-                        Limpiar filtros
+                        Filtrar
 
                     </button>
 
+
+                    <!-- LIMPIAR -->
+
+                    <a
+                        th:href="@{/inventario}"
+                        class="btn-limpiar">
+
+                        Limpiar
+
+                    </a>
+
+
                 </div>
 
-            </div>
+
+            </form>
 
 
             <!-- =================================================
@@ -971,10 +1215,12 @@
 
 
                 <table
-                    id="tablaInventario"
-                    th:if="${activos != null and !activos.isEmpty()}">
+                    th:if="${activos != null
+                    and !activos.isEmpty()}">
+
 
                     <thead>
+
 
                         <tr>
 
@@ -992,8 +1238,6 @@
 
                             <th>Procesador</th>
 
-                            <th>Generación</th>
-
                             <th>RAM</th>
 
                             <th>Almacenamiento</th>
@@ -1004,74 +1248,53 @@
 
                             <th>Ubicación</th>
 
-                            <th>Centro de costo</th>
-
                             <th>Garantía</th>
 
                             <th>Acciones</th>
 
                         </tr>
 
+
                     </thead>
 
 
                     <tbody>
 
+
                         <tr
-                            th:each="activo : ${activos}"
-
-                            class="fila-activo"
-
-                            th:attr="
-                            data-tipo=${activo.tipoEquipo != null
-                            ? activo.tipoEquipo.nombreTipo
-                            : ''},
-
-                            data-marca=${activo.marca != null
-                            ? activo.marca.nombreMarca
-                            : ''},
-
-                            data-estado=${activo.estado != null
-                            ? activo.estado.nombreEstado
-                            : ''},
-
-                            data-sede=${activo.sede != null
-                            ? activo.sede.nombreSede
-                            : ''},
-
-                            data-centro=${activo.centroCosto != null
-                            ? activo.centroCosto.codigo
-                            : ''}">
+                            th:each="activo : ${activos}">
 
 
                             <!-- ID -->
 
                             <td
                                 th:text="${activo.idActivo}">
+
+                                1
+
                             </td>
 
 
                             <!-- INVENTARIO -->
 
                             <td
-                                th:text="${activo.numeroInventario}">
+                                th:text="${activo.numeroInventario != null
+                                ? activo.numeroInventario
+                                : '-'}">
+
+                                Inventario
+
                             </td>
 
 
                             <!-- SERIE -->
 
-                            <td>
+                            <td
+                                th:text="${activo.numeroSerie != null
+                                ? activo.numeroSerie
+                                : '-'}">
 
-                                <span
-                                    th:if="${activo.numeroSerie != null}"
-                                    th:text="${activo.numeroSerie}">
-                                </span>
-
-                                <span
-                                    th:if="${activo.numeroSerie == null}"
-                                    class="sin-dato">
-                                    -
-                                </span>
+                                Serie
 
                             </td>
 
@@ -1082,6 +1305,9 @@
                                 th:text="${activo.tipoEquipo != null
                                 ? activo.tipoEquipo.nombreTipo
                                 : '-'}">
+
+                                Tipo
+
                             </td>
 
 
@@ -1091,6 +1317,9 @@
                                 th:text="${activo.marca != null
                                 ? activo.marca.nombreMarca
                                 : '-'}">
+
+                                Marca
+
                             </td>
 
 
@@ -1100,94 +1329,54 @@
                                 th:text="${activo.modelo != null
                                 ? activo.modelo
                                 : '-'}">
+
+                                Modelo
+
                             </td>
 
 
                             <!-- PROCESADOR -->
 
-                            <td>
+                            <td
+                                th:text="${activo.procesador != null
+                                ? activo.procesador
+                                : '-'}">
 
-                                <span
-                                    th:if="${activo.procesador != null}"
-                                    th:text="${activo.procesador}">
-                                </span>
-
-                                <span
-                                    th:if="${activo.procesador == null}"
-                                    class="sin-dato">
-
-                                    Pendiente
-
-                                </span>
-
-                            </td>
-
-
-                            <!-- GENERACIÓN -->
-
-                            <td>
-
-                                <span
-                                    th:if="${activo.generacionProcesador != null}"
-
-                                    th:text="${activo.generacionProcesador
-                                    + 'ª Gen'}">
-                                </span>
-
-
-                                <span
-                                    th:if="${activo.generacionProcesador == null}"
-                                    class="sin-dato">
-
-                                    Pendiente
-
-                                </span>
+                                Procesador
 
                             </td>
 
 
                             <!-- RAM -->
 
-                            <td>
+                            <td
+                                th:text="${activo.ramGb != null
+                                ? activo.ramGb + ' GB'
+                                : '-'}">
 
-                                <span
-                                    th:if="${activo.ramGb != null}"
-                                    th:text="${activo.ramGb + ' GB'}">
-                                </span>
-
-                                <span
-                                    th:if="${activo.ramGb == null}"
-                                    class="sin-dato">
-                                    -
-                                </span>
+                                RAM
 
                             </td>
 
 
                             <!-- ALMACENAMIENTO -->
 
-                            <td>
+                            <td
+                                th:text="${activo.almacenamientoGb != null
+                                ? activo.almacenamientoGb + ' GB'
+                                : '-'}">
 
-                                <span
-                                    th:if="${activo.almacenamientoGb != null}"
-                                    th:text="${activo.almacenamientoGb + ' GB'}">
-                                </span>
-
-                                <span
-                                    th:if="${activo.almacenamientoGb == null}"
-                                    class="sin-dato">
-                                    -
-                                </span>
+                                Almacenamiento
 
                             </td>
 
 
-                            <!-- =================================================
-                                 ESTADO
-                                 ================================================= -->
+                            <!-- ESTADO -->
 
                             <td>
 
+
+                                <!-- DISPONIBLE -->
 
                                 <span
                                     class="estado estado-disponible"
@@ -1201,6 +1390,8 @@
                                 </span>
 
 
+                                <!-- ASIGNADO -->
+
                                 <span
                                     class="estado estado-asignado"
 
@@ -1213,53 +1404,7 @@
                                 </span>
 
 
-                                <span
-                                    class="estado estado-renovacion"
-
-                                    th:if="${activo.estado != null
-                                    and activo.estado.nombreEstado
-                                    == 'RENOVACION_POR_DEVOLVER'}">
-
-                                    RENOVACIÓN POR DEVOLVER
-
-                                </span>
-
-
-                                <span
-                                    class="estado estado-cesado"
-
-                                    th:if="${activo.estado != null
-                                    and activo.estado.nombreEstado
-                                    == 'CESADO_POR_DEVOLVER'}">
-
-                                    CESADO POR DEVOLVER
-
-                                </span>
-
-
-                                <span
-                                    class="estado estado-prestamo"
-
-                                    th:if="${activo.estado != null
-                                    and activo.estado.nombreEstado
-                                    == 'PRESTAMO_POR_GARANTIA'}">
-
-                                    PRÉSTAMO POR GARANTÍA
-
-                                </span>
-
-
-                                <span
-                                    class="estado estado-backup"
-
-                                    th:if="${activo.estado != null
-                                    and activo.estado.nombreEstado
-                                    == 'BACKUP'}">
-
-                                    BACKUP
-
-                                </span>
-
+                                <!-- MANTENIMIENTO -->
 
                                 <span
                                     class="estado estado-mantenimiento"
@@ -1273,29 +1418,7 @@
                                 </span>
 
 
-                                <span
-                                    class="estado estado-garantia"
-
-                                    th:if="${activo.estado != null
-                                    and activo.estado.nombreEstado
-                                    == 'GARANTIA'}">
-
-                                    GARANTÍA
-
-                                </span>
-
-
-                                <span
-                                    class="estado estado-pendiente"
-
-                                    th:if="${activo.estado != null
-                                    and activo.estado.nombreEstado
-                                    == 'DEVUELTO_PENDIENTE_REVISION'}">
-
-                                    PENDIENTE DE REVISIÓN
-
-                                </span>
-
+                                <!-- BAJA -->
 
                                 <span
                                     class="estado estado-baja"
@@ -1309,6 +1432,8 @@
                                 </span>
 
 
+                                <!-- OTROS -->
+
                                 <span
                                     class="estado estado-otro"
 
@@ -1316,22 +1441,13 @@
                                     or (
                                     activo.estado.nombreEstado
                                     != 'DISPONIBLE'
+
                                     and activo.estado.nombreEstado
                                     != 'ASIGNADO_EN_USO'
-                                    and activo.estado.nombreEstado
-                                    != 'RENOVACION_POR_DEVOLVER'
-                                    and activo.estado.nombreEstado
-                                    != 'CESADO_POR_DEVOLVER'
-                                    and activo.estado.nombreEstado
-                                    != 'PRESTAMO_POR_GARANTIA'
-                                    and activo.estado.nombreEstado
-                                    != 'BACKUP'
+
                                     and activo.estado.nombreEstado
                                     != 'MANTENIMIENTO'
-                                    and activo.estado.nombreEstado
-                                    != 'GARANTIA'
-                                    and activo.estado.nombreEstado
-                                    != 'DEVUELTO_PENDIENTE_REVISION'
+
                                     and activo.estado.nombreEstado
                                     != 'BAJA'
                                     )}"
@@ -1339,7 +1455,11 @@
                                     th:text="${activo.estado != null
                                     ? activo.estado.nombreEstado
                                     : '-'}">
+
+                                    Otro
+
                                 </span>
+
 
                             </td>
 
@@ -1350,6 +1470,9 @@
                                 th:text="${activo.sede != null
                                 ? activo.sede.nombreSede
                                 : '-'}">
+
+                                Sede
+
                             </td>
 
 
@@ -1359,46 +1482,23 @@
                                 th:text="${activo.ubicacion != null
                                 ? activo.ubicacion.nombreUbicacion
                                 : '-'}">
-                            </td>
 
-
-                            <!-- CENTRO DE COSTO -->
-
-                            <td>
-
-                                <span
-                                    th:if="${activo.centroCosto != null}"
-                                    th:text="${activo.centroCosto.codigo}">
-                                </span>
-
-                                <span
-                                    th:if="${activo.centroCosto == null}"
-                                    class="sin-dato">
-                                    -
-                                </span>
+                                Ubicación
 
                             </td>
 
 
                             <!-- GARANTÍA -->
 
-                            <td>
+                            <td
+                                th:text="${activo.fechaVencimientoGarantia != null
+                                ? #temporals.format(
+                                activo.fechaVencimientoGarantia,
+                                'dd/MM/yyyy'
+                                )
+                                : '-'}">
 
-                                <span
-                                    th:if="${activo.fechaVencimientoGarantia != null}"
-
-                                    th:text="${#temporals.format(
-                                    activo.fechaVencimientoGarantia,
-                                    'dd/MM/yyyy'
-                                    )}">
-                                </span>
-
-
-                                <span
-                                    th:if="${activo.fechaVencimientoGarantia == null}"
-                                    class="sin-dato">
-                                    -
-                                </span>
+                                Garantía
 
                             </td>
 
@@ -1406,6 +1506,9 @@
                             <!-- ACCIONES -->
 
                             <td class="acciones-tabla">
+
+
+                                <!-- TODOS PUEDEN VER -->
 
                                 <a
                                     th:href="@{/inventario/ver/{id}
@@ -1417,6 +1520,8 @@
 
                                 </a>
 
+
+                                <!-- ADMIN / SOPORTE -->
 
                                 <a
                                     th:if="${puedeGestionar}"
@@ -1430,476 +1535,253 @@
 
                                 </a>
 
+
                             </td>
+
 
                         </tr>
 
+
                     </tbody>
 
+
                 </table>
-
-
-                <!-- SIN ACTIVOS -->
-
-                <div
-                    class="sin-datos"
-
-                    th:if="${activos == null or activos.isEmpty()}">
-
-                    No existen activos registrados.
-
-                </div>
 
 
                 <!-- SIN RESULTADOS -->
 
                 <div
-                    id="sinResultados"
-                    class="sin-resultados">
+                    class="sin-datos"
 
-                    No se encontraron activos que coincidan
+                    th:if="${activos == null
+                    or activos.isEmpty()}">
+
+
+                    No se encontraron activos
                     con los filtros seleccionados.
+
 
                 </div>
 
+
             </div>
 
+
+            <!-- =================================================
+                 PAGINACIÓN
+                 ================================================= -->
+
+            <div
+                class="paginacion-barra"
+
+                th:if="${paginaActivos != null}">
+
+
+                <!-- INFORMACIÓN -->
+
+                <div class="paginacion-info">
+
+
+                    <span
+                        th:if="${paginaActivos.totalElements > 0}">
+
+
+                        Mostrando
+
+
+                        <strong
+                            th:text="${paginaActivos.number
+                            * paginaActivos.size + 1}">
+
+                            1
+
+                        </strong>
+
+
+                        -
+
+
+                        <strong
+                            th:text="${paginaActivos.number
+                            * paginaActivos.size
+                            + paginaActivos.numberOfElements}">
+
+                            10
+
+                        </strong>
+
+
+                        de
+
+
+                        <strong
+                            th:text="${paginaActivos.totalElements}">
+
+                            0
+
+                        </strong>
+
+
+                        activos
+
+
+                    </span>
+
+
+                    <span
+                        th:if="${paginaActivos.totalElements == 0}">
+
+                        0 activos encontrados
+
+                    </span>
+
+
+                </div>
+
+
+                <!-- BOTONES -->
+
+                <div
+                    class="paginacion"
+
+                    th:if="${paginaActivos.totalPages > 1}">
+
+
+                    <!-- PRIMERA -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaActivos.first}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/inventario(
+                        page=0,
+                        size=${size},
+                        q=${q},
+                        tipoId=${tipoId},
+                        marcaId=${marcaId},
+                        estadoId=${estadoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        «
+
+                    </a>
+
+
+                    <!-- ANTERIOR -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaActivos.first}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/inventario(
+                        page=${paginaActivos.number - 1},
+                        size=${size},
+                        q=${q},
+                        tipoId=${tipoId},
+                        marcaId=${marcaId},
+                        estadoId=${estadoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        ‹
+
+                    </a>
+
+
+                    <!-- NÚMEROS -->
+
+                    <a
+                        class="pagina"
+
+                        th:each="i : ${#numbers.sequence(
+                        T(java.lang.Math).max(
+                        0,
+                        paginaActivos.number - 2
+                        ),
+                        T(java.lang.Math).min(
+                        paginaActivos.totalPages - 1,
+                        paginaActivos.number + 2
+                        )
+                        )}"
+
+                        th:classappend="${i == paginaActivos.number}
+                        ? ' activa'"
+
+                        th:text="${i + 1}"
+
+                        th:href="@{/inventario(
+                        page=${i},
+                        size=${size},
+                        q=${q},
+                        tipoId=${tipoId},
+                        marcaId=${marcaId},
+                        estadoId=${estadoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        1
+
+                    </a>
+
+
+                    <!-- SIGUIENTE -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaActivos.last}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/inventario(
+                        page=${paginaActivos.number + 1},
+                        size=${size},
+                        q=${q},
+                        tipoId=${tipoId},
+                        marcaId=${marcaId},
+                        estadoId=${estadoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        ›
+
+                    </a>
+
+
+                    <!-- ÚLTIMA -->
+
+                    <a
+                        class="pagina"
+
+                        th:classappend="${paginaActivos.last}
+                        ? ' deshabilitada'"
+
+                        th:href="@{/inventario(
+                        page=${paginaActivos.totalPages - 1},
+                        size=${size},
+                        q=${q},
+                        tipoId=${tipoId},
+                        marcaId=${marcaId},
+                        estadoId=${estadoId},
+                        sedeId=${sedeId}
+                        )}">
+
+                        »
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
         </div>
-
-
-        <!-- =====================================================
-             FILTROS JAVASCRIPT
-             ===================================================== -->
-
-        <script>
-
-            document.addEventListener(
-                    "DOMContentLoaded",
-                    function () {
-
-
-                        const buscador =
-                                document.getElementById(
-                                        "busquedaGeneral"
-                                        );
-
-
-                        const filtroTipo =
-                                document.getElementById(
-                                        "filtroTipo"
-                                        );
-
-
-                        const filtroMarca =
-                                document.getElementById(
-                                        "filtroMarca"
-                                        );
-
-
-                        const filtroEstado =
-                                document.getElementById(
-                                        "filtroEstado"
-                                        );
-
-
-                        const filtroSede =
-                                document.getElementById(
-                                        "filtroSede"
-                                        );
-
-
-                        const filtroCentroCosto =
-                                document.getElementById(
-                                        "filtroCentroCosto"
-                                        );
-
-
-                        const btnLimpiar =
-                                document.getElementById(
-                                        "btnLimpiar"
-                                        );
-
-
-                        const cantidadVisible =
-                                document.getElementById(
-                                        "cantidadVisible"
-                                        );
-
-
-                        const sinResultados =
-                                document.getElementById(
-                                        "sinResultados"
-                                        );
-
-
-                        const filas =
-                                Array.from(
-                                        document.querySelectorAll(
-                                                ".fila-activo"
-                                                )
-                                        );
-
-
-                        /*
-                         * =================================================
-                         * ELIMINAR OPCIONES REPETIDAS
-                         * =================================================
-                         */
-
-                        function eliminarDuplicados(select) {
-
-                            if (!select) {
-                                return;
-                            }
-
-
-                            const vistos =
-                                    new Set();
-
-
-                            Array.from(
-                                    select.options
-                                    ).forEach(
-                                    function (opcion) {
-
-
-                                        if (opcion.value === "") {
-                                            return;
-                                        }
-
-
-                                        const valor =
-                                                opcion.value
-                                                .trim()
-                                                .toUpperCase();
-
-
-                                        if (vistos.has(valor)) {
-
-                                            opcion.remove();
-
-                                        } else {
-
-                                            vistos.add(valor);
-                                        }
-
-                                    }
-                            );
-                        }
-
-
-                        eliminarDuplicados(
-                                filtroSede
-                                );
-
-
-                        eliminarDuplicados(
-                                filtroCentroCosto
-                                );
-
-
-                        /*
-                         * =================================================
-                         * APLICAR FILTROS
-                         * =================================================
-                         */
-
-                        function aplicarFiltros() {
-
-
-                            const textoBusqueda =
-                                    buscador
-                                    ? buscador.value
-                                    .trim()
-                                    .toUpperCase()
-                                    : "";
-
-
-                            const tipoSeleccionado =
-                                    filtroTipo
-                                    ? filtroTipo.value
-                                    .trim()
-                                    .toUpperCase()
-                                    : "";
-
-
-                            const marcaSeleccionada =
-                                    filtroMarca
-                                    ? filtroMarca.value
-                                    .trim()
-                                    .toUpperCase()
-                                    : "";
-
-
-                            const estadoSeleccionado =
-                                    filtroEstado
-                                    ? filtroEstado.value
-                                    .trim()
-                                    .toUpperCase()
-                                    : "";
-
-
-                            const sedeSeleccionada =
-                                    filtroSede
-                                    ? filtroSede.value
-                                    .trim()
-                                    .toUpperCase()
-                                    : "";
-
-
-                            const centroSeleccionado =
-                                    filtroCentroCosto
-                                    ? filtroCentroCosto.value
-                                    .trim()
-                                    .toUpperCase()
-                                    : "";
-
-
-                            let visibles = 0;
-
-
-                            filas.forEach(
-                                    function (fila) {
-
-
-                                        const textoFila =
-                                                fila.innerText
-                                                .toUpperCase();
-
-
-                                        const tipo =
-                                                (
-                                                        fila.dataset.tipo || ""
-                                                        )
-                                                .trim()
-                                                .toUpperCase();
-
-
-                                        const marca =
-                                                (
-                                                        fila.dataset.marca || ""
-                                                        )
-                                                .trim()
-                                                .toUpperCase();
-
-
-                                        const estado =
-                                                (
-                                                        fila.dataset.estado || ""
-                                                        )
-                                                .trim()
-                                                .toUpperCase();
-
-
-                                        const sede =
-                                                (
-                                                        fila.dataset.sede || ""
-                                                        )
-                                                .trim()
-                                                .toUpperCase();
-
-
-                                        const centro =
-                                                (
-                                                        fila.dataset.centro || ""
-                                                        )
-                                                .trim()
-                                                .toUpperCase();
-
-
-                                        const coincideTexto =
-                                                textoBusqueda === ""
-                                                || textoFila.includes(
-                                                        textoBusqueda
-                                                        );
-
-
-                                        const coincideTipo =
-                                                tipoSeleccionado === ""
-                                                || tipo === tipoSeleccionado;
-
-
-                                        const coincideMarca =
-                                                marcaSeleccionada === ""
-                                                || marca === marcaSeleccionada;
-
-
-                                        const coincideEstado =
-                                                estadoSeleccionado === ""
-                                                || estado === estadoSeleccionado;
-
-
-                                        const coincideSede =
-                                                sedeSeleccionada === ""
-                                                || sede === sedeSeleccionada;
-
-
-                                        const coincideCentro =
-                                                centroSeleccionado === ""
-                                                || centro === centroSeleccionado;
-
-
-                                        const mostrar =
-                                                coincideTexto
-                                                && coincideTipo
-                                                && coincideMarca
-                                                && coincideEstado
-                                                && coincideSede
-                                                && coincideCentro;
-
-
-                                        if (mostrar) {
-
-                                            fila.style.display = "";
-
-                                            visibles++;
-
-                                        } else {
-
-                                            fila.style.display = "none";
-                                        }
-
-                                    }
-                            );
-
-
-                            if (cantidadVisible) {
-
-                                cantidadVisible.textContent =
-                                        visibles;
-                            }
-
-
-                            if (sinResultados) {
-
-                                sinResultados.style.display =
-                                        visibles === 0
-                                        ? "block"
-                                        : "none";
-                            }
-
-                        }
-
-
-                        /*
-                         * =================================================
-                         * EVENTOS
-                         * =================================================
-                         */
-
-                        if (buscador) {
-
-                            buscador.addEventListener(
-                                    "input",
-                                    aplicarFiltros
-                                    );
-                        }
-
-
-                        if (filtroTipo) {
-
-                            filtroTipo.addEventListener(
-                                    "change",
-                                    aplicarFiltros
-                                    );
-                        }
-
-
-                        if (filtroMarca) {
-
-                            filtroMarca.addEventListener(
-                                    "change",
-                                    aplicarFiltros
-                                    );
-                        }
-
-
-                        if (filtroEstado) {
-
-                            filtroEstado.addEventListener(
-                                    "change",
-                                    aplicarFiltros
-                                    );
-                        }
-
-
-                        if (filtroSede) {
-
-                            filtroSede.addEventListener(
-                                    "change",
-                                    aplicarFiltros
-                                    );
-                        }
-
-
-                        if (filtroCentroCosto) {
-
-                            filtroCentroCosto.addEventListener(
-                                    "change",
-                                    aplicarFiltros
-                                    );
-                        }
-
-
-                        /*
-                         * =================================================
-                         * LIMPIAR FILTROS
-                         * =================================================
-                         */
-
-                        if (btnLimpiar) {
-
-                            btnLimpiar.addEventListener(
-                                    "click",
-                                    function () {
-
-
-                                        if (buscador) {
-                                            buscador.value = "";
-                                        }
-
-
-                                        if (filtroTipo) {
-                                            filtroTipo.value = "";
-                                        }
-
-
-                                        if (filtroMarca) {
-                                            filtroMarca.value = "";
-                                        }
-
-
-                                        if (filtroEstado) {
-                                            filtroEstado.value = "";
-                                        }
-
-
-                                        if (filtroSede) {
-                                            filtroSede.value = "";
-                                        }
-
-
-                                        if (filtroCentroCosto) {
-                                            filtroCentroCosto.value = "";
-                                        }
-
-
-                                        aplicarFiltros();
-
-                                    }
-                            );
-                        }
-
-
-                        /*
-                         * Estado inicial.
-                         */
-                        aplicarFiltros();
-
-                    }
-            );
-
-        </script>
 
 
     </body>

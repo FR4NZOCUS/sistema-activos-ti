@@ -12,15 +12,22 @@ import com.unimaq.sistemaactivos.repository.UbicacionOperativaRepository;
 
 import com.unimaq.sistemaactivos.service.HistorialActivoService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class InventarioController {
+
 
     /*
      * =====================================================
@@ -87,16 +94,209 @@ public class InventarioController {
 
     /*
      * =====================================================
-     * LISTAR INVENTARIO
+     * INVENTARIO
+     * FILTROS + PAGINACIÓN
      * =====================================================
      */
     @GetMapping("/inventario")
     public String mostrarInventario(
+            @RequestParam(
+                    value = "q",
+                    required = false
+            ) String q,
+            @RequestParam(
+                    value = "tipoId",
+                    required = false
+            ) Integer tipoId,
+            @RequestParam(
+                    value = "marcaId",
+                    required = false
+            ) Integer marcaId,
+            @RequestParam(
+                    value = "estadoId",
+                    required = false
+            ) Integer estadoId,
+            @RequestParam(
+                    value = "sedeId",
+                    required = false
+            ) Integer sedeId,
+            @RequestParam(
+                    value = "page",
+                    defaultValue = "0"
+            ) int page,
+            @RequestParam(
+                    value = "size",
+                    defaultValue = "10"
+            ) int size,
             Model model) {
 
+
+        /*
+         * =================================================
+         * VALIDAR PÁGINA
+         * =================================================
+         */
+        if (page < 0) {
+
+            page = 0;
+        }
+
+
+        /*
+         * =================================================
+         * VALIDAR CANTIDAD DE REGISTROS
+         * =================================================
+         */
+        if (size != 10
+                && size != 20
+                && size != 50) {
+
+            size = 10;
+        }
+
+
+        /*
+         * =================================================
+         * PAGINACIÓN
+         * =================================================
+         */
+        Pageable pageable
+                = PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(
+                                Sort.Direction.DESC,
+                                "idActivo"
+                        )
+                );
+
+
+        /*
+         * =================================================
+         * CONSULTA CON FILTROS
+         * =================================================
+         */
+        Page<Activo> paginaActivos
+                = activoRepository
+                        .buscarConFiltros(
+                                q,
+                                tipoId,
+                                marcaId,
+                                estadoId,
+                                sedeId,
+                                pageable
+                        );
+
+
+        /*
+         * =================================================
+         * VALIDAR PÁGINA EXISTENTE
+         * =================================================
+         */
+        if (paginaActivos.getTotalPages() > 0
+                && page
+                >= paginaActivos.getTotalPages()) {
+
+            page = 0;
+
+            pageable
+                    = PageRequest.of(
+                            0,
+                            size,
+                            Sort.by(
+                                    Sort.Direction.DESC,
+                                    "idActivo"
+                            )
+                    );
+
+            paginaActivos
+                    = activoRepository
+                            .buscarConFiltros(
+                                    q,
+                                    tipoId,
+                                    marcaId,
+                                    estadoId,
+                                    sedeId,
+                                    pageable
+                            );
+        }
+
+
+        /*
+         * =================================================
+         * RESULTADOS
+         * =================================================
+         */
         model.addAttribute(
                 "activos",
-                activoRepository.findAll()
+                paginaActivos.getContent()
+        );
+
+        model.addAttribute(
+                "paginaActivos",
+                paginaActivos
+        );
+
+
+        /*
+         * =================================================
+         * CATÁLOGOS PARA FILTROS
+         * =================================================
+         */
+        model.addAttribute(
+                "tiposEquipo",
+                tipoEquipoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "marcas",
+                marcaRepository.findAll()
+        );
+
+        model.addAttribute(
+                "estados",
+                estadoActivoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "sedes",
+                sedeRepository.findAll()
+        );
+
+
+        /*
+         * =================================================
+         * CONSERVAR FILTROS
+         * =================================================
+         */
+        model.addAttribute(
+                "q",
+                q
+        );
+
+        model.addAttribute(
+                "tipoId",
+                tipoId
+        );
+
+        model.addAttribute(
+                "marcaId",
+                marcaId
+        );
+
+        model.addAttribute(
+                "estadoId",
+                estadoId
+        );
+
+        model.addAttribute(
+                "sedeId",
+                sedeId
+        );
+
+        model.addAttribute(
+                "size",
+                size
         );
 
         return "inventario";
@@ -117,7 +317,9 @@ public class InventarioController {
                 new Activo()
         );
 
-        cargarCatalogos(model);
+        cargarCatalogos(
+                model
+        );
 
         return "nuevo-activo";
     }
@@ -125,7 +327,7 @@ public class InventarioController {
 
     /*
      * =====================================================
-     * GUARDAR / ACTUALIZAR ACTIVO
+     * GUARDAR / ACTUALIZAR
      * =====================================================
      */
     @PostMapping("/inventario/guardar")
@@ -135,29 +337,17 @@ public class InventarioController {
 
         /*
          * =================================================
-         * EDICIÓN
+         * EDITAR ACTIVO EXISTENTE
          * =================================================
-         *
-         * Si existe idActivo significa que estamos
-         * modificando un registro ya existente.
-         *
-         * MUY IMPORTANTE:
-         *
-         * El estado del activo NO se obtiene del formulario.
-         *
-         * Siempre conservamos el estado almacenado
-         * actualmente en la base de datos.
          */
-        if (activo.getIdActivo() != null) {
+        if (activo.getIdActivo()
+                != null) {
 
-
-            /*
-             * Recuperar activo real.
-             */
             Activo existente
                     = activoRepository
                             .findById(
-                                    activo.getIdActivo()
+                                    activo
+                                            .getIdActivo()
                             )
                             .orElseThrow(()
                                     -> new IllegalArgumentException(
@@ -169,28 +359,17 @@ public class InventarioController {
 
             /*
              * =================================================
-             * NORMALIZAR RELACIONES EDITABLES
-             * =================================================
-             *
-             * No normalizamos el estado porque no puede
-             * modificarse desde la edición general.
-             */
-            normalizarRelacionesEditables(
-                    activo
-            );
-
-
-            /*
-             * =================================================
              * IDENTIFICACIÓN
              * =================================================
              */
             existente.setNumeroInventario(
-                    activo.getNumeroInventario()
+                    activo
+                            .getNumeroInventario()
             );
 
             existente.setNumeroSerie(
-                    activo.getNumeroSerie()
+                    activo
+                            .getNumeroSerie()
             );
 
 
@@ -200,90 +379,125 @@ public class InventarioController {
              * =================================================
              */
             existente.setTipoEquipo(
-                    activo.getTipoEquipo()
+                    activo
+                            .getTipoEquipo()
             );
 
             existente.setMarca(
-                    activo.getMarca()
+                    activo
+                            .getMarca()
             );
 
             existente.setModelo(
-                    activo.getModelo()
+                    activo
+                            .getModelo()
             );
 
 
             /*
              * =================================================
-             * CARACTERÍSTICAS TÉCNICAS
+             * DATOS TÉCNICOS
              * =================================================
              */
             existente.setProcesador(
-                    activo.getProcesador()
+                    activo
+                            .getProcesador()
             );
 
             existente.setGeneracionProcesador(
-                    activo.getGeneracionProcesador()
+                    activo
+                            .getGeneracionProcesador()
             );
 
             existente.setRamGb(
-                    activo.getRamGb()
+                    activo
+                            .getRamGb()
             );
 
             existente.setAlmacenamientoGb(
-                    activo.getAlmacenamientoGb()
+                    activo
+                            .getAlmacenamientoGb()
             );
 
 
             /*
              * =================================================
-             * FECHAS
+             * FECHA COMPRA
              * =================================================
              */
             existente.setFechaCompra(
-                    activo.getFechaCompra()
+                    activo
+                            .getFechaCompra()
             );
 
-            existente.setFechaVencimientoGarantia(
-                    activo.getFechaVencimientoGarantia()
-            );
+
+            /*
+             * =================================================
+             * GARANTÍA
+             * =================================================
+             *
+             * Si no llega una nueva fecha,
+             * conservamos la existente.
+             */
+            if (activo
+                    .getFechaVencimientoGarantia()
+                    != null) {
+
+                existente
+                        .setFechaVencimientoGarantia(
+                                activo
+                                        .getFechaVencimientoGarantia()
+                        );
+            }
 
 
             /*
              * =================================================
              * ESTADO
              * =================================================
-             *
-             * NO hacemos:
-             *
-             * existente.setEstado(activo.getEstado());
-             *
-             * El estado actual permanece exactamente igual.
-             *
-             * Esto evita cambios manuales como:
-             *
-             * ASIGNADO_EN_USO -> DISPONIBLE
-             * MANTENIMIENTO -> DISPONIBLE
-             * BAJA -> ASIGNADO_EN_USO
-             *
-             * Los cambios de estado solamente deben realizarse
-             * mediante los procesos correspondientes.
              */
- /*
+            existente.setEstado(
+                    activo
+                            .getEstado()
+            );
+
+
+            /*
+             * =================================================
+             * SEDE
+             * =================================================
+             */
+            existente.setSede(
+                    activo
+                            .getSede()
+            );
+
+
+            /*
              * =================================================
              * UBICACIÓN
              * =================================================
              */
-            existente.setSede(
-                    activo.getSede()
-            );
-
             existente.setUbicacion(
-                    activo.getUbicacion()
+                    activo
+                            .getUbicacion()
             );
 
-            existente.setCentroCosto(
-                    activo.getCentroCosto()
-            );
+
+            /*
+             * =================================================
+             * CENTRO DE COSTO
+             * =================================================
+             */
+            if (activo
+                    .getCentroCosto()
+                    != null) {
+
+                existente.setCentroCosto(
+                        activo
+                                .getCentroCosto()
+                );
+            }
 
 
             /*
@@ -292,14 +506,13 @@ public class InventarioController {
              * =================================================
              */
             existente.setObservaciones(
-                    activo.getObservaciones()
+                    activo
+                            .getObservaciones()
             );
 
 
             /*
-             * =================================================
-             * GUARDAR
-             * =================================================
+             * GUARDAR.
              */
             activoRepository.save(
                     existente
@@ -312,248 +525,13 @@ public class InventarioController {
              * =================================================
              * NUEVO ACTIVO
              * =================================================
-             *
-             * Para un activo nuevo sí necesitamos definir
-             * un estado inicial.
              */
-            normalizarRelacionesNuevoActivo(
-                    activo
-            );
-
             activoRepository.save(
                     activo
             );
         }
 
         return "redirect:/inventario";
-    }
-
-
-    /*
-     * =====================================================
-     * NORMALIZAR RELACIONES DE EDICIÓN
-     * =====================================================
-     *
-     * Convierte las relaciones recibidas desde Thymeleaf
-     * en entidades reales administradas por JPA.
-     *
-     * En edición NO se procesa el estado.
-     */
-    private void normalizarRelacionesEditables(
-            Activo activo) {
-
-
-        /*
-         * =================================================
-         * TIPO DE EQUIPO
-         * =================================================
-         */
-        if (activo.getTipoEquipo() == null
-                || activo
-                        .getTipoEquipo()
-                        .getIdTipoEquipo() == null) {
-
-            throw new IllegalArgumentException(
-                    "Debe seleccionar un tipo de equipo."
-            );
-        }
-
-        Integer idTipoEquipo
-                = activo
-                        .getTipoEquipo()
-                        .getIdTipoEquipo();
-
-        activo.setTipoEquipo(
-                tipoEquipoRepository
-                        .findById(idTipoEquipo)
-                        .orElseThrow(()
-                                -> new IllegalArgumentException(
-                                        "Tipo de equipo no encontrado."
-                                )
-                        )
-        );
-
-
-        /*
-         * =================================================
-         * MARCA
-         * =================================================
-         */
-        if (activo.getMarca() == null
-                || activo
-                        .getMarca()
-                        .getIdMarca() == null) {
-
-            throw new IllegalArgumentException(
-                    "Debe seleccionar una marca."
-            );
-        }
-
-        Integer idMarca
-                = activo
-                        .getMarca()
-                        .getIdMarca();
-
-        activo.setMarca(
-                marcaRepository
-                        .findById(idMarca)
-                        .orElseThrow(()
-                                -> new IllegalArgumentException(
-                                        "Marca no encontrada."
-                                )
-                        )
-        );
-
-
-        /*
-         * =================================================
-         * SEDE
-         * =================================================
-         */
-        if (activo.getSede() != null
-                && activo
-                        .getSede()
-                        .getIdSede() != null) {
-
-            Integer idSede
-                    = activo
-                            .getSede()
-                            .getIdSede();
-
-            activo.setSede(
-                    sedeRepository
-                            .findById(idSede)
-                            .orElseThrow(()
-                                    -> new IllegalArgumentException(
-                                            "Sede no encontrada."
-                                    )
-                            )
-            );
-
-        } else {
-
-            activo.setSede(null);
-        }
-
-
-        /*
-         * =================================================
-         * UBICACIÓN
-         * =================================================
-         */
-        if (activo.getUbicacion() != null
-                && activo
-                        .getUbicacion()
-                        .getIdUbicacion() != null) {
-
-            Integer idUbicacion
-                    = activo
-                            .getUbicacion()
-                            .getIdUbicacion();
-
-            activo.setUbicacion(
-                    ubicacionRepository
-                            .findById(idUbicacion)
-                            .orElseThrow(()
-                                    -> new IllegalArgumentException(
-                                            "Ubicación no encontrada."
-                                    )
-                            )
-            );
-
-        } else {
-
-            activo.setUbicacion(null);
-        }
-
-
-        /*
-         * =================================================
-         * CENTRO DE COSTO
-         * =================================================
-         */
-        if (activo.getCentroCosto() != null
-                && activo
-                        .getCentroCosto()
-                        .getIdCentroCosto() != null) {
-
-            Integer idCentroCosto
-                    = activo
-                            .getCentroCosto()
-                            .getIdCentroCosto();
-
-            activo.setCentroCosto(
-                    centroCostoRepository
-                            .findById(idCentroCosto)
-                            .orElseThrow(()
-                                    -> new IllegalArgumentException(
-                                            "Centro de costo no encontrado."
-                                    )
-                            )
-            );
-
-        } else {
-
-            activo.setCentroCosto(null);
-        }
-    }
-
-
-    /*
-     * =====================================================
-     * NORMALIZAR NUEVO ACTIVO
-     * =====================================================
-     *
-     * Un activo nuevo necesita las mismas relaciones
-     * editables, pero además requiere un estado inicial.
-     */
-    private void normalizarRelacionesNuevoActivo(
-            Activo activo) {
-
-
-        /*
-         * Primero normalizamos:
-         *
-         * - tipo
-         * - marca
-         * - sede
-         * - ubicación
-         * - centro de costo
-         */
-        normalizarRelacionesEditables(
-                activo
-        );
-
-
-        /*
-         * =================================================
-         * ESTADO INICIAL
-         * =================================================
-         */
-        if (activo.getEstado() == null
-                || activo
-                        .getEstado()
-                        .getIdEstado() == null) {
-
-            throw new IllegalArgumentException(
-                    "Debe seleccionar un estado inicial."
-            );
-        }
-
-        Integer idEstado
-                = activo
-                        .getEstado()
-                        .getIdEstado();
-
-        activo.setEstado(
-                estadoActivoRepository
-                        .findById(idEstado)
-                        .orElseThrow(()
-                                -> new IllegalArgumentException(
-                                        "Estado del activo no encontrado."
-                                )
-                        )
-        );
     }
 
 
@@ -582,7 +560,9 @@ public class InventarioController {
                 activo
         );
 
-        cargarCatalogos(model);
+        cargarCatalogos(
+                model
+        );
 
         return "editar-activo";
     }
@@ -613,6 +593,10 @@ public class InventarioController {
                 activo
         );
 
+
+        /*
+         * HISTORIAL DEL ACTIVO.
+         */
         model.addAttribute(
                 "historial",
                 historialActivoService

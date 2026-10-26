@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org">
@@ -24,10 +25,11 @@
                 color: #263238;
             }
 
-
-            /* =====================================================
-               CABECERA
-               ===================================================== */
+            /*
+             * =====================================================
+             * CABECERA
+             * =====================================================
+             */
 
             .cabecera {
                 background: #14476b;
@@ -56,10 +58,11 @@
                 font-size: 14px;
             }
 
-
-            /* =====================================================
-               USUARIO
-               ===================================================== */
+            /*
+             * =====================================================
+             * USUARIO
+             * =====================================================
+             */
 
             .usuario-area {
                 display: flex;
@@ -100,10 +103,11 @@
                 background: #e8edf1;
             }
 
-
-            /* =====================================================
-               NAVEGACIÓN
-               ===================================================== */
+            /*
+             * =====================================================
+             * MENÚ
+             * =====================================================
+             */
 
             .nav {
                 background: #0b2f4a;
@@ -116,6 +120,7 @@
 
                 display: flex;
                 align-items: center;
+
                 gap: 5px;
             }
 
@@ -139,10 +144,11 @@
                 font-weight: bold;
             }
 
-
-            /* =====================================================
-               CONTENIDO
-               ===================================================== */
+            /*
+             * =====================================================
+             * CONTENIDO
+             * =====================================================
+             */
 
             .contenedor {
                 width: 95%;
@@ -174,10 +180,11 @@
                 margin-bottom: 25px;
             }
 
-
-            /* =====================================================
-               FORMULARIO
-               ===================================================== */
+            /*
+             * =====================================================
+             * FORMULARIO
+             * =====================================================
+             */
 
             .grid {
                 display: grid;
@@ -199,7 +206,9 @@
 
             label {
                 margin-bottom: 7px;
+
                 font-weight: bold;
+
                 font-size: 14px;
             }
 
@@ -233,15 +242,19 @@
 
             .ayuda {
                 margin-top: 6px;
+
                 color: #78909c;
+
                 font-size: 12px;
+
                 line-height: 1.4;
             }
 
-
-            /* =====================================================
-               SUBTÍTULOS
-               ===================================================== */
+            /*
+             * =====================================================
+             * SUBTÍTULOS
+             * =====================================================
+             */
 
             .subtitulo {
                 grid-column: 1 / -1;
@@ -250,22 +263,50 @@
 
                 padding-bottom: 8px;
 
-                border-bottom: 1px solid #e5eaed;
+                border-bottom:
+                    1px solid #e5eaed;
 
                 color: #16374f;
 
                 font-size: 16px;
+
                 font-weight: bold;
             }
 
+            /*
+             * =====================================================
+             * SECCIÓN TÉCNICA
+             * =====================================================
+             */
 
-            /* =====================================================
-               BOTONES
-               ===================================================== */
+            .seccion-tecnica {
+                grid-column: 1 / -1;
+            }
+
+            .grid-tecnico {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 18px;
+            }
+
+            .seccion-oculta {
+                display: none;
+            }
+
+            /*
+             * =====================================================
+             * BOTONES
+             * =====================================================
+             */
 
             .acciones {
                 display: flex;
+
                 justify-content: flex-end;
+
                 gap: 10px;
 
                 margin-top: 25px;
@@ -305,10 +346,11 @@
                 background: #dfe3e6;
             }
 
-
-            /* =====================================================
-               RESPONSIVE
-               ===================================================== */
+            /*
+             * =====================================================
+             * RESPONSIVE
+             * =====================================================
+             */
 
             @media(max-width: 750px) {
 
@@ -316,8 +358,13 @@
                     grid-template-columns: 1fr;
                 }
 
+                .grid-tecnico {
+                    grid-template-columns: 1fr;
+                }
+
                 .campo-completo,
-                .subtitulo {
+                .subtitulo,
+                .seccion-tecnica {
                     grid-column: auto;
                 }
 
@@ -376,16 +423,13 @@
 
                         </strong>
 
-
                         <span th:if="${esAdministrador}">
                             Administrador
                         </span>
 
-
                         <span th:if="${esSoporte}">
                             Soporte TI
                         </span>
-
 
                         <span th:if="${esConsulta}">
                             Consulta
@@ -394,8 +438,9 @@
                     </div>
 
 
-                    <form method="post"
-                          th:action="@{/logout}">
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
 
                         <button
                             type="submit"
@@ -415,7 +460,7 @@
 
 
         <!-- =====================================================
-             NAVEGACIÓN
+             MENÚ
              ===================================================== -->
 
         <div class="nav">
@@ -426,39 +471,33 @@
                     Inicio
                 </a>
 
-
-                <a th:href="@{/inventario}"
-                   class="activo">
+                <a
+                    th:href="@{/inventario}"
+                    class="activo">
 
                     Inventario
 
                 </a>
 
-
                 <a th:href="@{/colaboradores}">
                     Colaboradores
                 </a>
-
 
                 <a th:href="@{/asignaciones}">
                     Asignaciones
                 </a>
 
-
                 <a th:href="@{/devoluciones}">
                     Devoluciones
                 </a>
-
 
                 <a th:href="@{/alertas-garantia}">
                     Garantías
                 </a>
 
-
                 <a th:href="@{/requisitos-cargo}">
                     Requisitos
                 </a>
-
 
                 <a
                     th:if="${esAdministrador}"
@@ -481,18 +520,13 @@
 
             <div class="tarjeta">
 
-
                 <h2>
                     Nuevo activo
                 </h2>
 
-
                 <p class="descripcion">
-
-                    Registre la información general,
-                    ubicación y características técnicas
-                    del activo tecnológico.
-
+                    Registre la información general, ubicación
+                    y características técnicas del activo tecnológico.
                 </p>
 
 
@@ -514,8 +548,6 @@
                         </div>
 
 
-                        <!-- NÚMERO DE INVENTARIO -->
-
                         <div class="campo">
 
                             <label>
@@ -530,8 +562,6 @@
                         </div>
 
 
-                        <!-- NÚMERO DE SERIE -->
-
                         <div class="campo">
 
                             <label>
@@ -545,7 +575,9 @@
                         </div>
 
 
-                        <!-- TIPO -->
+                        <!-- =================================================
+                             TIPO DE EQUIPO
+                             ================================================= -->
 
                         <div class="campo">
 
@@ -554,6 +586,7 @@
                             </label>
 
                             <select
+                                id="tipoEquipo"
                                 th:field="*{tipoEquipo.idTipoEquipo}"
                                 required>
 
@@ -572,7 +605,9 @@
                         </div>
 
 
-                        <!-- MARCA -->
+                        <!-- =================================================
+                             MARCA
+                             ================================================= -->
 
                         <div class="campo">
 
@@ -599,7 +634,9 @@
                         </div>
 
 
-                        <!-- MODELO -->
+                        <!-- =================================================
+                             MODELO
+                             ================================================= -->
 
                         <div class="campo campo-completo">
 
@@ -619,85 +656,96 @@
                              CARACTERÍSTICAS TÉCNICAS
                              ================================================= -->
 
-                        <div class="subtitulo">
-                            Características técnicas
-                        </div>
+                        <div
+                            id="seccionCaracteristicasTecnicas"
+                            class="seccion-tecnica">
 
 
-                        <!-- PROCESADOR -->
-
-                        <div class="campo">
-
-                            <label>
-                                Procesador
-                            </label>
-
-                            <input
-                                type="text"
-                                th:field="*{procesador}"
-                                placeholder="Ej. Intel Core i7">
-
-                            <div class="ayuda">
-                                Registre la familia del procesador.
+                            <div class="subtitulo">
+                                Características técnicas
                             </div>
 
-                        </div>
+
+                            <div class="grid-tecnico">
 
 
-                        <!-- GENERACIÓN -->
+                                <!-- PROCESADOR -->
 
-                        <div class="campo">
+                                <div class="campo">
 
-                            <label>
-                                Generación del procesador
-                            </label>
+                                    <label>
+                                        Procesador
+                                    </label>
 
-                            <input
-                                type="number"
-                                th:field="*{generacionProcesador}"
-                                min="1"
-                                max="30"
-                                placeholder="Ej. 11">
+                                    <input
+                                        type="text"
+                                        th:field="*{procesador}"
+                                        placeholder="Ej. Intel Core i7">
 
-                            <div class="ayuda">
-                                Ejemplo: 9, 10, 11, 12, 13 o 14.
-                                Puede dejarse vacío si todavía está
-                                pendiente de verificación.
+                                    <div class="ayuda">
+                                        Registre la familia del procesador.
+                                    </div>
+
+                                </div>
+
+
+                                <!-- GENERACIÓN -->
+
+                                <div class="campo">
+
+                                    <label>
+                                        Generación del procesador
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        th:field="*{generacionProcesador}"
+                                        min="1"
+                                        max="30"
+                                        placeholder="Ej. 11">
+
+                                    <div class="ayuda">
+                                        Ejemplo: 9, 10, 11, 12, 13 o 14.
+                                    </div>
+
+                                </div>
+
+
+                                <!-- RAM -->
+
+                                <div class="campo">
+
+                                    <label>
+                                        RAM (GB)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        th:field="*{ramGb}"
+                                        min="1"
+                                        placeholder="Ej. 16">
+
+                                </div>
+
+
+                                <!-- ALMACENAMIENTO -->
+
+                                <div class="campo">
+
+                                    <label>
+                                        Almacenamiento (GB)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        th:field="*{almacenamientoGb}"
+                                        min="1"
+                                        placeholder="Ej. 512">
+
+                                </div>
+
+
                             </div>
-
-                        </div>
-
-
-                        <!-- RAM -->
-
-                        <div class="campo">
-
-                            <label>
-                                RAM (GB)
-                            </label>
-
-                            <input
-                                type="number"
-                                th:field="*{ramGb}"
-                                min="1"
-                                placeholder="Ej. 16">
-
-                        </div>
-
-
-                        <!-- ALMACENAMIENTO -->
-
-                        <div class="campo">
-
-                            <label>
-                                Almacenamiento (GB)
-                            </label>
-
-                            <input
-                                type="number"
-                                th:field="*{almacenamientoGb}"
-                                min="1"
-                                placeholder="Ej. 512">
 
                         </div>
 
@@ -814,8 +862,7 @@
                             </select>
 
                             <div class="ayuda">
-                                Seleccione el centro de costo asociado
-                                al activo.
+                                Seleccione el centro de costo asociado al activo.
                             </div>
 
                         </div>
@@ -877,11 +924,12 @@
 
                         </div>
 
+
                     </div>
 
 
                     <!-- =================================================
-                         ACCIONES
+                         BOTONES
                          ================================================= -->
 
                     <div class="acciones">
@@ -904,13 +952,199 @@
 
                         </button>
 
+
                     </div>
+
 
                 </form>
 
             </div>
 
         </div>
+
+
+        <!-- =====================================================
+             MOSTRAR / OCULTAR CAMPOS TÉCNICOS
+             ===================================================== -->
+
+        <script>
+
+            document.addEventListener(
+                    "DOMContentLoaded",
+                    function () {
+
+
+                        const tipoEquipo
+                                = document.getElementById(
+                                        "tipoEquipo"
+                                        );
+
+
+                        const seccionTecnica
+                                = document.getElementById(
+                                        "seccionCaracteristicasTecnicas"
+                                        );
+
+
+                        /*
+                         * =================================================
+                         * ACTUALIZAR VISIBILIDAD
+                         * =================================================
+                         */
+
+                        function actualizarCamposTecnicos() {
+
+
+                            /*
+                             * Validación de seguridad.
+                             */
+                            if (!tipoEquipo
+                                    || !seccionTecnica) {
+
+                                return;
+                            }
+
+
+                            const opcionSeleccionada
+                                    = tipoEquipo.options[
+                                            tipoEquipo.selectedIndex
+                                    ];
+
+
+                            /*
+                             * Si no existe una opción seleccionada,
+                             * ocultamos los campos técnicos.
+                             */
+                            if (!opcionSeleccionada) {
+
+
+                                seccionTecnica
+                                        .classList
+                                        .add(
+                                                "seccion-oculta"
+                                                );
+
+
+                                return;
+                            }
+
+
+                            /*
+                             * Obtenemos el texto del tipo.
+                             */
+                            const tipo
+                                    = opcionSeleccionada
+                                    .text
+                                    .trim()
+                                    .toUpperCase();
+
+
+                            /*
+                             * =================================================
+                             * TIPOS QUE REQUIEREN DATOS TÉCNICOS
+                             * =================================================
+                             *
+                             * Laptop
+                             * Desktop
+                             *
+                             * Si posteriormente agregas:
+                             *
+                             * Workstation
+                             *
+                             * solamente debes incluirlo aquí.
+                             */
+                            const requiereCaracteristicas
+                                    = tipo === "LAPTOP"
+                                    || tipo === "DESKTOP"
+                                    || tipo === "PC"
+                                    || tipo === "WORKSTATION";
+
+
+                            if (requiereCaracteristicas) {
+
+
+                                /*
+                                 * MOSTRAR
+                                 */
+                                seccionTecnica
+                                        .classList
+                                        .remove(
+                                                "seccion-oculta"
+                                                );
+
+
+                            } else {
+
+
+                                /*
+                                 * OCULTAR
+                                 */
+                                seccionTecnica
+                                        .classList
+                                        .add(
+                                                "seccion-oculta"
+                                                );
+
+
+                                /*
+                                 * =================================================
+                                 * LIMPIAR CAMPOS TÉCNICOS
+                                 * =================================================
+                                 *
+                                 * Esto es importante.
+                                 *
+                                 * Si primero seleccionamos Laptop,
+                                 * escribimos RAM 16 y después cambiamos
+                                 * a Monitor, no queremos guardar ese RAM
+                                 * accidentalmente.
+                                 */
+
+                                const inputsTecnicos
+                                        = seccionTecnica
+                                        .querySelectorAll(
+                                                "input"
+                                                );
+
+
+                                inputsTecnicos
+                                        .forEach(
+                                                function (input) {
+
+                                                    input.value = "";
+
+                                                }
+                                        );
+
+                            }
+
+                        }
+
+
+                        /*
+                         * =================================================
+                         * AL CAMBIAR EL TIPO
+                         * =================================================
+                         */
+
+                        tipoEquipo.addEventListener(
+                                "change",
+                                actualizarCamposTecnicos
+                                );
+
+
+                        /*
+                         * =================================================
+                         * AL CARGAR LA PÁGINA
+                         * =================================================
+                         */
+
+                        actualizarCamposTecnicos();
+
+
+                    }
+            );
+
+        </script>
 
 
     </body>

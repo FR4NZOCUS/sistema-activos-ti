@@ -16,6 +16,19 @@ public interface ColaboradorRepository
 
     /*
      * =====================================================
+     * CONTAR COLABORADORES POR ESTADO
+     * =====================================================
+     *
+     * Este método es utilizado por InicioController
+     * para mostrar la cantidad de colaboradores activos.
+     */
+    long countByEstadoColaborador(
+            String estadoColaborador
+    );
+
+
+    /*
+     * =====================================================
      * BÚSQUEDA CON FILTROS Y PAGINACIÓN
      * =====================================================
      *
@@ -26,9 +39,6 @@ public interface ColaboradorRepository
      * - estado;
      * - cargo;
      * - sede.
-     *
-     * La paginación se ejecuta directamente
-     * desde la base de datos.
      */
     @Query("""
         SELECT c

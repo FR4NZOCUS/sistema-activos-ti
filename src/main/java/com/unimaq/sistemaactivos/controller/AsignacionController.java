@@ -9,6 +9,8 @@ import com.unimaq.sistemaactivos.repository.ActivoRepository;
 import com.unimaq.sistemaactivos.repository.AsignacionRepository;
 import com.unimaq.sistemaactivos.repository.ColaboradorRepository;
 import com.unimaq.sistemaactivos.repository.EstadoActivoRepository;
+import com.unimaq.sistemaactivos.repository.SedeRepository;
+import com.unimaq.sistemaactivos.repository.TipoEquipoRepository;
 
 import com.unimaq.sistemaactivos.service.HistorialActivoService;
 import com.unimaq.sistemaactivos.service.RecomendacionActivoService;
@@ -16,6 +18,11 @@ import com.unimaq.sistemaactivos.service.RecomendacionActivoService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +40,8 @@ public class AsignacionController {
     private final ColaboradorRepository colaboradorRepository;
     private final ActivoRepository activoRepository;
     private final EstadoActivoRepository estadoActivoRepository;
+    private final TipoEquipoRepository tipoEquipoRepository;
+    private final SedeRepository sedeRepository;
 
     private final RecomendacionActivoService recomendacionActivoService;
     private final HistorialActivoService historialActivoService;
@@ -42,6 +51,8 @@ public class AsignacionController {
             ColaboradorRepository colaboradorRepository,
             ActivoRepository activoRepository,
             EstadoActivoRepository estadoActivoRepository,
+            TipoEquipoRepository tipoEquipoRepository,
+            SedeRepository sedeRepository,
             RecomendacionActivoService recomendacionActivoService,
             HistorialActivoService historialActivoService) {
 
@@ -49,28 +60,96 @@ public class AsignacionController {
         this.colaboradorRepository = colaboradorRepository;
         this.activoRepository = activoRepository;
         this.estadoActivoRepository = estadoActivoRepository;
-
-        this.recomendacionActivoService
-                = recomendacionActivoService;
-
-        this.historialActivoService
-                = historialActivoService;
+        this.tipoEquipoRepository = tipoEquipoRepository;
+        this.sedeRepository = sedeRepository;
+        this.recomendacionActivoService = recomendacionActivoService;
+        this.historialActivoService = historialActivoService;
     }
 
 
     /*
      * =====================================================
-     * LISTADO DE ASIGNACIONES
+     * LISTADO DE ASIGNACIONES CON FILTROS Y PAGINACIÓN
      * =====================================================
      */
     @GetMapping("/asignaciones")
     public String listarAsignaciones(
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "estado", required = false) String estado,
+            @RequestParam(value = "tipoId", required = false) Integer tipoId,
+            @RequestParam(value = "sedeId", required = false) Integer sedeId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             Model model) {
+
+        if (page < 0) {
+            page = 0;
+        }
+
+        if (size != 10 && size != 20 && size != 50) {
+            size = 10;
+        }
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "idAsignacion")
+        );
+
+        Page<Asignacion> paginaAsignaciones
+                = asignacionRepository.buscarConFiltros(
+                        q,
+                        estado,
+                        tipoId,
+                        sedeId,
+                        pageable
+                );
+
+        if (paginaAsignaciones.getTotalPages() > 0
+                && page >= paginaAsignaciones.getTotalPages()) {
+
+            page = 0;
+            pageable = PageRequest.of(
+                    0,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "idAsignacion")
+            );
+
+            paginaAsignaciones
+                    = asignacionRepository.buscarConFiltros(
+                            q,
+                            estado,
+                            tipoId,
+                            sedeId,
+                            pageable
+                    );
+        }
 
         model.addAttribute(
                 "asignaciones",
-                asignacionRepository.findAll()
+                paginaAsignaciones.getContent()
         );
+
+        model.addAttribute(
+                "paginaAsignaciones",
+                paginaAsignaciones
+        );
+
+        model.addAttribute(
+                "tiposEquipo",
+                tipoEquipoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "sedes",
+                sedeRepository.findAll()
+        );
+
+        model.addAttribute("q", q);
+        model.addAttribute("estado", estado);
+        model.addAttribute("tipoId", tipoId);
+        model.addAttribute("sedeId", sedeId);
+        model.addAttribute("size", size);
 
         return "asignaciones";
     }
@@ -89,40 +168,32 @@ public class AsignacionController {
             ) Integer colaboradorId,
             Model model) {
 
-        Asignacion asignacion
-                = new Asignacion();
+        Asignacion asignacion = new Asignacion();
 
         model.addAttribute(
                 "asignacion",
                 asignacion
         );
 
-
         /*
-         * =================================================
-         * LISTADO DE COLABORADORES
-         * =================================================
+         * Lista de colaboradores.
          */
         model.addAttribute(
                 "colaboradores",
                 colaboradorRepository.findAll()
         );
 
-
         /*
          * Si todavía no se seleccionó colaborador,
-         * mostramos únicamente el primer paso.
+         * solo mostramos el primer paso.
          */
         if (colaboradorId == null) {
 
             return "nueva-asignacion";
         }
 
-
         /*
-         * =================================================
-         * BUSCAR COLABORADOR
-         * =================================================
+         * Buscar colaborador seleccionado.
          */
         Colaborador colaborador
                 = colaboradorRepository
@@ -132,7 +203,6 @@ public class AsignacionController {
                                         "Colaborador no encontrado."
                                 )
                         );
-
 
         /*
          * Asociar colaborador al formulario.
@@ -146,43 +216,10 @@ public class AsignacionController {
                 colaborador
         );
 
-
         /*
          * =================================================
-         * ACTIVO PRINCIPAL SELECCIONADO AUTOMÁTICAMENTE
+         * ACTIVOS PRINCIPALES RECOMENDADOS
          * =================================================
-         *
-         * Ya no pedimos al usuario que escoja una laptop.
-         *
-         * El sistema selecciona automáticamente la
-         * opción más adecuada según:
-         *
-         * - cargo;
-         * - tipo de equipo;
-         * - procesador;
-         * - generación;
-         * - RAM;
-         * - almacenamiento;
-         * - disponibilidad.
-         */
-        Activo activoPrincipalAutomatico
-                = recomendacionActivoService
-                        .obtenerActivoPrincipalAutomatico(
-                                colaboradorId
-                        );
-
-        model.addAttribute(
-                "activoPrincipalAutomatico",
-                activoPrincipalAutomatico
-        );
-
-
-        /*
-         * Por compatibilidad temporal mantenemos también
-         * la lista completa de recomendados.
-         *
-         * Después podremos eliminarla cuando terminemos
-         * de adaptar la plantilla.
          */
         model.addAttribute(
                 "activosRecomendados",
@@ -191,7 +228,6 @@ public class AsignacionController {
                                 colaboradorId
                         )
         );
-
 
         /*
          * =================================================
@@ -206,10 +242,9 @@ public class AsignacionController {
                         )
         );
 
-
         /*
          * =================================================
-         * ACTIVOS COMPLEMENTARIOS DISPONIBLES
+         * ACTIVOS COMPLEMENTARIOS REALES DISPONIBLES
          * =================================================
          */
         model.addAttribute(
@@ -229,18 +264,13 @@ public class AsignacionController {
      * GUARDAR ASIGNACIÓN
      * =====================================================
      *
-     * El activo principal YA NO se toma desde
-     * formulario.getActivo().
+     * Guarda:
      *
-     * El servidor lo calcula nuevamente al momento
-     * de confirmar la asignación.
+     * 1. Activo principal obligatorio.
+     * 2. Cero o varios activos complementarios.
      *
-     * Esto evita:
-     *
-     * - modificaciones manuales desde el navegador;
-     * - asignaciones que no correspondan al cargo;
-     * - seleccionar un equipo que dejó de ser adecuado;
-     * - depender de un radio button enviado por HTML.
+     * Cada activo genera su propio registro
+     * en la tabla asignaciones.
      */
     @Transactional
     @PostMapping("/asignaciones/guardar")
@@ -250,7 +280,6 @@ public class AsignacionController {
                     value = "activosComplementariosSeleccionados",
                     required = false
             ) List<Integer> idsComplementarios) {
-
 
         /*
          * =================================================
@@ -267,16 +296,33 @@ public class AsignacionController {
             );
         }
 
+        /*
+         * =================================================
+         * VALIDAR ACTIVO PRINCIPAL
+         * =================================================
+         */
+        if (formulario.getActivo() == null
+                || formulario
+                        .getActivo()
+                        .getIdActivo() == null) {
+
+            throw new IllegalArgumentException(
+                    "Debe seleccionar un activo principal."
+            );
+        }
+
         Integer idColaborador
                 = formulario
                         .getColaborador()
                         .getIdColaborador();
 
+        Integer idActivoPrincipal
+                = formulario
+                        .getActivo()
+                        .getIdActivo();
 
         /*
-         * =================================================
-         * RECUPERAR COLABORADOR REAL
-         * =================================================
+         * Recuperar colaborador real.
          */
         Colaborador colaborador
                 = colaboradorRepository
@@ -287,71 +333,59 @@ public class AsignacionController {
                                 )
                         );
 
-
         /*
          * =================================================
-         * SELECCIONAR ACTIVO PRINCIPAL AUTOMÁTICAMENTE
+         * VALIDAR QUE EL PRINCIPAL SEA REALMENTE
+         * UN ACTIVO RECOMENDADO
          * =================================================
-         *
-         * MUY IMPORTANTE:
-         *
-         * El activo se vuelve a calcular aquí.
-         *
-         * No utilizamos un ID enviado por el navegador.
          */
-        Activo activoSeleccionado
+        List<Activo> recomendados
                 = recomendacionActivoService
-                        .obtenerActivoPrincipalAutomatico(
+                        .obtenerRecomendados(
                                 idColaborador
                         );
 
+        boolean principalPermitido = false;
 
-        /*
-         * Si no existe ningún equipo que cumpla los
-         * requisitos, no se realiza la asignación.
-         */
-        if (activoSeleccionado == null) {
+        for (Activo recomendado : recomendados) {
+
+            if (recomendado
+                    .getIdActivo()
+                    .equals(idActivoPrincipal)) {
+
+                principalPermitido = true;
+
+                break;
+            }
+        }
+
+        if (!principalPermitido) {
 
             throw new IllegalArgumentException(
-                    "No existe actualmente un activo "
-                    + "principal disponible que cumpla "
-                    + "los requisitos configurados "
-                    + "para el cargo del colaborador."
+                    "El activo principal seleccionado "
+                    + "no corresponde a una recomendación "
+                    + "válida para el cargo."
             );
         }
 
-
         /*
-         * Recuperamos nuevamente el activo desde
-         * el repositorio.
-         *
-         * Así trabajamos con el registro gestionado
-         * por JPA dentro de la transacción.
+         * Recuperar activo principal.
          */
         Activo activoPrincipal
                 = activoRepository
-                        .findById(
-                                activoSeleccionado
-                                        .getIdActivo()
-                        )
+                        .findById(idActivoPrincipal)
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
-                                        "El activo principal "
-                                        + "seleccionado automáticamente "
-                                        + "ya no existe."
+                                        "Activo principal no encontrado."
                                 )
                         );
 
-
         /*
-         * =================================================
-         * VALIDAR QUE SIGA DISPONIBLE
-         * =================================================
+         * Validar disponibilidad.
          */
         validarActivoDisponible(
                 activoPrincipal
         );
-
 
         /*
          * =================================================
@@ -370,10 +404,9 @@ public class AsignacionController {
                                 )
                         );
 
-
         /*
          * =================================================
-         * REGISTRAR ACTIVO PRINCIPAL
+         * GUARDAR ACTIVO PRINCIPAL
          * =================================================
          */
         registrarAsignacionIndividual(
@@ -381,32 +414,21 @@ public class AsignacionController {
                 activoPrincipal,
                 estadoAsignado,
                 formulario.getObservaciones(),
-                "Activo principal asignado "
-                + "automáticamente según los "
-                + "requisitos del cargo a "
+                "Activo principal asignado a "
                 + colaborador.getNombreCompleto()
         );
 
-
         /*
          * =================================================
-         * ACTIVOS COMPLEMENTARIOS
+         * COMPLEMENTARIOS
          * =================================================
-         *
-         * Los complementarios continúan siendo
-         * seleccionados manualmente por Soporte TI.
-         *
-         * Esto es intencional porque elementos como
-         * monitor, mouse o celular pueden depender
-         * de disponibilidad o necesidad operativa.
          */
         if (idsComplementarios != null
                 && !idsComplementarios.isEmpty()) {
 
-
             /*
-             * Obtener los complementarios permitidos
-             * para el cargo.
+             * Obtener los complementarios que el sistema
+             * realmente recomienda para ese colaborador.
              */
             List<Activo> complementariosPermitidos
                     = recomendacionActivoService
@@ -414,9 +436,9 @@ public class AsignacionController {
                                     idColaborador
                             );
 
-
             /*
-             * Crear conjunto de IDs válidos.
+             * Convertimos IDs permitidos en Set para
+             * validar rápidamente cada selección.
              */
             Set<Integer> idsPermitidos
                     = new HashSet<>();
@@ -429,9 +451,9 @@ public class AsignacionController {
                 );
             }
 
-
             /*
-             * Evitar procesar IDs duplicados.
+             * También evitamos procesar dos veces
+             * el mismo ID enviado desde el formulario.
              */
             Set<Integer> idsProcesados
                     = new HashSet<>();
@@ -443,7 +465,6 @@ public class AsignacionController {
 
                     continue;
                 }
-
 
                 /*
                  * Evitar duplicados.
@@ -458,25 +479,22 @@ public class AsignacionController {
                         idComplementario
                 );
 
-
                 /*
-                 * Validar que realmente sea un
-                 * complemento permitido.
+                 * Verificar que sea un complemento
+                 * permitido para ese cargo.
                  */
                 if (!idsPermitidos.contains(
                         idComplementario)) {
 
                     throw new IllegalArgumentException(
-                            "Uno de los activos "
-                            + "complementarios seleccionados "
-                            + "no corresponde a los "
-                            + "requisitos del cargo."
+                            "Uno de los activos complementarios "
+                            + "seleccionados no corresponde "
+                            + "a los requisitos del cargo."
                     );
                 }
 
-
                 /*
-                 * Recuperar activo.
+                 * Buscar activo.
                  */
                 Activo activoComplementario
                         = activoRepository
@@ -490,37 +508,15 @@ public class AsignacionController {
                                         )
                                 );
 
-
                 /*
-                 * Validar que continúe disponible.
+                 * Comprobar que continúe disponible.
                  */
                 validarActivoDisponible(
                         activoComplementario
                 );
 
-
                 /*
-                 * Evitar que por alguna configuración
-                 * incorrecta el mismo activo principal
-                 * sea procesado también como complemento.
-                 */
-                if (activoComplementario
-                        .getIdActivo()
-                        .equals(
-                                activoPrincipal
-                                        .getIdActivo()
-                        )) {
-
-                    throw new IllegalArgumentException(
-                            "El activo principal no puede "
-                            + "registrarse también como "
-                            + "activo complementario."
-                    );
-                }
-
-
-                /*
-                 * Registrar asignación independiente.
+                 * Guardar nueva asignación.
                  */
                 registrarAsignacionIndividual(
                         colaborador,
@@ -528,7 +524,8 @@ public class AsignacionController {
                         estadoAsignado,
                         formulario.getObservaciones(),
                         "Activo complementario asignado a "
-                        + colaborador.getNombreCompleto()
+                        + colaborador
+                                .getNombreCompleto()
                 );
             }
         }
@@ -539,20 +536,8 @@ public class AsignacionController {
 
     /*
      * =====================================================
-     * REGISTRAR ASIGNACIÓN INDIVIDUAL
+     * REGISTRAR UNA ASIGNACIÓN INDIVIDUAL
      * =====================================================
-     *
-     * Cada activo genera su propio registro en
-     * la tabla asignaciones.
-     *
-     * Esto permite devolver posteriormente:
-     *
-     * - laptop;
-     * - monitor;
-     * - mouse;
-     * - celular;
-     *
-     * de manera independiente.
      */
     private void registrarAsignacionIndividual(
             Colaborador colaborador,
@@ -561,13 +546,11 @@ public class AsignacionController {
             String observaciones,
             String comentarioHistorial) {
 
-
         /*
          * Guardar estado anterior.
          */
         EstadoActivo estadoAnterior
                 = activo.getEstado();
-
 
         /*
          * Cambiar estado del activo.
@@ -579,7 +562,6 @@ public class AsignacionController {
         activoRepository.save(
                 activo
         );
-
 
         /*
          * Crear asignación independiente.
@@ -603,14 +585,12 @@ public class AsignacionController {
                 observaciones
         );
 
-
         /*
          * Guardar asignación.
          */
         asignacionRepository.save(
                 nuevaAsignacion
         );
-
 
         /*
          * Registrar trazabilidad.

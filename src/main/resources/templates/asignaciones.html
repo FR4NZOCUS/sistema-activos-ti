@@ -1,898 +1,528 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org">
-
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
     <head>
-
         <meta charset="UTF-8">
-
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Asignaciones</title>
 
         <style>
-
             * {
                 box-sizing: border-box;
                 font-family: Arial, Helvetica, sans-serif;
             }
-
             body {
                 margin: 0;
                 background: #f4f6f8;
                 color: #263238;
             }
-
             .cabecera {
                 background: #14476b;
                 color: white;
                 padding: 18px 30px;
             }
-
             .cabecera-contenido {
-                max-width: 1500px;
+                max-width: 1400px;
                 margin: 0 auto;
-
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 gap: 20px;
             }
-
             .cabecera h1 {
                 margin: 0;
                 font-size: 25px;
             }
-
             .cabecera p {
                 margin: 5px 0 0;
                 font-size: 14px;
             }
-
             .usuario-area {
                 display: flex;
                 align-items: center;
                 gap: 15px;
             }
-
             .usuario-info {
                 text-align: right;
             }
-
             .usuario-info strong {
                 display: block;
                 font-size: 14px;
             }
-
             .usuario-info span {
                 font-size: 12px;
                 opacity: .85;
             }
-
             .btn-logout {
                 background: white;
                 color: #14476b;
-
                 border: none;
                 border-radius: 5px;
-
                 padding: 9px 14px;
-
                 font-size: 13px;
                 font-weight: bold;
-
                 cursor: pointer;
             }
-
-            .btn-logout:hover {
-                background: #e8edf1;
-            }
-
             .nav {
                 background: #0b2f4a;
                 padding: 0 30px;
             }
-
             .nav-contenido {
-                max-width: 1500px;
+                max-width: 1400px;
                 margin: 0 auto;
-
                 display: flex;
                 align-items: center;
                 gap: 5px;
             }
-
             .nav a {
                 color: white;
                 text-decoration: none;
-
                 padding: 13px 16px;
-
                 display: block;
-
                 font-size: 14px;
             }
-
             .nav a:hover {
                 background: #164f78;
             }
-
             .nav a.activo {
                 background: #0f5ca8;
                 font-weight: bold;
             }
-
             .contenedor {
-                width: 96%;
-                max-width: 1600px;
+                width: 95%;
+                max-width: 1400px;
                 margin: 30px auto;
             }
-
             .encabezado-pagina {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-
+                gap: 15px;
                 margin-bottom: 20px;
-
-                gap: 20px;
             }
-
             .encabezado-pagina h2 {
                 margin: 0;
                 color: #16374f;
             }
-
             .encabezado-pagina p {
                 margin: 6px 0 0;
                 color: #607d8b;
                 font-size: 14px;
             }
-
             .btn {
-                text-decoration: none;
+                border: none;
                 border-radius: 5px;
-                padding: 10px 16px;
-                font-size: 14px;
+                padding: 10px 15px;
+                text-decoration: none;
+                cursor: pointer;
                 display: inline-block;
+                font-size: 13px;
             }
-
-            .btn-nuevo {
-                background: #158a54;
+            .btn-primario {
+                background: #0f5ca8;
                 color: white;
-                font-weight: bold;
             }
-
-            .btn-nuevo:hover {
-                background: #107044;
+            .btn-secundario {
+                background: #eceff1;
+                color: #37474f;
             }
-
-            .tabla-contenedor {
-                width: 100%;
+            .btn-ver {
+                background: #e7f1fc;
+                color: #0f5ca8;
+            }
+            .btn-devolver {
+                background: #fff3cd;
+                color: #765b00;
+            }
+            .filtros {
                 background: white;
-
-                border-radius: 8px;
-
-                overflow-x: auto;
-
                 border: 1px solid #e0e5e8;
-
-                box-shadow:
-                    0 2px 5px rgba(0,0,0,.04);
+                border-radius: 8px;
+                padding: 18px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04);
             }
-
+            .filtros-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr 1fr 120px auto auto;
+                gap: 12px;
+                align-items: end;
+            }
+            .campo label {
+                display: block;
+                font-size: 12px;
+                font-weight: bold;
+                margin-bottom: 6px;
+                color: #455a64;
+            }
+            .campo input, .campo select {
+                width: 100%;
+                height: 40px;
+                padding: 8px 10px;
+                border: 1px solid #cfd8dc;
+                border-radius: 5px;
+                background: white;
+            }
+            .tabla-contenedor {
+                background: white;
+                border: 1px solid #e0e5e8;
+                border-radius: 8px;
+                overflow-x: auto;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04);
+            }
             table {
                 width: 100%;
                 border-collapse: collapse;
-                min-width: 1450px;
+                min-width: 1050px;
             }
-
             th {
-                background: #f7f9fa;
-
+                background: #eef3f7;
+                color: #16374f;
+                font-size: 13px;
                 text-align: left;
-
-                padding: 13px;
-
-                border-bottom: 1px solid #dfe3e6;
-
-                font-size: 13px;
-
-                color: #37474f;
+                padding: 12px;
+                border-bottom: 1px solid #d9e1e5;
             }
-
             td {
-                padding: 13px;
-
-                border-bottom: 1px solid #eceff1;
-
+                padding: 12px;
+                border-bottom: 1px solid #edf0f2;
                 font-size: 13px;
-
-                vertical-align: middle;
+                vertical-align: top;
             }
-
-            tr:last-child td {
-                border-bottom: none;
-            }
-
-            tbody tr:hover {
+            tr:hover td {
                 background: #fafcfd;
             }
-
-            /*
-             * ================================================
-             * ESTADO DE ASIGNACIÓN
-             * ================================================
-             */
-
-            .estado {
+            .badge {
                 display: inline-block;
-
-                padding: 5px 9px;
-
-                border-radius: 14px;
-
+                padding: 5px 8px;
+                border-radius: 12px;
                 font-size: 11px;
-
                 font-weight: bold;
-
-                white-space: nowrap;
             }
-
-            .estado-activa {
-                background: #d8f5e8;
-                color: #08784f;
+            .badge-activa {
+                background: #e8f5e9;
+                color: #2e7d32;
             }
-
-            .estado-finalizada {
+            .badge-finalizada {
                 background: #eceff1;
                 color: #546e7a;
             }
-
-            .estado-otro {
-                background: #fff1cd;
-                color: #8a6700;
+            .acciones {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
             }
-
-
-            /*
-             * ================================================
-             * ESTADOS DEL ACTIVO
-             * ================================================
-             */
-
-            .activo-asignado {
-                background: #dbeafe;
-                color: #1d4ed8;
-            }
-
-            .activo-renovacion {
-                background: #fef3c7;
-                color: #92400e;
-            }
-
-            .activo-cesado {
-                background: #fee2e2;
-                color: #991b1b;
-            }
-
-            .activo-prestamo {
-                background: #ede9fe;
-                color: #6d28d9;
-            }
-
-            .activo-disponible {
-                background: #d1fae5;
-                color: #065f46;
-            }
-
-            .activo-otro {
-                background: #e5e7eb;
-                color: #4b5563;
-            }
-
-
-            /*
-             * ================================================
-             * PERFIL TECNOLÓGICO
-             * ================================================
-             */
-
-            .perfil {
-                display: inline-block;
-
-                padding: 5px 9px;
-
-                border-radius: 12px;
-
-                background: #e7f1fc;
-
-                color: #0f5ca8;
-
-                font-size: 11px;
-
-                font-weight: bold;
-
-                white-space: nowrap;
-            }
-
-
-            /*
-             * ================================================
-             * ACCIONES
-             * ================================================
-             */
-
-            .acciones-tabla {
-                white-space: nowrap;
-            }
-
-            .accion {
-                color: #0f5ca8;
-                text-decoration: none;
-                font-weight: bold;
-                margin-right: 10px;
-            }
-
-            .accion:hover {
-                text-decoration: underline;
-            }
-
-            .accion-devolver {
-                color: #b26a00;
-            }
-
-            .sin-datos {
-                padding: 25px;
+            .sin-resultados {
+                padding: 30px;
                 text-align: center;
                 color: #607d8b;
             }
-
-            @media(max-width: 900px) {
-
-                .cabecera-contenido {
-                    flex-direction: column;
-                    align-items: flex-start;
+            .paginacion-barra {
+                margin-top: 18px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            .paginacion-info {
+                font-size: 13px;
+                color: #607d8b;
+            }
+            .paginacion {
+                display: flex;
+                gap: 5px;
+                flex-wrap: wrap;
+            }
+            .pagina {
+                min-width: 36px;
+                height: 36px;
+                padding: 8px 10px;
+                border-radius: 5px;
+                border: 1px solid #cfd8dc;
+                background: white;
+                color: #37474f;
+                text-decoration: none;
+                text-align: center;
+                font-size: 13px;
+            }
+            .pagina:hover {
+                border-color: #0f5ca8;
+                color: #0f5ca8;
+            }
+            .pagina.activa {
+                background: #0f5ca8;
+                border-color: #0f5ca8;
+                color: white;
+                font-weight: bold;
+            }
+            .pagina.deshabilitada {
+                opacity: .45;
+                pointer-events: none;
+            }
+            @media(max-width: 1100px) {
+                .filtros-grid {
+                    grid-template-columns: 1fr 1fr;
                 }
-
-                .usuario-info {
-                    text-align: left;
-                }
-
-                .usuario-area {
-                    width: 100%;
-                    justify-content: space-between;
-                }
-
                 .nav-contenido {
                     flex-wrap: wrap;
                 }
-
-                .encabezado-pagina {
+            }
+            @media(max-width: 650px) {
+                .filtros-grid {
+                    grid-template-columns: 1fr;
+                }
+                .encabezado-pagina, .cabecera-contenido {
                     flex-direction: column;
                     align-items: flex-start;
-                    gap: 15px;
+                }
+                .usuario-info {
+                    text-align: left;
                 }
             }
-
         </style>
-
     </head>
-
     <body>
 
-
         <div class="cabecera">
-
             <div class="cabecera-contenido">
-
                 <div>
-
-                    <h1>
-                        Sistema de Control de Activos TI
-                    </h1>
-
-                    <p>
-                        Gestión de asignaciones de activos tecnológicos
-                    </p>
-
+                    <h1>Sistema de Gestión de Activos TI</h1>
+                    <p>Control y asignación de activos tecnológicos</p>
                 </div>
-
 
                 <div class="usuario-area">
-
                     <div class="usuario-info">
-
-                        <strong
-                            th:text="${usuarioAutenticado != null
-                            ? usuarioAutenticado
-                            : 'Usuario'}">
-
-                            Usuario
-
-                        </strong>
-
-                        <span th:if="${esAdministrador}">
-                            Administrador
-                        </span>
-
-                        <span th:if="${esSoporte}">
-                            Soporte TI
-                        </span>
-
-                        <span th:if="${esConsulta}">
-                            Consulta
-                        </span>
-
+                        <strong th:text="${usuarioAutenticado != null ? usuarioAutenticado : 'Usuario'}">Usuario</strong>
+                        <span th:if="${esAdministrador}">Administrador</span>
+                        <span th:if="${esSoporte}">Soporte TI</span>
+                        <span th:if="${esConsulta}">Consulta</span>
                     </div>
 
-
-                    <form
-                        method="post"
-                        th:action="@{/logout}">
-
-                        <button
-                            type="submit"
-                            class="btn-logout">
-
-                            Cerrar sesión
-
-                        </button>
-
+                    <form method="post" th:action="@{/logout}">
+                        <button type="submit" class="btn-logout">Cerrar sesión</button>
                     </form>
-
                 </div>
-
             </div>
-
         </div>
-
 
         <div class="nav">
-
             <div class="nav-contenido">
-
-                <a th:href="@{/}">
-                    Inicio
-                </a>
-
-                <a th:href="@{/inventario}">
-                    Inventario
-                </a>
-
-                <a th:href="@{/colaboradores}">
-                    Colaboradores
-                </a>
-
-                <a th:href="@{/asignaciones}"
-                   class="activo">
-                    Asignaciones
-                </a>
-
-                <a th:href="@{/devoluciones}">
-                    Devoluciones
-                </a>
-
-                <a th:href="@{/alertas-garantia}">
-                    Garantías
-                </a>
-
-                <a th:href="@{/requisitos-cargo}">
-                    Requisitos
-                </a>
-
-                <a
-                    th:if="${esAdministrador}"
-                    th:href="@{/usuarios}">
-
-                    Usuarios
-
-                </a>
-
+                <a th:href="@{/}">Inicio</a>
+                <a th:href="@{/inventario}">Inventario</a>
+                <a th:href="@{/colaboradores}">Colaboradores</a>
+                <a th:href="@{/asignaciones}" class="activo">Asignaciones</a>
+                <a th:href="@{/devoluciones}">Devoluciones</a>
+                <a th:href="@{/alertas-garantia}">Garantías</a>
+                <a th:href="@{/requisitos-cargo}">Requisitos</a>
+                <a th:if="${esAdministrador}" th:href="@{/usuarios}">Usuarios</a>
             </div>
-
         </div>
-
 
         <div class="contenedor">
 
             <div class="encabezado-pagina">
-
                 <div>
-
-                    <h2>
-                        Asignaciones
-                    </h2>
-
-                    <p>
-                        Consulte las asignaciones actuales,
-                        el estado de cada activo y gestione
-                        las devoluciones correspondientes.
-                    </p>
-
+                    <h2>Asignaciones</h2>
+                    <p>Filtre y consulte las asignaciones registradas sin cargar todos los registros a la vez.</p>
                 </div>
 
-
-                <a
-                    th:if="${puedeGestionar}"
-                    th:href="@{/asignaciones/nueva}"
-                    class="btn btn-nuevo">
-
-                    + Nueva asignación
-
+                <a th:if="${esAdministrador or esSoporte}"
+                   th:href="@{/asignaciones/nueva}"
+                   class="btn btn-primario">
+                    Nueva asignación
                 </a>
-
             </div>
 
+            <form class="filtros" method="get" th:action="@{/asignaciones}">
+                <div class="filtros-grid">
+
+                    <div class="campo">
+                        <label>Búsqueda</label>
+                        <input type="text"
+                               name="q"
+                               th:value="${q}"
+                               placeholder="Colaborador, código, inventario, serie o modelo">
+                    </div>
+
+                    <div class="campo">
+                        <label>Estado</label>
+                        <select name="estado">
+                            <option value="">Todos</option>
+                            <option value="ACTIVA" th:selected="${estado == 'ACTIVA'}">ACTIVA</option>
+                            <option value="FINALIZADA" th:selected="${estado == 'FINALIZADA'}">FINALIZADA</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label>Tipo de equipo</label>
+                        <select name="tipoId">
+                            <option value="">Todos</option>
+                            <option th:each="tipo : ${tiposEquipo}"
+                                    th:value="${tipo.idTipoEquipo}"
+                                    th:text="${tipo.nombreTipo}"
+                                    th:selected="${tipoId != null and tipoId == tipo.idTipoEquipo}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label>Sede</label>
+                        <select name="sedeId">
+                            <option value="">Todas</option>
+                            <option th:each="sede : ${sedes}"
+                                    th:value="${sede.idSede}"
+                                    th:text="${sede.nombreSede}"
+                                    th:selected="${sedeId != null and sedeId == sede.idSede}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label>Por página</label>
+                        <select name="size">
+                            <option value="10" th:selected="${size == 10}">10</option>
+                            <option value="20" th:selected="${size == 20}">20</option>
+                            <option value="50" th:selected="${size == 50}">50</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primario">Filtrar</button>
+                    <a th:href="@{/asignaciones}" class="btn btn-secundario">Limpiar</a>
+                </div>
+            </form>
 
             <div class="tabla-contenedor">
-
-                <table
-                    th:if="${asignaciones != null
-                    and !asignaciones.isEmpty()}">
-
+                <table th:if="${asignaciones != null and !asignaciones.isEmpty()}">
                     <thead>
-
                         <tr>
-
                             <th>ID</th>
-
                             <th>Colaborador</th>
-
-                            <th>Perfil tecnológico</th>
-
-                            <th>Inventario</th>
-
+                            <th>Código</th>
+                            <th>Activo</th>
                             <th>Tipo</th>
-
-                            <th>Marca</th>
-
-                            <th>Modelo</th>
-
-                            <th>Estado del activo</th>
-
-                            <th>Fecha</th>
-
-                            <th>Estado asignación</th>
-
+                            <th>Marca / Modelo</th>
+                            <th>Sede</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
-
                         </tr>
-
                     </thead>
 
-
                     <tbody>
+                        <tr th:each="asignacion : ${asignaciones}">
+                            <td th:text="${asignacion.idAsignacion}">1</td>
 
-                        <tr
-                            th:each="asignacion : ${asignaciones}">
-
-
-                            <!-- ID -->
-
-                            <td
-                                th:text="${asignacion.idAsignacion}">
+                            <td th:text="${asignacion.colaborador != null ? asignacion.colaborador.nombreCompleto : '-'}">
+                                Colaborador
                             </td>
 
-
-                            <!-- COLABORADOR -->
-
-                            <td
-                                th:text="${asignacion.colaborador != null
-                                ? asignacion.colaborador.nombreCompleto
-                                : '-'}">
+                            <td th:text="${asignacion.colaborador != null ? asignacion.colaborador.codigoUsuario : '-'}">
+                                Código
                             </td>
-
-
-                            <!-- PERFIL TECNOLÓGICO -->
 
                             <td>
-
-                                <span
-                                    th:if="${asignacion.colaborador != null
-                                    and asignacion.colaborador.cargo != null}"
-
-                                    class="perfil"
-
-                                    th:text="${asignacion.colaborador.cargo.nombreCargo}">
-
-                                </span>
-
-                                <span
-                                    th:if="${asignacion.colaborador == null
-                                    or asignacion.colaborador.cargo == null}">
-
-                                    -
-
-                                </span>
-
+                                <div th:text="${asignacion.activo != null ? asignacion.activo.numeroInventario : '-'}">Inventario</div>
+                                <small th:text="${asignacion.activo != null and asignacion.activo.numeroSerie != null ? asignacion.activo.numeroSerie : ''}"></small>
                             </td>
 
-
-                            <!-- INVENTARIO -->
-
-                            <td
-                                th:text="${asignacion.activo != null
-                                ? asignacion.activo.numeroInventario
-                                : '-'}">
+                            <td th:text="${asignacion.activo != null and asignacion.activo.tipoEquipo != null ? asignacion.activo.tipoEquipo.nombreTipo : '-'}">
+                                Tipo
                             </td>
-
-
-                            <!-- TIPO -->
-
-                            <td
-                                th:text="${asignacion.activo != null
-                                and asignacion.activo.tipoEquipo != null
-                                ? asignacion.activo.tipoEquipo.nombreTipo
-                                : '-'}">
-                            </td>
-
-
-                            <!-- MARCA -->
-
-                            <td
-                                th:text="${asignacion.activo != null
-                                and asignacion.activo.marca != null
-                                ? asignacion.activo.marca.nombreMarca
-                                : '-'}">
-                            </td>
-
-
-                            <!-- MODELO -->
-
-                            <td
-                                th:text="${asignacion.activo != null
-                                and asignacion.activo.modelo != null
-                                ? asignacion.activo.modelo
-                                : '-'}">
-                            </td>
-
-
-                            <!-- ESTADO DEL ACTIVO -->
 
                             <td>
-
-                                <!-- ASIGNADO EN USO -->
-
-                                <span
-                                    class="estado activo-asignado"
-
-                                    th:if="${asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    and asignacion.activo.estado.nombreEstado
-                                    == 'ASIGNADO_EN_USO'}">
-
-                                    ASIGNADO EN USO
-
-                                </span>
-
-
-                                <!-- RENOVACIÓN POR DEVOLVER -->
-
-                                <span
-                                    class="estado activo-renovacion"
-
-                                    th:if="${asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    and asignacion.activo.estado.nombreEstado
-                                    == 'RENOVACION_POR_DEVOLVER'}">
-
-                                    RENOVACIÓN POR DEVOLVER
-
-                                </span>
-
-
-                                <!-- CESADO POR DEVOLVER -->
-
-                                <span
-                                    class="estado activo-cesado"
-
-                                    th:if="${asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    and asignacion.activo.estado.nombreEstado
-                                    == 'CESADO_POR_DEVOLVER'}">
-
-                                    CESADO POR DEVOLVER
-
-                                </span>
-
-
-                                <!-- PRÉSTAMO POR GARANTÍA -->
-
-                                <span
-                                    class="estado activo-prestamo"
-
-                                    th:if="${asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    and asignacion.activo.estado.nombreEstado
-                                    == 'PRESTAMO_POR_GARANTIA'}">
-
-                                    PRÉSTAMO POR GARANTÍA
-
-                                </span>
-
-
-                                <!-- DISPONIBLE -->
-
-                                <span
-                                    class="estado activo-disponible"
-
-                                    th:if="${asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    and asignacion.activo.estado.nombreEstado
-                                    == 'DISPONIBLE'}">
-
-                                    DISPONIBLE
-
-                                </span>
-
-
-                                <!-- CUALQUIER OTRO ESTADO -->
-
-                                <span
-                                    class="estado activo-otro"
-
-                                    th:if="${asignacion.activo == null
-                                    or asignacion.activo.estado == null
-                                    or (
-                                    asignacion.activo.estado.nombreEstado
-                                    != 'ASIGNADO_EN_USO'
-                                    and asignacion.activo.estado.nombreEstado
-                                    != 'RENOVACION_POR_DEVOLVER'
-                                    and asignacion.activo.estado.nombreEstado
-                                    != 'CESADO_POR_DEVOLVER'
-                                    and asignacion.activo.estado.nombreEstado
-                                    != 'PRESTAMO_POR_GARANTIA'
-                                    and asignacion.activo.estado.nombreEstado
-                                    != 'DISPONIBLE'
-                                    )}"
-
-                                    th:text="${asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    ? asignacion.activo.estado.nombreEstado
-                                    : '-'}">
-
-                                </span>
-
+                                <span th:text="${asignacion.activo != null and asignacion.activo.marca != null ? asignacion.activo.marca.nombreMarca : '-'}"></span>
+                                <span th:if="${asignacion.activo != null and asignacion.activo.modelo != null}"
+                                      th:text="${' - ' + asignacion.activo.modelo}"></span>
                             </td>
 
-
-                            <!-- FECHA -->
-
-                            <td
-                                th:text="${asignacion.fechaAsignacion != null
-                                ? #temporals.format(
-                                asignacion.fechaAsignacion,
-                                'dd/MM/yyyy HH:mm'
-                                )
-                                : '-'}">
+                            <td th:text="${asignacion.activo != null and asignacion.activo.sede != null ? asignacion.activo.sede.nombreSede : '-'}">
+                                Sede
                             </td>
-
-
-                            <!-- ESTADO DE LA ASIGNACIÓN -->
 
                             <td>
-
-                                <span
-                                    class="estado estado-activa"
-
-                                    th:if="${asignacion.estadoAsignacion == 'ACTIVA'}">
-
+                                <span class="badge"
+                                      th:classappend="${asignacion.estadoAsignacion == 'ACTIVA' ? ' badge-activa' : ' badge-finalizada'}"
+                                      th:text="${asignacion.estadoAsignacion}">
                                     ACTIVA
-
                                 </span>
-
-
-                                <span
-                                    class="estado estado-finalizada"
-
-                                    th:if="${asignacion.estadoAsignacion == 'FINALIZADA'}">
-
-                                    FINALIZADA
-
-                                </span>
-
-
-                                <span
-                                    class="estado estado-otro"
-
-                                    th:if="${asignacion.estadoAsignacion != 'ACTIVA'
-                                    and asignacion.estadoAsignacion != 'FINALIZADA'}"
-
-                                    th:text="${asignacion.estadoAsignacion != null
-                                    ? asignacion.estadoAsignacion
-                                    : '-'}">
-
-                                </span>
-
                             </td>
 
+                            <td>
+                                <div class="acciones">
+                                    <a th:href="@{/asignaciones/ver/{id}(id=${asignacion.idAsignacion})}"
+                                       class="btn btn-ver">
+                                        Ver
+                                    </a>
 
-                            <!-- ACCIONES -->
-
-                            <td class="acciones-tabla">
-
-
-                                <!-- TODOS PUEDEN CONSULTAR -->
-
-                                <a
-                                    th:href="@{/asignaciones/ver/{id}
-                                    (id=${asignacion.idAsignacion})}"
-
-                                    class="accion">
-
-                                    Ver
-
-                                </a>
-
-
-                                <!--
-                                    DEVOLUCIÓN
-        
-                                    Requisitos:
-        
-                                    1. Usuario ADMIN o SOPORTE.
-                                    2. Asignación ACTIVA.
-                                    3. Activo existente.
-                                    4. Estado retornable.
-        
-                                    Estados retornables:
-        
-                                    ASIGNADO_EN_USO
-                                    RENOVACION_POR_DEVOLVER
-                                    CESADO_POR_DEVOLVER
-                                    PRESTAMO_POR_GARANTIA
-                                -->
-
-                                <a
-                                    th:if="${puedeGestionar
-                                    and asignacion.estadoAsignacion == 'ACTIVA'
-                                    and asignacion.activo != null
-                                    and asignacion.activo.estado != null
-                                    and (
-                                    asignacion.activo.estado.nombreEstado
-                                    == 'ASIGNADO_EN_USO'
-                                    or asignacion.activo.estado.nombreEstado
-                                    == 'RENOVACION_POR_DEVOLVER'
-                                    or asignacion.activo.estado.nombreEstado
-                                    == 'CESADO_POR_DEVOLVER'
-                                    or asignacion.activo.estado.nombreEstado
-                                    == 'PRESTAMO_POR_GARANTIA'
-                                    )}"
-
-                                    th:href="@{/devoluciones/nueva/{id}
-                                    (id=${asignacion.idAsignacion})}"
-
-                                    class="accion accion-devolver">
-
-                                    Devolver
-
-                                </a>
-
+                                    <a th:if="${(esAdministrador or esSoporte) and asignacion.estadoAsignacion == 'ACTIVA'}"
+                                       th:href="@{/devoluciones/nueva/{id}(id=${asignacion.idAsignacion})}"
+                                       class="btn btn-devolver">
+                                        Devolver
+                                    </a>
+                                </div>
                             </td>
-
                         </tr>
-
                     </tbody>
-
                 </table>
 
+                <div class="sin-resultados"
+                     th:if="${asignaciones == null or asignaciones.isEmpty()}">
+                    No se encontraron asignaciones con los filtros seleccionados.
+                </div>
+            </div>
 
-                <div
-                    class="sin-datos"
+            <div class="paginacion-barra" th:if="${paginaAsignaciones != null}">
 
-                    th:if="${asignaciones == null
-                    or asignaciones.isEmpty()}">
+                <div class="paginacion-info">
+                    <span th:if="${paginaAsignaciones.totalElements > 0}">
+                        Mostrando
+                        <strong th:text="${paginaAsignaciones.number * paginaAsignaciones.size + 1}">1</strong>
+                        -
+                        <strong th:text="${paginaAsignaciones.number * paginaAsignaciones.size + paginaAsignaciones.numberOfElements}">10</strong>
+                        de
+                        <strong th:text="${paginaAsignaciones.totalElements}">0</strong>
+                        registros
+                    </span>
 
-                    No existen asignaciones registradas.
-
+                    <span th:if="${paginaAsignaciones.totalElements == 0}">0 registros</span>
                 </div>
 
+                <div class="paginacion" th:if="${paginaAsignaciones.totalPages > 1}">
+
+                    <a class="pagina"
+                       th:classappend="${paginaAsignaciones.first} ? ' deshabilitada'"
+                       th:href="@{/asignaciones(page=0,size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+                        «
+                    </a>
+
+                    <a class="pagina"
+                       th:classappend="${paginaAsignaciones.first} ? ' deshabilitada'"
+                       th:href="@{/asignaciones(page=${paginaAsignaciones.number - 1},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+                        ‹
+                    </a>
+
+                    <a class="pagina"
+                       th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, paginaAsignaciones.number - 2), T(java.lang.Math).min(paginaAsignaciones.totalPages - 1, paginaAsignaciones.number + 2))}"
+                       th:classappend="${i == paginaAsignaciones.number} ? ' activa'"
+                       th:text="${i + 1}"
+                       th:href="@{/asignaciones(page=${i},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+                        1
+                    </a>
+
+                    <a class="pagina"
+                       th:classappend="${paginaAsignaciones.last} ? ' deshabilitada'"
+                       th:href="@{/asignaciones(page=${paginaAsignaciones.number + 1},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+                        ›
+                    </a>
+
+                    <a class="pagina"
+                       th:classappend="${paginaAsignaciones.last} ? ' deshabilitada'"
+                       th:href="@{/asignaciones(page=${paginaAsignaciones.totalPages - 1},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+                        »
+                    </a>
+
+                </div>
             </div>
 
         </div>
-
     </body>
-
 </html>

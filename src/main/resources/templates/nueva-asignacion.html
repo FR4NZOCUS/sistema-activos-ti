@@ -564,6 +564,98 @@
             }
 
             /* =====================================================
+               COMBO BUSCABLE DE COLABORADORES
+               ===================================================== */
+
+            .combo-colaborador {
+                position: relative;
+                width: 100%;
+            }
+
+            .combo-input {
+                width: 100%;
+                height: 42px;
+                padding: 11px 42px 11px 12px;
+                border: 1px solid #cfd8dc;
+                border-radius: 5px;
+                background: white;
+                color: #263238;
+                font-size: 14px;
+            }
+
+            .combo-input:focus {
+                outline: none;
+                border-color: #0f5ca8;
+            }
+
+            .combo-flecha {
+                position: absolute;
+                top: 50%;
+                right: 14px;
+                transform: translateY(-50%);
+                color: #263238;
+                font-size: 11px;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .combo-lista {
+                position: absolute;
+                top: calc(100% + 3px);
+                left: 0;
+                right: 0;
+                z-index: 9999;
+                display: none;
+                max-height: 300px;
+                overflow-y: auto;
+                background: white;
+                border: 1px solid #cfd8dc;
+                border-radius: 5px;
+                box-shadow: 0 5px 15px rgba(0,0,0,.12);
+            }
+
+            .combo-opcion {
+                padding: 10px 14px;
+                border-bottom: 1px solid #edf0f2;
+                cursor: pointer;
+                background: white;
+            }
+
+            .combo-opcion:last-child {
+                border-bottom: none;
+            }
+
+            .combo-opcion:hover,
+            .combo-opcion.seleccionada {
+                background: #eaf4fd;
+            }
+
+            .combo-nombre {
+                display: block;
+                color: #16374f;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .combo-detalle {
+                display: block;
+                margin-top: 3px;
+                color: #607d8b;
+                font-size: 12px;
+            }
+
+            .combo-sin-resultados {
+                padding: 14px;
+                text-align: center;
+                color: #78909c;
+                font-size: 13px;
+            }
+
+            .datos-colaboradores {
+                display: none;
+            }
+
+            /* =====================================================
                RESPONSIVE
                ===================================================== */
 
@@ -752,7 +844,6 @@
                     1. Seleccionar colaborador
                 </h3>
 
-
                 <form
                     id="formColaborador"
                     method="get"
@@ -762,15 +853,15 @@
                         Colaborador
                     </label>
 
-
-                    <div class="combo-buscable">
+                    <div class="combo-colaborador">
 
                         <input
-                            id="buscarColaborador"
-                            class="combo-buscable-input"
                             type="text"
+                            id="buscarColaborador"
+                            class="combo-input"
                             autocomplete="off"
                             placeholder="-- Seleccione o escriba un colaborador --"
+
                             th:value="${colaboradorSeleccionado != null
                             ? colaboradorSeleccionado.nombreCompleto
                             + ' - '
@@ -779,19 +870,22 @@
                             : 'Sin código')
                             : ''}">
 
-                        <span class="combo-flecha">
+                        <span
+                            id="flechaCombo"
+                            class="combo-flecha">
+
                             ▼
+
                         </span>
 
-
                         <input
-                            id="colaboradorId"
                             type="hidden"
+                            id="colaboradorId"
                             name="colaboradorId"
+
                             th:value="${colaboradorSeleccionado != null
                             ? colaboradorSeleccionado.idColaborador
                             : ''}">
-
 
                         <div
                             id="listaColaboradores"
@@ -800,14 +894,11 @@
 
                     </div>
 
-
-                    <!--
-                        Datos ocultos utilizados por JavaScript.
-                    -->
                     <div class="datos-colaboradores">
 
                         <div
                             class="dato-colaborador"
+
                             th:each="colaborador : ${colaboradores}"
 
                             th:attr="
@@ -819,6 +910,7 @@
                             data-cargo=${colaborador.cargo != null
                             ? colaborador.cargo.nombreCargo
                             : 'Sin cargo'}">
+
                         </div>
 
                     </div>
@@ -1413,7 +1505,6 @@
         </div>
 
 
-
         <!-- =====================================================
              COMBO BUSCABLE DE COLABORADORES
              ===================================================== -->
@@ -1424,14 +1515,9 @@
                     "DOMContentLoaded",
                     function () {
 
-                        const input
+                        const buscador
                                 = document.getElementById(
                                         "buscarColaborador"
-                                        );
-
-                        const inputId
-                                = document.getElementById(
-                                        "colaboradorId"
                                         );
 
                         const lista
@@ -1439,24 +1525,49 @@
                                         "listaColaboradores"
                                         );
 
+                        const inputId
+                                = document.getElementById(
+                                        "colaboradorId"
+                                        );
+
                         const formulario
                                 = document.getElementById(
                                         "formColaborador"
                                         );
 
-                        const elementos
-                                = Array.from(
-                                        document.querySelectorAll(
-                                                ".dato-colaborador"
-                                                )
+                        const flecha
+                                = document.getElementById(
+                                        "flechaCombo"
+                                        );
+
+                        const datosHTML
+                                = document.querySelectorAll(
+                                        ".dato-colaborador"
                                         );
 
 
+                        if (
+                                !buscador
+                                || !lista
+                                || !inputId
+                                || !formulario
+                                || !flecha
+                                ) {
+
+                            return;
+                        }
+
+
                         const colaboradores
-                                = elementos.map(
-                                        function (elemento) {
+                                = Array.from(
+                                        datosHTML
+                                        )
+                                .map(
+                                        function (
+                                                elemento) {
 
                                             return {
+
                                                 id:
                                                         elemento.dataset.id,
 
@@ -1471,14 +1582,22 @@
                                                 cargo:
                                                         elemento.dataset.cargo
                                                         || "Sin cargo"
+
                                             };
 
                                         }
                                 );
 
 
-                        let indiceActivo = -1;
+                        let indiceSeleccionado
+                                = -1;
 
+
+                        /*
+                         * =============================================
+                         * NORMALIZAR
+                         * =============================================
+                         */
 
                         function normalizar(
                                 texto) {
@@ -1490,128 +1609,182 @@
                                             /[\u0300-\u036f]/g,
                                             ""
                                             );
+
                         }
 
+
+                        /*
+                         * =============================================
+                         * CERRAR LISTA
+                         * =============================================
+                         */
 
                         function cerrarLista() {
 
                             lista.style.display
                                     = "none";
 
-                            lista.innerHTML
-                                    = "";
+                            indiceSeleccionado
+                                    = -1;
 
-                            indiceActivo = -1;
                         }
 
 
-                        function seleccionar(
+                        /*
+                         * =============================================
+                         * SELECCIONAR
+                         * =============================================
+                         */
+
+                        function seleccionarColaborador(
                                 colaborador) {
 
-                            input.value
+                            buscador.value
                                     = colaborador.nombre
                                     + " - "
-                                    + colaborador.codigo;
+                                    + (
+                                            colaborador.codigo
+                                            || "Sin código"
+                                            );
+
 
                             inputId.value
                                     = colaborador.id;
 
+
                             cerrarLista();
 
+
                             formulario.submit();
+
                         }
 
 
-                        function mostrarResultados(
-                                terminoActual) {
+                        /*
+                         * =============================================
+                         * MOSTRAR RESULTADOS
+                         * =============================================
+                         */
 
-                            const termino
-                                    = normalizar(
-                                            terminoActual
+                        function mostrarResultados(
+                                mostrarTodos = false) {
+
+                            const textoBusqueda
+                                    = mostrarTodos
+                                    ? ""
+                                    : normalizar(
+                                            buscador.value.trim()
                                             );
 
 
-                            /*
-                             * Si está vacío, mostramos solamente
-                             * los primeros colaboradores para
-                             * mantener el comportamiento de combo.
-                             */
+                            inputId.value
+                                    = "";
+
+
                             const coincidencias
                                     = colaboradores
                                     .filter(
                                             function (
                                                     colaborador) {
 
-                                                if (!termino) {
+                                                if (
+                                                        textoBusqueda === ""
+                                                        ) {
 
                                                     return true;
                                                 }
 
 
-                                                const texto
+                                                const textoCompleto
                                                         = normalizar(
                                                                 colaborador.nombre
                                                                 + " "
                                                                 + colaborador.codigo
                                                                 + " "
                                                                 + colaborador.cargo
+
                                                                 );
 
 
-                                                return texto.includes(
-                                                        termino
-                                                        );
+                                                return textoCompleto
+                                                        .includes(
+                                                                textoBusqueda
+                                                                );
 
                                             }
                                     )
                                     .slice(
                                             0,
-                                            10
+                                            12
                                             );
 
 
                             lista.innerHTML
                                     = "";
 
-                            indiceActivo = -1;
+
+                            indiceSeleccionado
+                                    = -1;
 
 
-                            if (coincidencias.length === 0) {
+                            /*
+                             * =========================================
+                             * SIN RESULTADOS
+                             * =========================================
+                             */
 
-                                const vacio
+                            if (
+                                    coincidencias.length === 0
+                                    ) {
+
+                                const mensaje
                                         = document.createElement(
                                                 "div"
                                                 );
 
-                                vacio.className
-                                        = "combo-vacio";
 
-                                vacio.textContent
-                                        = "No se encontraron colaboradores.";
+                                mensaje.className
+                                        =
+                                        "combo-sin-resultados";
+
+
+                                mensaje.textContent
+                                        =
+                                        "No se encontraron colaboradores.";
+
 
                                 lista.appendChild(
-                                        vacio
+                                        mensaje
                                         );
+
 
                                 lista.style.display
                                         = "block";
+
 
                                 return;
                             }
 
 
+                            /*
+                             * =========================================
+                             * CREAR OPCIONES
+                             * =========================================
+                             */
+
                             coincidencias.forEach(
                                     function (
-                                            colaborador,
-                                            indice) {
+                                            colaborador) {
 
                                         const opcion
                                                 = document.createElement(
                                                         "div"
                                                         );
 
+
                                         opcion.className
-                                                = "combo-opcion";
+                                                =
+                                                "combo-opcion";
 
 
                                         const nombre
@@ -1619,11 +1792,15 @@
                                                         "span"
                                                         );
 
+
                                         nombre.className
-                                                = "combo-opcion-nombre";
+                                                =
+                                                "combo-nombre";
+
 
                                         nombre.textContent
-                                                = colaborador.nombre;
+                                                =
+                                                colaborador.nombre;
 
 
                                         const detalle
@@ -1631,11 +1808,15 @@
                                                         "span"
                                                         );
 
+
                                         detalle.className
-                                                = "combo-opcion-detalle";
+                                                =
+                                                "combo-detalle";
+
 
                                         detalle.textContent
-                                                = "Código: "
+                                                =
+                                                "Código: "
                                                 + (
                                                         colaborador.codigo
                                                         || "-"
@@ -1647,6 +1828,7 @@
                                         opcion.appendChild(
                                                 nombre
                                                 );
+
 
                                         opcion.appendChild(
                                                 detalle
@@ -1660,7 +1842,8 @@
 
                                                     evento.preventDefault();
 
-                                                    seleccionar(
+
+                                                    seleccionarColaborador(
                                                             colaborador
                                                             );
 
@@ -1678,40 +1861,59 @@
 
                             lista.style.display
                                     = "block";
+
                         }
 
 
                         /*
-                         * Al hacer clic se comporta
-                         * como un combo normal.
+                         * =============================================
+                         * AL HACER CLIC EN EL CAMPO
+                         * =============================================
                          */
-                        input.addEventListener(
+
+                        buscador.addEventListener(
                                 "focus",
                                 function () {
 
-                                    mostrarResultados(
-                                            input.value
-                                            );
+                                    if (
+                                            buscador.value.trim()
+                                            === ""
+                                            ) {
+
+                                        mostrarResultados(
+                                                true
+                                                );
+
+                                    } else {
+
+                                        mostrarResultados(
+                                                false
+                                                );
+
+                                    }
 
                                 }
                         );
 
 
                         /*
-                         * Al escribir filtra por:
+                         * =============================================
+                         * AL ESCRIBIR
+                         * =============================================
+                         *
+                         * Busca por:
                          *
                          * - nombre;
                          * - código;
                          * - cargo.
                          */
-                        input.addEventListener(
+
+                        buscador.addEventListener(
                                 "input",
                                 function () {
 
-                                    inputId.value = "";
-
                                     mostrarResultados(
-                                            input.value
+                                            false
                                             );
 
                                 }
@@ -1719,9 +1921,61 @@
 
 
                         /*
-                         * Navegación con teclado.
+                         * =============================================
+                         * FLECHA DEL COMBO
+                         * =============================================
                          */
-                        input.addEventListener(
+
+                        flecha.addEventListener(
+                                "mousedown",
+                                function (
+                                        evento) {
+
+                                    evento.preventDefault();
+
+                                    evento.stopPropagation();
+
+
+                                    const estaAbierto
+                                            =
+                                            lista.style.display
+                                            === "block";
+
+
+                                    if (
+                                            estaAbierto
+                                            ) {
+
+                                        cerrarLista();
+
+                                    } else {
+
+                                        buscador.focus();
+
+
+                                        /*
+                                         * Al presionar la flecha
+                                         * muestra los primeros
+                                         * colaboradores.
+                                         */
+
+                                        mostrarResultados(
+                                                true
+                                                );
+
+                                    }
+
+                                }
+                        );
+
+
+                        /*
+                         * =============================================
+                         * TECLADO
+                         * =============================================
+                         */
+
+                        buscador.addEventListener(
                                 "keydown",
                                 function (
                                         evento) {
@@ -1731,10 +1985,18 @@
                                                     lista.querySelectorAll(
                                                             ".combo-opcion"
                                                             )
+
                                                     );
 
 
-                                    if (evento.key === "Escape") {
+                                    /*
+                                     * ESC
+                                     */
+
+                                    if (
+                                            evento.key
+                                            === "Escape"
+                                            ) {
 
                                         cerrarLista();
 
@@ -1742,99 +2004,199 @@
                                     }
 
 
-                                    if (opciones.length === 0) {
+                                    /*
+                                     * FLECHA ABAJO
+                                     */
 
-                                        return;
-                                    }
+                                    if (
+                                            evento.key
+                                            === "ArrowDown"
+                                            ) {
 
 
-                                    if (evento.key === "ArrowDown") {
+                                        if (
+                                                lista.style.display
+                                                !== "block"
+                                                ) {
+
+                                            mostrarResultados(
+                                                    false
+                                                    );
+
+                                            return;
+                                        }
+
+
+                                        if (
+                                                opciones.length === 0
+                                                ) {
+
+                                            return;
+                                        }
+
 
                                         evento.preventDefault();
 
-                                        indiceActivo
+
+                                        indiceSeleccionado
                                                 = Math.min(
-                                                        indiceActivo + 1,
-                                                        opciones.length - 1
+                                                        indiceSeleccionado
+                                                        + 1,
+                                                        opciones.length
+                                                        - 1
+
                                                         );
 
+
+                                        /*
+                                         * FLECHA ARRIBA
+                                         */
+
                                     } else if (
-                                            evento.key === "ArrowUp") {
+                                            evento.key
+                                            === "ArrowUp"
+                                            ) {
+
+
+                                        if (
+                                                opciones.length === 0
+                                                ) {
+
+                                            return;
+                                        }
+
 
                                         evento.preventDefault();
 
-                                        indiceActivo
+
+                                        indiceSeleccionado
                                                 = Math.max(
-                                                        indiceActivo - 1,
+                                                        indiceSeleccionado
+                                                        - 1,
                                                         0
+
                                                         );
 
-                                    } else if (
-                                            evento.key === "Enter") {
 
-                                        if (indiceActivo >= 0) {
+                                        /*
+                                         * ENTER
+                                         */
+
+                                    } else if (
+                                            evento.key
+                                            === "Enter"
+                                            ) {
+
+
+                                        if (
+                                                indiceSeleccionado
+                                                >= 0
+
+                                                &&
+                                                indiceSeleccionado
+                                                < opciones.length
+                                                ) {
+
 
                                             evento.preventDefault();
 
+
                                             opciones[
-                                                    indiceActivo
+                                                    indiceSeleccionado
                                             ].dispatchEvent(
                                                     new MouseEvent(
                                                             "mousedown"
                                                             )
+
                                                     );
+
                                         }
 
+
                                         return;
+
 
                                     } else {
 
+
                                         return;
+
                                     }
 
+
+                                    /*
+                                     * =====================================
+                                     * RESALTAR OPCIÓN
+                                     * =====================================
+                                     */
 
                                     opciones.forEach(
                                             function (
                                                     opcion,
                                                     indice) {
 
+
                                                 opcion
                                                         .classList
                                                         .toggle(
-                                                                "activa",
+                                                                "seleccionada",
                                                                 indice
-                                                                === indiceActivo
+                                                                === indiceSeleccionado
+
                                                                 );
 
                                             }
                                     );
 
 
-                                    if (indiceActivo >= 0) {
+                                    /*
+                                     * Mantener visible.
+                                     */
+
+                                    if (
+                                            indiceSeleccionado
+                                            >= 0
+                                            ) {
+
 
                                         opciones[
-                                                indiceActivo
+                                                indiceSeleccionado
                                         ].scrollIntoView(
                                                 {
-                                                    block: "nearest"
+
+                                                    block:
+                                                            "nearest"
+
                                                 }
                                         );
+
                                     }
 
                                 }
                         );
 
 
+                        /*
+                         * =============================================
+                         * CERRAR AL HACER CLIC FUERA
+                         * =============================================
+                         */
+
                         document.addEventListener(
                                 "click",
                                 function (
                                         evento) {
 
-                                    if (!evento.target.closest(
-                                            ".combo-buscable"
-                                            )) {
+
+                                    if (
+                                            !evento.target.closest(
+                                                    ".combo-colaborador"
+                                                    )
+                                            ) {
+
 
                                         cerrarLista();
+
                                     }
 
                                 }
@@ -1844,7 +2206,6 @@
             );
 
         </script>
-
 
     </body>
 

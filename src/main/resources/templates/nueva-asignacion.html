@@ -758,36 +758,32 @@
                     method="get"
                     th:action="@{/asignaciones/nueva}">
 
-                    <label for="buscadorColaborador">
+                    <label for="buscarColaborador">
                         Colaborador
                     </label>
 
-                    <div class="campo-colaborador">
 
-                        <!--
-                            Combo editable:
-                            permite escribir y también desplegar opciones.
-                        -->
+                    <div class="combo-buscable">
+
                         <input
-                            id="buscadorColaborador"
+                            id="buscarColaborador"
+                            class="combo-buscable-input"
                             type="text"
-                            list="listaColaboradores"
                             autocomplete="off"
-                            placeholder="Escriba nombre, código o cargo..."
+                            placeholder="-- Seleccione o escriba un colaborador --"
                             th:value="${colaboradorSeleccionado != null
-                            ? (colaboradorSeleccionado.codigoUsuario != null
-                            ? colaboradorSeleccionado.codigoUsuario + ' - '
-                            : '')
-                            + colaboradorSeleccionado.nombreCompleto
+                            ? colaboradorSeleccionado.nombreCompleto
                             + ' - '
-                            + (colaboradorSeleccionado.cargo != null
-                            ? colaboradorSeleccionado.cargo.nombreCargo
-                            : 'Sin cargo')
+                            + (colaboradorSeleccionado.codigoUsuario != null
+                            ? colaboradorSeleccionado.codigoUsuario
+                            : 'Sin código')
                             : ''}">
 
-                        <!--
-                            ID real que se enviará al controlador.
-                        -->
+                        <span class="combo-flecha">
+                            ▼
+                        </span>
+
+
                         <input
                             id="colaboradorId"
                             type="hidden"
@@ -796,35 +792,33 @@
                             ? colaboradorSeleccionado.idColaborador
                             : ''}">
 
-                        <!--
-                            Lista desplegable con:
-                            Código - Nombre - Cargo
-                        -->
-                        <datalist id="listaColaboradores">
-
-                            <option
-                                th:each="colaborador : ${colaboradores}"
-                                th:value="${(colaborador.codigoUsuario != null
-                                ? colaborador.codigoUsuario + ' - '
-                                : '')
-                                + colaborador.nombreCompleto
-                                + ' - '
-                                + (colaborador.cargo != null
-                                ? colaborador.cargo.nombreCargo
-                                : 'Sin cargo')}"
-                                th:attr="data-id=${colaborador.idColaborador}">
-                            </option>
-
-                        </datalist>
-
-                        <div class="ayuda-buscador">
-                            Puede buscar por nombre, código de trabajador o cargo.
-                        </div>
 
                         <div
-                            id="mensajeBusqueda"
-                            class="mensaje-busqueda">
-                            Seleccione un colaborador de la lista.
+                            id="listaColaboradores"
+                            class="combo-lista">
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        Datos ocultos utilizados por JavaScript.
+                    -->
+                    <div class="datos-colaboradores">
+
+                        <div
+                            class="dato-colaborador"
+                            th:each="colaborador : ${colaboradores}"
+
+                            th:attr="
+                            data-id=${colaborador.idColaborador},
+                            data-nombre=${colaborador.nombreCompleto},
+                            data-codigo=${colaborador.codigoUsuario != null
+                            ? colaborador.codigoUsuario
+                            : ''},
+                            data-cargo=${colaborador.cargo != null
+                            ? colaborador.cargo.nombreCargo
+                            : 'Sin cargo'}">
                         </div>
 
                     </div>
@@ -1418,6 +1412,8 @@
 
         </div>
 
+
+
         <!-- =====================================================
              COMBO BUSCABLE DE COLABORADORES
              ===================================================== -->
@@ -1428,10 +1424,11 @@
                     "DOMContentLoaded",
                     function () {
 
-                        const buscador
+                        const input
                                 = document.getElementById(
-                                        "buscadorColaborador"
+                                        "buscarColaborador"
                                         );
+
                         const inputId
                                 = document.getElementById(
                                         "colaboradorId"
@@ -1447,153 +1444,397 @@
                                         "formColaborador"
                                         );
 
-                        const mensaje
-                                = document.getElementById(
-                                        "mensajeBusqueda"
+                        const elementos
+                                = Array.from(
+                                        document.querySelectorAll(
+                                                ".dato-colaborador"
+                                                )
                                         );
 
 
-                        /*
-                         * =================================================
-                         * BUSCAR LA OPCIÓN SELECCIONADA
-                         * =================================================
-                         */
-                        function obtenerOpcionSeleccionada() {
+                        const colaboradores
+                                = elementos.map(
+                                        function (elemento) {
 
-                            const valor
-                                    = buscador.value.trim();
+                                            return {
+                                                id:
+                                                        elemento.dataset.id,
 
-                            const opciones
-                                    = lista.querySelectorAll(
-                                            "option"
+                                                nombre:
+                                                        elemento.dataset.nombre
+                                                        || "",
+
+                                                codigo:
+                                                        elemento.dataset.codigo
+                                                        || "",
+
+                                                cargo:
+                                                        elemento.dataset.cargo
+                                                        || "Sin cargo"
+                                            };
+
+                                        }
+                                );
+
+
+                        let indiceActivo = -1;
+
+
+                        function normalizar(
+                                texto) {
+
+                            return (texto || "")
+                                    .toLowerCase()
+                                    .normalize("NFD")
+                                    .replace(
+                                            /[\u0300-\u036f]/g,
+                                            ""
+                                            );
+                        }
+
+
+                        function cerrarLista() {
+
+                            lista.style.display
+                                    = "none";
+
+                            lista.innerHTML
+                                    = "";
+
+                            indiceActivo = -1;
+                        }
+
+
+                        function seleccionar(
+                                colaborador) {
+
+                            input.value
+                                    = colaborador.nombre
+                                    + " - "
+                                    + colaborador.codigo;
+
+                            inputId.value
+                                    = colaborador.id;
+
+                            cerrarLista();
+
+                            formulario.submit();
+                        }
+
+
+                        function mostrarResultados(
+                                terminoActual) {
+
+                            const termino
+                                    = normalizar(
+                                            terminoActual
                                             );
 
-                            for (const opcion of opciones) {
 
-                                if (opcion.value === valor) {
+                            /*
+                             * Si está vacío, mostramos solamente
+                             * los primeros colaboradores para
+                             * mantener el comportamiento de combo.
+                             */
+                            const coincidencias
+                                    = colaboradores
+                                    .filter(
+                                            function (
+                                                    colaborador) {
 
-                                    return opcion;
-                                }
+                                                if (!termino) {
+
+                                                    return true;
+                                                }
+
+
+                                                const texto
+                                                        = normalizar(
+                                                                colaborador.nombre
+                                                                + " "
+                                                                + colaborador.codigo
+                                                                + " "
+                                                                + colaborador.cargo
+                                                                );
+
+
+                                                return texto.includes(
+                                                        termino
+                                                        );
+
+                                            }
+                                    )
+                                    .slice(
+                                            0,
+                                            10
+                                            );
+
+
+                            lista.innerHTML
+                                    = "";
+
+                            indiceActivo = -1;
+
+
+                            if (coincidencias.length === 0) {
+
+                                const vacio
+                                        = document.createElement(
+                                                "div"
+                                                );
+
+                                vacio.className
+                                        = "combo-vacio";
+
+                                vacio.textContent
+                                        = "No se encontraron colaboradores.";
+
+                                lista.appendChild(
+                                        vacio
+                                        );
+
+                                lista.style.display
+                                        = "block";
+
+                                return;
                             }
 
-                            return null;
+
+                            coincidencias.forEach(
+                                    function (
+                                            colaborador,
+                                            indice) {
+
+                                        const opcion
+                                                = document.createElement(
+                                                        "div"
+                                                        );
+
+                                        opcion.className
+                                                = "combo-opcion";
+
+
+                                        const nombre
+                                                = document.createElement(
+                                                        "span"
+                                                        );
+
+                                        nombre.className
+                                                = "combo-opcion-nombre";
+
+                                        nombre.textContent
+                                                = colaborador.nombre;
+
+
+                                        const detalle
+                                                = document.createElement(
+                                                        "span"
+                                                        );
+
+                                        detalle.className
+                                                = "combo-opcion-detalle";
+
+                                        detalle.textContent
+                                                = "Código: "
+                                                + (
+                                                        colaborador.codigo
+                                                        || "-"
+                                                        )
+                                                + " | Cargo: "
+                                                + colaborador.cargo;
+
+
+                                        opcion.appendChild(
+                                                nombre
+                                                );
+
+                                        opcion.appendChild(
+                                                detalle
+                                                );
+
+
+                                        opcion.addEventListener(
+                                                "mousedown",
+                                                function (
+                                                        evento) {
+
+                                                    evento.preventDefault();
+
+                                                    seleccionar(
+                                                            colaborador
+                                                            );
+
+                                                }
+                                        );
+
+
+                                        lista.appendChild(
+                                                opcion
+                                                );
+
+                                    }
+                            );
+
+
+                            lista.style.display
+                                    = "block";
                         }
 
 
                         /*
-                         * =================================================
-                         * CUANDO SELECCIONA UNA OPCIÓN
-                         * =================================================
+                         * Al hacer clic se comporta
+                         * como un combo normal.
                          */
-                        buscador.addEventListener(
-                                "change",
+                        input.addEventListener(
+                                "focus",
                                 function () {
 
-                                    const opcion
-                                            = obtenerOpcionSeleccionada();
-
-
-                                    if (opcion) {
-
-                                        /*
-                                         * Guardar ID real.
-                                         */
-                                        inputId.value
-                                                = opcion.dataset.id;
-
-
-                                        mensaje.style.display
-                                                = "none";
-
-
-                                        /*
-                                         * Cargar automáticamente
-                                         * la recomendación del colaborador.
-                                         */
-                                        formulario.submit();
-
-                                    } else {
-
-                                        inputId.value
-                                                = "";
-
-
-                                        if (buscador.value.trim() !== "") {
-
-                                            mensaje.style.display
-                                                    = "block";
-
-                                        } else {
-
-                                            mensaje.style.display
-                                                    = "none";
-                                        }
-                                    }
+                                    mostrarResultados(
+                                            input.value
+                                            );
 
                                 }
                         );
 
 
                         /*
-                         * =================================================
-                         * AL ESCRIBIR
-                         * =================================================
+                         * Al escribir filtra por:
                          *
-                         * Mientras escribe, se limpia el ID anterior
-                         * para evitar enviar un colaborador equivocado.
+                         * - nombre;
+                         * - código;
+                         * - cargo.
                          */
-                        buscador.addEventListener(
+                        input.addEventListener(
                                 "input",
                                 function () {
 
                                     inputId.value = "";
 
-                                    mensaje.style.display
-                                            = "none";
+                                    mostrarResultados(
+                                            input.value
+                                            );
 
                                 }
                         );
 
 
                         /*
-                         * =================================================
-                         * ENTER
-                         * =================================================
-                         *
-                         * Si escribe exactamente una opción válida
-                         * y presiona Enter, se selecciona.
+                         * Navegación con teclado.
                          */
-                        buscador.addEventListener(
+                        input.addEventListener(
                                 "keydown",
-                                function (evento) {
+                                function (
+                                        evento) {
 
-                                    if (evento.key !== "Enter") {
+                                    const opciones
+                                            = Array.from(
+                                                    lista.querySelectorAll(
+                                                            ".combo-opcion"
+                                                            )
+                                                    );
+
+
+                                    if (evento.key === "Escape") {
+
+                                        cerrarLista();
 
                                         return;
                                     }
 
 
-                                    const opcion
-                                            = obtenerOpcionSeleccionada();
+                                    if (opciones.length === 0) {
+
+                                        return;
+                                    }
 
 
-                                    if (opcion) {
+                                    if (evento.key === "ArrowDown") {
 
                                         evento.preventDefault();
 
-                                        inputId.value
-                                                = opcion.dataset.id;
+                                        indiceActivo
+                                                = Math.min(
+                                                        indiceActivo + 1,
+                                                        opciones.length - 1
+                                                        );
 
-                                        formulario.submit();
+                                    } else if (
+                                            evento.key === "ArrowUp") {
+
+                                        evento.preventDefault();
+
+                                        indiceActivo
+                                                = Math.max(
+                                                        indiceActivo - 1,
+                                                        0
+                                                        );
+
+                                    } else if (
+                                            evento.key === "Enter") {
+
+                                        if (indiceActivo >= 0) {
+
+                                            evento.preventDefault();
+
+                                            opciones[
+                                                    indiceActivo
+                                            ].dispatchEvent(
+                                                    new MouseEvent(
+                                                            "mousedown"
+                                                            )
+                                                    );
+                                        }
+
+                                        return;
 
                                     } else {
 
-                                        evento.preventDefault();
+                                        return;
+                                    }
 
-                                        mensaje.style.display
-                                                = buscador.value.trim() !== ""
-                                                ? "block"
-                                                : "none";
+
+                                    opciones.forEach(
+                                            function (
+                                                    opcion,
+                                                    indice) {
+
+                                                opcion
+                                                        .classList
+                                                        .toggle(
+                                                                "activa",
+                                                                indice
+                                                                === indiceActivo
+                                                                );
+
+                                            }
+                                    );
+
+
+                                    if (indiceActivo >= 0) {
+
+                                        opciones[
+                                                indiceActivo
+                                        ].scrollIntoView(
+                                                {
+                                                    block: "nearest"
+                                                }
+                                        );
+                                    }
+
+                                }
+                        );
+
+
+                        document.addEventListener(
+                                "click",
+                                function (
+                                        evento) {
+
+                                    if (!evento.target.closest(
+                                            ".combo-buscable"
+                                            )) {
+
+                                        cerrarLista();
                                     }
 
                                 }

@@ -21,8 +21,6 @@ public interface ActivoRepository
      * =====================================================
      * ACTIVOS POR ESTADO
      * =====================================================
-     *
-     * Utilizado por el módulo de recomendaciones.
      */
     List<Activo> findByEstadoNombreEstado(
             String nombreEstado
@@ -33,8 +31,6 @@ public interface ActivoRepository
      * =====================================================
      * CONTAR ACTIVOS POR ESTADO
      * =====================================================
-     *
-     * Utilizado por InicioController.
      */
     long countByEstadoNombreEstado(
             String nombreEstado
@@ -45,19 +41,22 @@ public interface ActivoRepository
      * =====================================================
      * GARANTÍAS PRÓXIMAS A VENCER
      * =====================================================
-     *
-     * Busca activos cuya garantía se encuentre
-     * dentro del rango indicado.
-     *
-     * Los resultados se ordenan de la fecha
-     * más cercana a la más lejana.
-     *
-     * Utilizado por InicioController.
      */
     List<Activo>
             findByFechaVencimientoGarantiaBetweenOrderByFechaVencimientoGarantiaAsc(
                     LocalDate fechaInicio,
                     LocalDate fechaFin
+            );
+
+
+    /*
+     * =====================================================
+     * GARANTÍAS VENCIDAS
+     * =====================================================
+     */
+    List<Activo>
+            findByFechaVencimientoGarantiaBeforeOrderByFechaVencimientoGarantiaAsc(
+                    LocalDate fecha
             );
 
 

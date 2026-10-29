@@ -11,6 +11,7 @@
 
         <title>Editar activo</title>
 
+
         <style>
 
             * {
@@ -96,13 +97,9 @@
                 cursor: pointer;
             }
 
-            .btn-logout:hover {
-                background: #e8edf1;
-            }
-
 
             /* =====================================================
-               NAVEGACIÓN
+               MENÚ
                ===================================================== */
 
             .nav {
@@ -116,11 +113,13 @@
 
                 display: flex;
                 align-items: center;
+
                 gap: 5px;
             }
 
             .nav a {
                 color: white;
+
                 text-decoration: none;
 
                 padding: 13px 16px;
@@ -147,6 +146,7 @@
             .contenedor {
                 width: 95%;
                 max-width: 1050px;
+
                 margin: 30px auto;
             }
 
@@ -154,6 +154,7 @@
                 background: white;
 
                 border: 1px solid #e0e5e8;
+
                 border-radius: 8px;
 
                 padding: 25px;
@@ -169,7 +170,9 @@
 
             .descripcion {
                 color: #607d8b;
+
                 font-size: 14px;
+
                 margin-bottom: 25px;
             }
 
@@ -211,7 +214,9 @@
 
                 padding: 11px 12px;
 
-                border: 1px solid #cfd8dc;
+                border:
+                    1px solid #cfd8dc;
+
                 border-radius: 5px;
 
                 font-size: 14px;
@@ -223,11 +228,13 @@
             select:focus,
             textarea:focus {
                 outline: none;
+
                 border-color: #0f5ca8;
             }
 
             textarea {
                 min-height: 90px;
+
                 resize: vertical;
             }
 
@@ -241,44 +248,6 @@
                 line-height: 1.4;
             }
 
-
-            /* =====================================================
-               ESTADO SOLO LECTURA
-               ===================================================== */
-
-            .estado-actual {
-                width: 100%;
-
-                padding: 11px 12px;
-
-                border: 1px solid #d9e1e5;
-
-                border-radius: 5px;
-
-                background: #f7f9fa;
-
-                color: #37474f;
-
-                font-size: 14px;
-
-                font-weight: bold;
-            }
-
-            .estado-ayuda {
-                margin-top: 6px;
-
-                color: #607d8b;
-
-                font-size: 12px;
-
-                line-height: 1.4;
-            }
-
-
-            /* =====================================================
-               SUBTÍTULOS
-               ===================================================== */
-
             .subtitulo {
                 grid-column: 1 / -1;
 
@@ -286,11 +255,13 @@
 
                 padding-bottom: 8px;
 
-                border-bottom: 1px solid #e5eaed;
+                border-bottom:
+                    1px solid #e5eaed;
 
                 color: #16374f;
 
                 font-size: 16px;
+
                 font-weight: bold;
             }
 
@@ -311,6 +282,7 @@
 
             .btn {
                 border: none;
+
                 border-radius: 5px;
 
                 padding: 11px 18px;
@@ -326,6 +298,7 @@
 
             .btn-guardar {
                 background: #0f5ca8;
+
                 color: white;
             }
 
@@ -335,6 +308,7 @@
 
             .btn-cancelar {
                 background: #eceff1;
+
                 color: #37474f;
             }
 
@@ -344,17 +318,41 @@
 
 
             /* =====================================================
+               CARACTERÍSTICAS TÉCNICAS
+               ===================================================== */
+
+            .seccion-tecnica {
+                grid-column: 1 / -1;
+            }
+
+            .grid-tecnico {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 18px;
+            }
+
+            .seccion-oculta {
+                display: none;
+            }
+
+
+            /* =====================================================
                RESPONSIVE
                ===================================================== */
 
             @media(max-width: 750px) {
 
-                .grid {
+                .grid,
+                .grid-tecnico {
                     grid-template-columns: 1fr;
                 }
 
                 .campo-completo,
-                .subtitulo {
+                .subtitulo,
+                .seccion-tecnica {
                     grid-column: auto;
                 }
 
@@ -364,24 +362,23 @@
 
                 .cabecera-contenido {
                     flex-direction: column;
+
                     align-items: flex-start;
                 }
 
                 .usuario-info {
                     text-align: left;
                 }
+
             }
 
         </style>
 
     </head>
 
+
     <body>
 
-
-        <!-- =====================================================
-             CABECERA
-             ===================================================== -->
 
         <div class="cabecera">
 
@@ -390,7 +387,7 @@
                 <div>
 
                     <h1>
-                        Sistema de Control de Activos TI
+                        Sistema de Gestión de Activos TI
                     </h1>
 
                     <p>
@@ -413,13 +410,16 @@
 
                         </strong>
 
+
                         <span th:if="${esAdministrador}">
                             Administrador
                         </span>
 
+
                         <span th:if="${esSoporte}">
                             Soporte TI
                         </span>
+
 
                         <span th:if="${esConsulta}">
                             Consulta
@@ -450,7 +450,7 @@
 
 
         <!-- =====================================================
-             NAVEGACIÓN
+             MENÚ
              ===================================================== -->
 
         <div class="nav">
@@ -461,8 +461,9 @@
                     Inicio
                 </a>
 
-                <a th:href="@{/inventario}"
-                   class="activo">
+                <a
+                    th:href="@{/inventario}"
+                    class="activo">
 
                     Inventario
 
@@ -518,7 +519,7 @@
                 <p class="descripcion">
 
                     Actualice la información general,
-                    ubicación y características técnicas
+                    características técnicas y ubicación
                     del activo tecnológico.
 
                 </p>
@@ -530,7 +531,7 @@
                     th:object="${activo}">
 
 
-                    <!-- ID -->
+                    <!-- ID DEL ACTIVO -->
 
                     <input
                         type="hidden"
@@ -545,11 +546,11 @@
                              ================================================= -->
 
                         <div class="subtitulo">
+
                             Identificación
+
                         </div>
 
-
-                        <!-- NÚMERO DE INVENTARIO -->
 
                         <div class="campo">
 
@@ -565,8 +566,6 @@
                         </div>
 
 
-                        <!-- NÚMERO DE SERIE -->
-
                         <div class="campo">
 
                             <label>
@@ -580,7 +579,9 @@
                         </div>
 
 
-                        <!-- TIPO -->
+                        <!-- =================================================
+                             TIPO DE EQUIPO
+                             ================================================= -->
 
                         <div class="campo">
 
@@ -588,26 +589,42 @@
                                 Tipo de equipo *
                             </label>
 
+
                             <select
-                                th:field="*{tipoEquipo.idTipoEquipo}"
+                                id="tipoEquipo"
+                                name="tipoEquipoId"
                                 required>
 
+
                                 <option value="">
+
                                     -- Seleccione --
+
                                 </option>
+
 
                                 <option
                                     th:each="tipo : ${tiposEquipo}"
+
                                     th:value="${tipo.idTipoEquipo}"
-                                    th:text="${tipo.nombreTipo}">
+
+                                    th:text="${tipo.nombreTipo}"
+
+                                    th:selected="${activo.tipoEquipo != null
+                                    and activo.tipoEquipo.idTipoEquipo
+                                    == tipo.idTipoEquipo}">
+
                                 </option>
+
 
                             </select>
 
                         </div>
 
 
-                        <!-- MARCA -->
+                        <!-- =================================================
+                             MARCA
+                             ================================================= -->
 
                         <div class="campo">
 
@@ -615,18 +632,30 @@
                                 Marca *
                             </label>
 
+
                             <select
-                                th:field="*{marca.idMarca}"
+                                name="marcaId"
                                 required>
 
+
                                 <option value="">
+
                                     -- Seleccione --
+
                                 </option>
+
 
                                 <option
                                     th:each="marcaItem : ${marcas}"
+
                                     th:value="${marcaItem.idMarca}"
-                                    th:text="${marcaItem.nombreMarca}">
+
+                                    th:text="${marcaItem.nombreMarca}"
+
+                                    th:selected="${activo.marca != null
+                                    and activo.marca.idMarca
+                                    == marcaItem.idMarca}">
+
                                 </option>
 
                             </select>
@@ -634,7 +663,9 @@
                         </div>
 
 
-                        <!-- MODELO -->
+                        <!-- =================================================
+                             MODELO
+                             ================================================= -->
 
                         <div class="campo campo-completo">
 
@@ -645,7 +676,7 @@
                             <input
                                 type="text"
                                 th:field="*{modelo}"
-                                placeholder="Ej. ThinkPad T14 Gen 2">
+                                placeholder="Ej. ThinkPad L14 Gen 5">
 
                         </div>
 
@@ -654,90 +685,81 @@
                              CARACTERÍSTICAS TÉCNICAS
                              ================================================= -->
 
-                        <div class="subtitulo">
-                            Características técnicas
-                        </div>
+                        <div
+                            id="seccionCaracteristicasTecnicas"
+                            class="seccion-tecnica">
 
 
-                        <!-- PROCESADOR -->
+                            <div class="subtitulo">
 
-                        <div class="campo">
-
-                            <label>
-                                Procesador
-                            </label>
-
-                            <input
-                                type="text"
-                                th:field="*{procesador}"
-                                placeholder="Ej. Intel Core i7">
-
-                            <div class="ayuda">
-
-                                Para los perfiles tecnológicos actuales,
-                                los equipos se evalúan principalmente
-                                por procesador y generación.
+                                Características técnicas
 
                             </div>
 
-                        </div>
+
+                            <div class="grid-tecnico">
 
 
-                        <!-- GENERACIÓN -->
+                                <div class="campo">
 
-                        <div class="campo">
+                                    <label>
+                                        Procesador
+                                    </label>
 
-                            <label>
-                                Generación del procesador
-                            </label>
+                                    <input
+                                        type="text"
+                                        th:field="*{procesador}"
+                                        placeholder="Ej. Intel Core i7">
 
-                            <input
-                                type="number"
-                                th:field="*{generacionProcesador}"
-                                min="1"
-                                max="30"
-                                placeholder="Ej. 11">
+                                </div>
 
-                            <div class="ayuda">
 
-                                Puede completar este dato después de
-                                verificar la información técnica del equipo.
+                                <div class="campo">
+
+                                    <label>
+                                        Generación del procesador
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        th:field="*{generacionProcesador}"
+                                        min="1"
+                                        max="30"
+                                        placeholder="Ej. 11">
+
+                                </div>
+
+
+                                <div class="campo">
+
+                                    <label>
+                                        RAM (GB)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        th:field="*{ramGb}"
+                                        min="1"
+                                        placeholder="Ej. 16">
+
+                                </div>
+
+
+                                <div class="campo">
+
+                                    <label>
+                                        Almacenamiento (GB)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        th:field="*{almacenamientoGb}"
+                                        min="1"
+                                        placeholder="Ej. 512">
+
+                                </div>
 
                             </div>
-
-                        </div>
-
-
-                        <!-- RAM -->
-
-                        <div class="campo">
-
-                            <label>
-                                RAM (GB)
-                            </label>
-
-                            <input
-                                type="number"
-                                th:field="*{ramGb}"
-                                min="1"
-                                placeholder="Ej. 16">
-
-                        </div>
-
-
-                        <!-- ALMACENAMIENTO -->
-
-                        <div class="campo">
-
-                            <label>
-                                Almacenamiento (GB)
-                            </label>
-
-                            <input
-                                type="number"
-                                th:field="*{almacenamientoGb}"
-                                min="1"
-                                placeholder="Ej. 512">
 
                         </div>
 
@@ -747,36 +769,48 @@
                              ================================================= -->
 
                         <div class="subtitulo">
+
                             Estado y ubicación
+
                         </div>
 
 
-                        <!-- ESTADO SOLO LECTURA -->
+                        <!-- ESTADO -->
 
                         <div class="campo">
 
                             <label>
-                                Estado actual
+                                Estado *
                             </label>
 
-                            <div
-                                class="estado-actual"
 
-                                th:text="${activo.estado != null
-                                ? activo.estado.nombreEstado
-                                : '-'}">
+                            <select
+                                name="estadoId"
+                                required>
 
-                                -
 
-                            </div>
+                                <option value="">
 
-                            <div class="estado-ayuda">
+                                    -- Seleccione --
 
-                                El estado no se modifica desde esta pantalla.
-                                Los cambios de estado se gestionan mediante
-                                asignaciones, devoluciones y revisión técnica.
+                                </option>
 
-                            </div>
+
+                                <option
+                                    th:each="estadoItem : ${estados}"
+
+                                    th:value="${estadoItem.idEstado}"
+
+                                    th:text="${estadoItem.nombreEstado}"
+
+                                    th:selected="${activo.estado != null
+                                    and activo.estado.idEstado
+                                    == estadoItem.idEstado}">
+
+                                </option>
+
+
+                            </select>
 
                         </div>
 
@@ -789,18 +823,30 @@
                                 Sede
                             </label>
 
-                            <select
-                                th:field="*{sede.idSede}">
+
+                            <select name="sedeId">
+
 
                                 <option value="">
+
                                     -- Sin sede --
+
                                 </option>
+
 
                                 <option
                                     th:each="sedeItem : ${sedes}"
+
                                     th:value="${sedeItem.idSede}"
-                                    th:text="${sedeItem.nombreSede}">
+
+                                    th:text="${sedeItem.nombreSede}"
+
+                                    th:selected="${activo.sede != null
+                                    and activo.sede.idSede
+                                    == sedeItem.idSede}">
+
                                 </option>
+
 
                             </select>
 
@@ -815,25 +861,39 @@
                                 Ubicación
                             </label>
 
-                            <select
-                                th:field="*{ubicacion.idUbicacion}">
+
+                            <select name="ubicacionId">
+
 
                                 <option value="">
+
                                     -- Sin ubicación --
+
                                 </option>
+
 
                                 <option
                                     th:each="ubicacionItem : ${ubicaciones}"
+
                                     th:value="${ubicacionItem.idUbicacion}"
-                                    th:text="${ubicacionItem.nombreUbicacion}">
+
+                                    th:text="${ubicacionItem.nombreUbicacion}"
+
+                                    th:selected="${activo.ubicacion != null
+                                    and activo.ubicacion.idUbicacion
+                                    == ubicacionItem.idUbicacion}">
+
                                 </option>
+
 
                             </select>
 
                         </div>
 
 
-                        <!-- CENTRO DE COSTO -->
+                        <!-- =================================================
+                             CENTRO DE COSTO
+                             ================================================= -->
 
                         <div class="campo">
 
@@ -841,41 +901,46 @@
                                 Centro de costo
                             </label>
 
-                            <select
-                                th:field="*{centroCosto.idCentroCosto}">
+
+                            <select name="centroCostoId">
+
 
                                 <option value="">
+
                                     -- Sin centro de costo --
+
                                 </option>
+
 
                                 <option
                                     th:each="centro : ${centrosCosto}"
+
                                     th:value="${centro.idCentroCosto}"
-                                    th:text="${centro.codigo}">
+
+                                    th:text="${centro.idCentroCosto}"
+
+                                    th:selected="${activo.centroCosto != null
+                                    and activo.centroCosto.idCentroCosto
+                                    == centro.idCentroCosto}">
+
                                 </option>
 
+
                             </select>
-
-                            <div class="ayuda">
-
-                                Seleccione el centro de costo asociado
-                                al activo.
-
-                            </div>
 
                         </div>
 
 
                         <!-- =================================================
-                             COMPRA Y GARANTÍA
+                             FECHAS
                              ================================================= -->
 
                         <div class="subtitulo">
+
                             Compra y garantía
+
                         </div>
 
-
-                        <!-- FECHA DE COMPRA -->
 
                         <div class="campo">
 
@@ -889,8 +954,6 @@
 
                         </div>
 
-
-                        <!-- GARANTÍA -->
 
                         <div class="campo">
 
@@ -915,9 +978,11 @@
                                 Observaciones
                             </label>
 
+
                             <textarea
                                 th:field="*{observaciones}"
-                                placeholder="Ingrese observaciones adicionales del activo...">
+
+                                placeholder="Información adicional del activo...">
                             </textarea>
 
                         </div>
@@ -926,13 +991,15 @@
 
 
                     <!-- =================================================
-                         ACCIONES
+                         BOTONES
                          ================================================= -->
 
                     <div class="acciones">
 
+
                         <a
                             th:href="@{/inventario}"
+
                             class="btn btn-cancelar">
 
                             Cancelar
@@ -942,6 +1009,7 @@
 
                         <button
                             type="submit"
+
                             class="btn btn-guardar">
 
                             Guardar cambios
@@ -955,6 +1023,149 @@
             </div>
 
         </div>
+
+
+        <!-- =====================================================
+             MOSTRAR / OCULTAR CARACTERÍSTICAS TÉCNICAS
+             ===================================================== -->
+
+        <script>
+
+            document.addEventListener(
+                    "DOMContentLoaded",
+                    function () {
+
+
+                        const tipoEquipo
+                                = document.getElementById(
+                                        "tipoEquipo"
+                                        );
+
+
+                        const seccionTecnica
+                                = document.getElementById(
+                                        "seccionCaracteristicasTecnicas"
+                                        );
+
+
+                        if (
+                                !tipoEquipo
+                                || !seccionTecnica
+                                ) {
+
+                            return;
+                        }
+
+
+                        function actualizarCamposTecnicos() {
+
+
+                            const opcion
+                                    = tipoEquipo.options[
+                                            tipoEquipo.selectedIndex
+                                    ];
+
+
+                            const nombreTipo
+                                    = opcion
+                                    ? opcion.text
+                                    .trim()
+                                    .toUpperCase()
+                                    : "";
+
+
+                            /*
+                             * Tipos que utilizan:
+                             *
+                             * Procesador
+                             * Generación
+                             * RAM
+                             * Almacenamiento
+                             */
+
+                            const requiereCaracteristicas
+                                    =
+                                    nombreTipo.includes(
+                                            "LAPTOP"
+                                            )
+
+                                    ||
+                                    nombreTipo.includes(
+                                            "DESKTOP"
+                                            )
+
+                                    ||
+                                    nombreTipo === "PC"
+
+                                    ||
+                                    nombreTipo.includes(
+                                            "WORKSTATION"
+                                            );
+
+
+                            if (
+                                    requiereCaracteristicas
+                                    ) {
+
+
+                                seccionTecnica
+                                        .classList
+                                        .remove(
+                                                "seccion-oculta"
+                                                );
+
+
+                            } else {
+
+
+                                seccionTecnica
+                                        .classList
+                                        .add(
+                                                "seccion-oculta"
+                                                );
+
+
+                                /*
+                                 * Vaciar datos técnicos
+                                 * cuando el tipo de activo
+                                 * no los utiliza.
+                                 */
+
+                                const inputs
+                                        = seccionTecnica
+                                        .querySelectorAll(
+                                                "input"
+                                                );
+
+
+                                inputs.forEach(
+                                        function (
+                                                input) {
+
+
+                                            input.value
+                                                    = "";
+
+                                        }
+                                );
+
+                            }
+
+                        }
+
+
+                        tipoEquipo.addEventListener(
+                                "change",
+                                actualizarCamposTecnicos
+                                );
+
+
+                        actualizarCamposTecnicos();
+
+                    }
+            );
+
+        </script>
 
 
     </body>

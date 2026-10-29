@@ -5,6 +5,7 @@ import com.unimaq.sistemaactivos.model.Colaborador;
 import com.unimaq.sistemaactivos.repository.CargoRepository;
 import com.unimaq.sistemaactivos.repository.CentroCostoRepository;
 import com.unimaq.sistemaactivos.repository.ColaboradorRepository;
+import com.unimaq.sistemaactivos.repository.PuestoRepository;
 import com.unimaq.sistemaactivos.repository.SedeRepository;
 import com.unimaq.sistemaactivos.repository.UbicacionOperativaRepository;
 
@@ -24,9 +25,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ColaboradorController {
 
+
+    /*
+     * =====================================================
+     * REPOSITORIOS
+     * =====================================================
+     */
     private final ColaboradorRepository colaboradorRepository;
 
     private final CargoRepository cargoRepository;
+
+    private final PuestoRepository puestoRepository;
 
     private final CentroCostoRepository centroCostoRepository;
 
@@ -34,9 +43,16 @@ public class ColaboradorController {
 
     private final UbicacionOperativaRepository ubicacionOperativaRepository;
 
+
+    /*
+     * =====================================================
+     * CONSTRUCTOR
+     * =====================================================
+     */
     public ColaboradorController(
             ColaboradorRepository colaboradorRepository,
             CargoRepository cargoRepository,
+            PuestoRepository puestoRepository,
             CentroCostoRepository centroCostoRepository,
             SedeRepository sedeRepository,
             UbicacionOperativaRepository ubicacionOperativaRepository) {
@@ -46,6 +62,9 @@ public class ColaboradorController {
 
         this.cargoRepository
                 = cargoRepository;
+
+        this.puestoRepository
+                = puestoRepository;
 
         this.centroCostoRepository
                 = centroCostoRepository;
@@ -94,9 +113,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * VALIDAR NÚMERO DE PÁGINA
-         * =================================================
+         * Validar página.
          */
         if (page < 0) {
 
@@ -105,9 +122,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * VALIDAR CANTIDAD DE REGISTROS
-         * =================================================
+         * Tamaños permitidos.
          */
         if (size != 10
                 && size != 20
@@ -118,12 +133,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * CREAR PAGINACIÓN
-         * =================================================
-         *
-         * Los colaboradores se muestran
-         * ordenados alfabéticamente.
+         * Crear paginación.
          */
         Pageable pageable
                 = PageRequest.of(
@@ -137,9 +147,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * CONSULTAR BASE DE DATOS
-         * =================================================
+         * Consultar colaboradores.
          */
         Page<Colaborador> paginaColaboradores
                 = colaboradorRepository
@@ -153,9 +161,8 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * VALIDAR PÁGINA EXISTENTE
-         * =================================================
+         * Si se solicita una página inexistente,
+         * regresar a la primera página.
          */
         if (paginaColaboradores.getTotalPages() > 0
                 && page
@@ -186,9 +193,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * RESULTADOS
-         * =================================================
+         * Resultados.
          */
         model.addAttribute(
                 "colaboradores",
@@ -202,9 +207,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * DATOS PARA LOS FILTROS
-         * =================================================
+         * Catálogos para filtros.
          */
         model.addAttribute(
                 "cargos",
@@ -218,10 +221,7 @@ public class ColaboradorController {
 
 
         /*
-         * =================================================
-         * CONSERVAR FILTROS
-         * =================================================
-         *
+         * Mantener filtros.
          */
         model.addAttribute(
                 "q",
@@ -266,8 +266,7 @@ public class ColaboradorController {
 
 
         /*
-         * Por defecto el colaborador
-         * se registra como ACTIVO.
+         * Estado por defecto.
          */
         colaborador.setEstadoColaborador(
                 "ACTIVO"
@@ -278,6 +277,16 @@ public class ColaboradorController {
                 colaborador
         );
 
+
+        /*
+         * Cargar:
+         *
+         * - puestos;
+         * - perfiles tecnológicos;
+         * - centros de costo;
+         * - sedes;
+         * - ubicaciones.
+         */
         cargarCatalogos(
                 model
         );
@@ -342,7 +351,7 @@ public class ColaboradorController {
 
         /*
          * =================================================
-         * CÓDIGO USUARIO
+         * CÓDIGO DE USUARIO
          * =================================================
          */
         if (colaborador.getCodigoUsuario() != null) {
@@ -361,6 +370,7 @@ public class ColaboradorController {
          * =================================================
          */
         if (colaborador.getEstadoColaborador() == null
+
                 || colaborador
                         .getEstadoColaborador()
                         .isBlank()) {
@@ -373,13 +383,53 @@ public class ColaboradorController {
 
         /*
          * =================================================
-         * CARGO
+         * PUESTO REAL
+         * =================================================
+         */
+        if (colaborador.getPuesto() != null
+
+                && colaborador
+                        .getPuesto()
+                        .getIdPuesto()
+                != null) {
+
+            colaborador.setPuesto(
+                    puestoRepository
+                            .findById(
+                                    colaborador
+                                            .getPuesto()
+                                            .getIdPuesto()
+                            )
+                            .orElseThrow(()
+                                    -> new IllegalArgumentException(
+                                            "Puesto no encontrado."
+                                    )
+                            )
+            );
+
+        } else {
+
+
+            /*
+             * Puesto real es opcional.
+             */
+            colaborador.setPuesto(
+                    null
+            );
+        }
+
+
+        /*
+         * =================================================
+         * PERFIL TECNOLÓGICO
          * =================================================
          */
         if (colaborador.getCargo() != null
+
                 && colaborador
                         .getCargo()
-                        .getIdCargo() != null) {
+                        .getIdCargo()
+                != null) {
 
             colaborador.setCargo(
                     cargoRepository
@@ -390,7 +440,7 @@ public class ColaboradorController {
                             )
                             .orElseThrow(()
                                     -> new IllegalArgumentException(
-                                            "Cargo no encontrado."
+                                            "Perfil tecnológico no encontrado."
                                     )
                             )
             );
@@ -409,9 +459,11 @@ public class ColaboradorController {
          * =================================================
          */
         if (colaborador.getCentroCosto() != null
+
                 && colaborador
                         .getCentroCosto()
-                        .getIdCentroCosto() != null) {
+                        .getIdCentroCosto()
+                != null) {
 
             colaborador.setCentroCosto(
                     centroCostoRepository
@@ -441,9 +493,11 @@ public class ColaboradorController {
          * =================================================
          */
         if (colaborador.getSede() != null
+
                 && colaborador
                         .getSede()
-                        .getIdSede() != null) {
+                        .getIdSede()
+                != null) {
 
             colaborador.setSede(
                     sedeRepository
@@ -473,9 +527,11 @@ public class ColaboradorController {
          * =================================================
          */
         if (colaborador.getUbicacion() != null
+
                 && colaborador
                         .getUbicacion()
-                        .getIdUbicacion() != null) {
+                        .getIdUbicacion()
+                != null) {
 
             colaborador.setUbicacion(
                     ubicacionOperativaRepository
@@ -524,7 +580,9 @@ public class ColaboradorController {
 
         Colaborador colaborador
                 = colaboradorRepository
-                        .findById(id)
+                        .findById(
+                                id
+                        )
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Colaborador no encontrado "
@@ -538,6 +596,14 @@ public class ColaboradorController {
                 colaborador
         );
 
+
+        /*
+         * Importante:
+         *
+         * También cargar puestos al editar
+         * para que el combo pueda mostrar
+         * todos los registros.
+         */
         cargarCatalogos(
                 model
         );
@@ -558,7 +624,9 @@ public class ColaboradorController {
 
         Colaborador colaborador
                 = colaboradorRepository
-                        .findById(id)
+                        .findById(
+                                id
+                        )
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Colaborador no encontrado "
@@ -584,21 +652,62 @@ public class ColaboradorController {
     private void cargarCatalogos(
             Model model) {
 
+
+        /*
+         * =================================================
+         * PUESTOS REALES
+         * =================================================
+         *
+         * Este atributo es el que faltaba.
+         *
+         * El HTML utiliza:
+         *
+         * ${puestos}
+         */
+        model.addAttribute(
+                "puestos",
+                puestoRepository.findAll()
+        );
+
+
+        /*
+         * =================================================
+         * PERFILES TECNOLÓGICOS
+         * =================================================
+         */
         model.addAttribute(
                 "cargos",
                 cargoRepository.findAll()
         );
 
+
+        /*
+         * =================================================
+         * CENTROS DE COSTO
+         * =================================================
+         */
         model.addAttribute(
                 "centrosCosto",
                 centroCostoRepository.findAll()
         );
 
+
+        /*
+         * =================================================
+         * SEDES
+         * =================================================
+         */
         model.addAttribute(
                 "sedes",
                 sedeRepository.findAll()
         );
 
+
+        /*
+         * =================================================
+         * UBICACIONES
+         * =================================================
+         */
         model.addAttribute(
                 "ubicaciones",
                 ubicacionOperativaRepository.findAll()

@@ -55,6 +55,7 @@
                 font-size: 14px;
             }
 
+
             /* =====================================================
                USUARIO
                ===================================================== */
@@ -98,6 +99,7 @@
                 background: #e8edf1;
             }
 
+
             /* =====================================================
                MENÚ
                ===================================================== */
@@ -138,6 +140,7 @@
                 font-weight: bold;
             }
 
+
             /* =====================================================
                CONTENIDO
                ===================================================== */
@@ -169,6 +172,7 @@
                 font-size: 14px;
             }
 
+
             /* =====================================================
                TARJETAS
                ===================================================== */
@@ -195,6 +199,7 @@
 
                 font-size: 18px;
             }
+
 
             /* =====================================================
                FORMULARIOS
@@ -237,14 +242,157 @@
                 resize: vertical;
             }
 
+
             /* =====================================================
-               INFORMACIÓN DEL COLABORADOR
+               COMBO BUSCABLE
+               ===================================================== */
+
+            .combo-colaborador {
+                position: relative;
+                width: 100%;
+            }
+
+            .combo-input {
+                width: 100%;
+                height: 42px;
+
+                padding:
+                    11px
+                    42px
+                    11px
+                    12px;
+
+                border:
+                    1px solid #cfd8dc;
+
+                border-radius: 5px;
+
+                background: white;
+
+                color: #263238;
+
+                font-size: 14px;
+            }
+
+            .combo-input:focus {
+                outline: none;
+
+                border-color: #0f5ca8;
+            }
+
+            .combo-flecha {
+                position: absolute;
+
+                top: 50%;
+                right: 14px;
+
+                transform:
+                    translateY(-50%);
+
+                color: #263238;
+
+                font-size: 11px;
+
+                cursor: pointer;
+
+                user-select: none;
+            }
+
+            .combo-lista {
+                position: absolute;
+
+                top:
+                    calc(100% + 3px);
+
+                left: 0;
+                right: 0;
+
+                z-index: 9999;
+
+                display: none;
+
+                max-height: 300px;
+
+                overflow-y: auto;
+
+                background: white;
+
+                border:
+                    1px solid #cfd8dc;
+
+                border-radius: 5px;
+
+                box-shadow:
+                    0 5px 15px
+                    rgba(0, 0, 0, 0.12);
+            }
+
+            .combo-opcion {
+                padding:
+                    10px
+                    14px;
+
+                border-bottom:
+                    1px solid #edf0f2;
+
+                cursor: pointer;
+
+                background: white;
+            }
+
+            .combo-opcion:last-child {
+                border-bottom: none;
+            }
+
+            .combo-opcion:hover,
+            .combo-opcion.seleccionada {
+                background: #eaf4fd;
+            }
+
+            .combo-nombre {
+                display: block;
+
+                color: #16374f;
+
+                font-size: 14px;
+
+                font-weight: bold;
+            }
+
+            .combo-detalle {
+                display: block;
+
+                margin-top: 3px;
+
+                color: #607d8b;
+
+                font-size: 12px;
+            }
+
+            .combo-sin-resultados {
+                padding: 14px;
+
+                text-align: center;
+
+                color: #78909c;
+
+                font-size: 13px;
+            }
+
+            .datos-colaboradores {
+                display: none;
+            }
+
+
+            /* =====================================================
+               INFORMACIÓN COLABORADOR
                ===================================================== */
 
             .info-colaborador {
                 background: #eef6fb;
 
-                border-left: 4px solid #0f5ca8;
+                border-left:
+                    4px solid #0f5ca8;
 
                 border-radius: 5px;
 
@@ -261,8 +409,9 @@
                 margin: 5px 0;
             }
 
+
             /* =====================================================
-               REQUISITOS COMPLEMENTARIOS
+               REQUISITOS
                ===================================================== */
 
             .lista-requisitos {
@@ -280,7 +429,8 @@
 
                 color: #28642f;
 
-                border: 1px solid #cce5ce;
+                border:
+                    1px solid #cce5ce;
 
                 padding: 8px 12px;
 
@@ -291,8 +441,9 @@
                 font-weight: bold;
             }
 
+
             /* =====================================================
-               ACTIVO PRINCIPAL AUTOMÁTICO
+               EQUIPO AUTOMÁTICO
                ===================================================== */
 
             .activo-automatico {
@@ -300,13 +451,35 @@
 
                 background: #f7fbff;
 
-                border: 2px solid #0f5ca8;
+                border:
+                    2px solid #0f5ca8;
 
                 border-radius: 8px;
 
                 padding: 22px;
 
                 margin-top: 15px;
+            }
+
+            .etiqueta-automatico {
+                display: inline-block;
+
+                background: #e7f1fc;
+
+                color: #0f5ca8;
+
+                border:
+                    1px solid #b9d6f2;
+
+                padding: 6px 10px;
+
+                border-radius: 4px;
+
+                font-size: 11px;
+
+                font-weight: bold;
+
+                margin-bottom: 15px;
             }
 
             .activo-automatico-titulo {
@@ -338,26 +511,6 @@
                 color: #37474f;
             }
 
-            .etiqueta-automatico {
-                display: inline-block;
-
-                background: #e7f1fc;
-
-                color: #0f5ca8;
-
-                border: 1px solid #b9d6f2;
-
-                padding: 6px 10px;
-
-                border-radius: 4px;
-
-                font-size: 11px;
-
-                font-weight: bold;
-
-                margin-bottom: 15px;
-            }
-
             .explicacion-automatica {
                 margin-top: 18px;
 
@@ -365,7 +518,8 @@
 
                 background: #eef6fb;
 
-                border-left: 4px solid #0f5ca8;
+                border-left:
+                    4px solid #0f5ca8;
 
                 border-radius: 4px;
 
@@ -375,6 +529,46 @@
 
                 line-height: 1.5;
             }
+
+
+            /* =====================================================
+               SIN EQUIPO / DIAGNÓSTICO
+               ===================================================== */
+
+            .sin-equipo {
+                padding: 18px;
+
+                background: #fff3f3;
+
+                border-left:
+                    4px solid #c62828;
+
+                border-radius: 5px;
+
+                color: #8b1d1d;
+
+                font-size: 14px;
+
+                line-height: 1.6;
+
+                margin-top: 15px;
+            }
+
+            .diagnostico {
+                margin-top: 12px;
+
+                padding: 12px;
+
+                background: #fff;
+
+                border:
+                    1px solid #efcccc;
+
+                border-radius: 5px;
+
+                font-weight: normal;
+            }
+
 
             /* =====================================================
                COMPLEMENTARIOS
@@ -397,7 +591,8 @@
             .activo-card {
                 position: relative;
 
-                border: 1px solid #d9e1e5;
+                border:
+                    1px solid #d9e1e5;
 
                 border-radius: 7px;
 
@@ -410,7 +605,7 @@
                     box-shadow .2s,
                     transform .2s;
 
-                background: #ffffff;
+                background: white;
             }
 
             .activo-card:hover {
@@ -418,9 +613,10 @@
 
                 box-shadow:
                     0 3px 10px
-                    rgba(0, 0, 0, 0.08);
+                    rgba(0,0,0,.08);
 
-                transform: translateY(-1px);
+                transform:
+                    translateY(-1px);
             }
 
             .activo-card input {
@@ -444,7 +640,8 @@
             }
 
             .complementario-card {
-                border-left: 4px solid #628d64;
+                border-left:
+                    4px solid #628d64;
             }
 
             .etiqueta-complemento {
@@ -454,7 +651,8 @@
 
                 color: #28642f;
 
-                border: 1px solid #cce5ce;
+                border:
+                    1px solid #cce5ce;
 
                 padding: 4px 7px;
 
@@ -467,8 +665,9 @@
                 margin-top: 10px;
             }
 
+
             /* =====================================================
-               MENSAJES
+               SIN RESULTADOS
                ===================================================== */
 
             .sin-resultados {
@@ -476,7 +675,8 @@
 
                 background: #fff8e1;
 
-                border-left: 4px solid #e0a800;
+                border-left:
+                    4px solid #e0a800;
 
                 border-radius: 4px;
 
@@ -489,23 +689,6 @@
                 line-height: 1.5;
             }
 
-            .sin-equipo {
-                padding: 18px;
-
-                background: #fff3f3;
-
-                border-left: 4px solid #c62828;
-
-                border-radius: 5px;
-
-                color: #8b1d1d;
-
-                font-size: 14px;
-
-                line-height: 1.6;
-
-                margin-top: 15px;
-            }
 
             /* =====================================================
                BOTONES
@@ -563,97 +746,6 @@
                 background: #dfe3e6;
             }
 
-            /* =====================================================
-               COMBO BUSCABLE DE COLABORADORES
-               ===================================================== */
-
-            .combo-colaborador {
-                position: relative;
-                width: 100%;
-            }
-
-            .combo-input {
-                width: 100%;
-                height: 42px;
-                padding: 11px 42px 11px 12px;
-                border: 1px solid #cfd8dc;
-                border-radius: 5px;
-                background: white;
-                color: #263238;
-                font-size: 14px;
-            }
-
-            .combo-input:focus {
-                outline: none;
-                border-color: #0f5ca8;
-            }
-
-            .combo-flecha {
-                position: absolute;
-                top: 50%;
-                right: 14px;
-                transform: translateY(-50%);
-                color: #263238;
-                font-size: 11px;
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .combo-lista {
-                position: absolute;
-                top: calc(100% + 3px);
-                left: 0;
-                right: 0;
-                z-index: 9999;
-                display: none;
-                max-height: 300px;
-                overflow-y: auto;
-                background: white;
-                border: 1px solid #cfd8dc;
-                border-radius: 5px;
-                box-shadow: 0 5px 15px rgba(0,0,0,.12);
-            }
-
-            .combo-opcion {
-                padding: 10px 14px;
-                border-bottom: 1px solid #edf0f2;
-                cursor: pointer;
-                background: white;
-            }
-
-            .combo-opcion:last-child {
-                border-bottom: none;
-            }
-
-            .combo-opcion:hover,
-            .combo-opcion.seleccionada {
-                background: #eaf4fd;
-            }
-
-            .combo-nombre {
-                display: block;
-                color: #16374f;
-                font-size: 14px;
-                font-weight: bold;
-            }
-
-            .combo-detalle {
-                display: block;
-                margin-top: 3px;
-                color: #607d8b;
-                font-size: 12px;
-            }
-
-            .combo-sin-resultados {
-                padding: 14px;
-                text-align: center;
-                color: #78909c;
-                font-size: 13px;
-            }
-
-            .datos-colaboradores {
-                display: none;
-            }
 
             /* =====================================================
                RESPONSIVE
@@ -667,6 +759,7 @@
 
                 .cabecera-contenido {
                     flex-direction: column;
+
                     align-items: flex-start;
                 }
 
@@ -692,6 +785,7 @@
         </style>
 
     </head>
+
 
     <body>
 
@@ -730,6 +824,7 @@
 
                         </strong>
 
+
                         <span th:if="${esAdministrador}">
                             Administrador
                         </span>
@@ -745,8 +840,9 @@
                     </div>
 
 
-                    <form method="post"
-                          th:action="@{/logout}">
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
 
                         <button
                             type="submit"
@@ -785,9 +881,12 @@
                     Colaboradores
                 </a>
 
-                <a th:href="@{/asignaciones}"
-                   class="activo">
+                <a
+                    th:href="@{/asignaciones}"
+                    class="activo">
+
                     Asignaciones
+
                 </a>
 
                 <a th:href="@{/devoluciones}">
@@ -802,9 +901,12 @@
                     Requisitos
                 </a>
 
-                <a th:if="${esAdministrador}"
-                   th:href="@{/usuarios}">
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+
                     Usuarios
+
                 </a>
 
             </div>
@@ -813,7 +915,7 @@
 
 
         <!-- =====================================================
-             CONTENIDO PRINCIPAL
+             CONTENIDO
              ===================================================== -->
 
         <div class="contenedor">
@@ -835,7 +937,7 @@
 
 
             <!-- =================================================
-                 PASO 1: SELECCIONAR COLABORADOR
+                 1. COLABORADOR
                  ================================================= -->
 
             <div class="tarjeta">
@@ -844,22 +946,27 @@
                     1. Seleccionar colaborador
                 </h3>
 
+
                 <form
                     id="formColaborador"
                     method="get"
                     th:action="@{/asignaciones/nueva}">
 
+
                     <label for="buscarColaborador">
                         Colaborador
                     </label>
 
+
                     <div class="combo-colaborador">
+
 
                         <input
                             type="text"
                             id="buscarColaborador"
                             class="combo-input"
                             autocomplete="off"
+
                             placeholder="-- Seleccione o escriba un colaborador --"
 
                             th:value="${colaboradorSeleccionado != null
@@ -870,6 +977,7 @@
                             : 'Sin código')
                             : ''}">
 
+
                         <span
                             id="flechaCombo"
                             class="combo-flecha">
@@ -877,6 +985,7 @@
                             ▼
 
                         </span>
+
 
                         <input
                             type="hidden"
@@ -887,12 +996,16 @@
                             ? colaboradorSeleccionado.idColaborador
                             : ''}">
 
+
                         <div
                             id="listaColaboradores"
                             class="combo-lista">
                         </div>
 
                     </div>
+
+
+                    <!-- DATOS OCULTOS -->
 
                     <div class="datos-colaboradores">
 
@@ -921,15 +1034,13 @@
 
 
             <!-- =================================================
-                 SOLO MOSTRAR SI HAY COLABORADOR
+                 SI EXISTE COLABORADOR
                  ================================================= -->
 
             <div th:if="${colaboradorSeleccionado != null}">
 
 
-                <!-- =============================================
-                     INFORMACIÓN DEL COLABORADOR
-                     ============================================= -->
+                <!-- INFORMACIÓN -->
 
                 <div class="info-colaborador">
 
@@ -976,9 +1087,9 @@
                 </div>
 
 
-                <!-- =============================================
-                     COMPLEMENTOS CONFIGURADOS
-                     ============================================= -->
+                <!-- =================================================
+                     COMPLEMENTOS SUGERIDOS
+                     ================================================= -->
 
                 <div class="tarjeta">
 
@@ -1027,25 +1138,24 @@
                 </div>
 
 
-                <!-- =============================================
-                     FORMULARIO DE ASIGNACIÓN
-                     ============================================= -->
+                <!-- =================================================
+                     FORMULARIO ASIGNACIÓN
+                     ================================================= -->
 
-                <form method="post"
-                      th:action="@{/asignaciones/guardar}"
-                      th:object="${asignacion}">
+                <form
+                    method="post"
+                    th:action="@{/asignaciones/guardar}"
+                    th:object="${asignacion}">
 
-
-                    <!-- ID DEL COLABORADOR -->
 
                     <input
                         type="hidden"
                         th:field="*{colaborador.idColaborador}">
 
 
-                    <!-- =========================================
-                         PASO 2: EQUIPO PRINCIPAL AUTOMÁTICO
-                         ========================================= -->
+                    <!-- =================================================
+                         2. EQUIPO AUTOMÁTICO
+                         ================================================= -->
 
                     <div class="tarjeta">
 
@@ -1054,7 +1164,9 @@
                         </h3>
 
 
-                        <!-- EXISTE EQUIPO PRINCIPAL -->
+                        <!-- =================================================
+                             EQUIPO ENCONTRADO
+                             ================================================= -->
 
                         <div
                             th:if="${activoPrincipalAutomatico != null}">
@@ -1072,17 +1184,21 @@
 
                                 <div class="activo-automatico-titulo">
 
+
                                     <span
                                         th:text="${activoPrincipalAutomatico.numeroInventario}">
                                     </span>
 
+
                                     -
+
 
                                     <span
                                         th:text="${activoPrincipalAutomatico.modelo != null
                                         ? activoPrincipalAutomatico.modelo
                                         : 'Modelo no registrado'}">
                                     </span>
+
 
                                 </div>
 
@@ -1174,7 +1290,7 @@
                                         <span
                                             th:text="${activoPrincipalAutomatico.generacionProcesador != null
                                             ? activoPrincipalAutomatico.generacionProcesador
-                                            : 'Pendiente'}">
+                                            : '-'}">
                                         </span>
 
                                     </div>
@@ -1248,10 +1364,9 @@
                                     porque cumple los requisitos técnicos
                                     configurados para el cargo del colaborador.
 
-                                    El sistema prioriza un equipo compatible que
-                                    se ajuste lo más posible a la generación,
-                                    procesador, memoria RAM y almacenamiento
-                                    requeridos.
+                                    El sistema prioriza el equipo compatible
+                                    que mejor se ajusta a los requisitos
+                                    configurados.
 
                                 </div>
 
@@ -1260,60 +1375,58 @@
                         </div>
 
 
-                        <!-- NO EXISTE EQUIPO -->
+                        <!-- =================================================
+                             NO SE ENCONTRÓ EQUIPO
+                             ================================================= -->
 
                         <div
                             class="sin-equipo"
 
                             th:if="${activoPrincipalAutomatico == null}">
 
+
                             <strong>
-                                No existe un equipo principal compatible.
+                                No se pudo seleccionar un equipo
+                                principal automáticamente.
                             </strong>
 
-                            <br><br>
 
-                            Actualmente no hay un activo disponible que cumpla
-                            todos los requisitos configurados para el cargo
-                            seleccionado.
+                            <div
+                                class="diagnostico"
 
-                            <br><br>
+                                th:if="${mensajeRecomendacion != null}">
 
-                            Verifique:
+                                <span
+                                    th:text="${mensajeRecomendacion}">
+                                </span>
 
-                            <br>
+                            </div>
 
-                            • disponibilidad del equipo;
 
-                            <br>
+                            <div
+                                class="diagnostico"
 
-                            • procesador;
+                                th:if="${mensajeRecomendacion == null}">
 
-                            <br>
+                                No existe actualmente un activo compatible
+                                con los requisitos configurados para este cargo.
 
-                            • generación mínima;
+                            </div>
 
-                            <br>
-
-                            • memoria RAM;
 
                             <br>
 
-                            • almacenamiento.
-
-                            <br><br>
-
-                            La asignación no podrá confirmarse hasta que exista
-                            un equipo compatible.
+                            Verifique la configuración del cargo
+                            y los equipos registrados en Inventario.
 
                         </div>
 
                     </div>
 
 
-                    <!-- =========================================
-                         PASO 3: COMPLEMENTARIOS
-                         ========================================= -->
+                    <!-- =================================================
+                         3. COMPLEMENTARIOS
+                         ================================================= -->
 
                     <div class="tarjeta">
 
@@ -1325,13 +1438,12 @@
                         <p style="font-size:14px; color:#607d8b;">
 
                             Los complementos son opcionales.
-                            Puede seleccionar los activos adicionales que
-                            correspondan al colaborador según disponibilidad.
+                            Puede seleccionar los activos adicionales
+                            que correspondan al colaborador según
+                            disponibilidad.
 
                         </p>
 
-
-                        <!-- EXISTEN COMPLEMENTARIOS -->
 
                         <div
                             class="lista-activos"
@@ -1413,8 +1525,7 @@
                                     </div>
 
 
-                                    <span
-                                        class="etiqueta-complemento">
+                                    <span class="etiqueta-complemento">
 
                                         COMPLEMENTARIO
 
@@ -1426,8 +1537,6 @@
 
                         </div>
 
-
-                        <!-- NO EXISTEN COMPLEMENTARIOS -->
 
                         <div
                             class="sin-resultados"
@@ -1443,9 +1552,9 @@
                     </div>
 
 
-                    <!-- =========================================
-                         OBSERVACIONES
-                         ========================================= -->
+                    <!-- =================================================
+                         4. OBSERVACIONES
+                         ================================================= -->
 
                     <div class="tarjeta">
 
@@ -1468,9 +1577,9 @@
                     </div>
 
 
-                    <!-- =========================================
+                    <!-- =================================================
                          BOTONES
-                         ========================================= -->
+                         ================================================= -->
 
                     <div class="acciones">
 
@@ -1506,7 +1615,7 @@
 
 
         <!-- =====================================================
-             COMBO BUSCABLE DE COLABORADORES
+             BUSCADOR DE COLABORADORES
              ===================================================== -->
 
         <script>
@@ -1515,30 +1624,36 @@
                     "DOMContentLoaded",
                     function () {
 
+
                         const buscador
                                 = document.getElementById(
                                         "buscarColaborador"
                                         );
+
 
                         const lista
                                 = document.getElementById(
                                         "listaColaboradores"
                                         );
 
+
                         const inputId
                                 = document.getElementById(
                                         "colaboradorId"
                                         );
+
 
                         const formulario
                                 = document.getElementById(
                                         "formColaborador"
                                         );
 
+
                         const flecha
                                 = document.getElementById(
                                         "flechaCombo"
                                         );
+
 
                         const datosHTML
                                 = document.querySelectorAll(
@@ -1551,7 +1666,6 @@
                                 || !lista
                                 || !inputId
                                 || !formulario
-                                || !flecha
                                 ) {
 
                             return;
@@ -1565,6 +1679,7 @@
                                 .map(
                                         function (
                                                 elemento) {
+
 
                                             return {
 
@@ -1594,17 +1709,23 @@
 
 
                         /*
-                         * =============================================
+                         * =================================================
                          * NORMALIZAR
-                         * =============================================
+                         * =================================================
                          */
 
                         function normalizar(
                                 texto) {
 
+
                             return (texto || "")
+
                                     .toLowerCase()
-                                    .normalize("NFD")
+
+                                    .normalize(
+                                            "NFD"
+                                            )
+
                                     .replace(
                                             /[\u0300-\u036f]/g,
                                             ""
@@ -1614,15 +1735,17 @@
 
 
                         /*
-                         * =============================================
-                         * CERRAR LISTA
-                         * =============================================
+                         * =================================================
+                         * CERRAR
+                         * =================================================
                          */
 
                         function cerrarLista() {
 
+
                             lista.style.display
                                     = "none";
+
 
                             indiceSeleccionado
                                     = -1;
@@ -1631,16 +1754,18 @@
 
 
                         /*
-                         * =============================================
+                         * =================================================
                          * SELECCIONAR
-                         * =============================================
+                         * =================================================
                          */
 
                         function seleccionarColaborador(
                                 colaborador) {
 
+
                             buscador.value
-                                    = colaborador.nombre
+                                    =
+                                    colaborador.nombre
                                     + " - "
                                     + (
                                             colaborador.codigo
@@ -1649,54 +1774,88 @@
 
 
                             inputId.value
-                                    = colaborador.id;
+                                    =
+                                    colaborador.id;
 
 
                             cerrarLista();
 
 
+                            /*
+                             * Carga automáticamente
+                             * la recomendación.
+                             */
                             formulario.submit();
 
                         }
 
 
                         /*
-                         * =============================================
+                         * =================================================
                          * MOSTRAR RESULTADOS
-                         * =============================================
+                         * =================================================
                          */
 
                         function mostrarResultados(
-                                mostrarTodos = false) {
+                                mostrarTodos) {
+
 
                             const textoBusqueda
-                                    = mostrarTodos
+                                    =
+                                    mostrarTodos
+
                                     ? ""
+
                                     : normalizar(
                                             buscador.value.trim()
                                             );
 
 
-                            inputId.value
-                                    = "";
+                            /*
+                             * Si está escribiendo,
+                             * invalidar la selección anterior.
+                             */
+
+                            if (!mostrarTodos) {
+
+                                inputId.value
+                                        = "";
+                            }
 
 
                             const coincidencias
-                                    = colaboradores
+                                    =
+                                    colaboradores
+
                                     .filter(
                                             function (
                                                     colaborador) {
 
+
+                                                /*
+                                                 * Mostrar todos.
+                                                 */
+
                                                 if (
-                                                        textoBusqueda === ""
+                                                        textoBusqueda
+                                                        === ""
                                                         ) {
 
                                                     return true;
                                                 }
 
 
+                                                /*
+                                                 * Buscar por:
+                                                 *
+                                                 * nombre
+                                                 * código
+                                                 * cargo
+                                                 */
+
                                                 const textoCompleto
-                                                        = normalizar(
+                                                        =
+                                                        normalizar(
                                                                 colaborador.nombre
                                                                 + " "
                                                                 + colaborador.codigo
@@ -1713,9 +1872,15 @@
 
                                             }
                                     )
+
+
+                                    /*
+                                     * Máximo 15 resultados.
+                                     */
+
                                     .slice(
                                             0,
-                                            12
+                                            15
                                             );
 
 
@@ -1728,17 +1893,20 @@
 
 
                             /*
-                             * =========================================
+                             * =================================================
                              * SIN RESULTADOS
-                             * =========================================
+                             * =================================================
                              */
 
                             if (
-                                    coincidencias.length === 0
+                                    coincidencias.length
+                                    === 0
                                     ) {
 
+
                                 const mensaje
-                                        = document.createElement(
+                                        =
+                                        document.createElement(
                                                 "div"
                                                 );
 
@@ -1759,25 +1927,29 @@
 
 
                                 lista.style.display
-                                        = "block";
+                                        =
+                                        "block";
 
 
                                 return;
+
                             }
 
 
                             /*
-                             * =========================================
+                             * =================================================
                              * CREAR OPCIONES
-                             * =========================================
+                             * =================================================
                              */
 
                             coincidencias.forEach(
                                     function (
                                             colaborador) {
 
+
                                         const opcion
-                                                = document.createElement(
+                                                =
+                                                document.createElement(
                                                         "div"
                                                         );
 
@@ -1787,8 +1959,13 @@
                                                 "combo-opcion";
 
 
+                                        /*
+                                         * Nombre.
+                                         */
+
                                         const nombre
-                                                = document.createElement(
+                                                =
+                                                document.createElement(
                                                         "span"
                                                         );
 
@@ -1803,8 +1980,13 @@
                                                 colaborador.nombre;
 
 
+                                        /*
+                                         * Detalle.
+                                         */
+
                                         const detalle
-                                                = document.createElement(
+                                                =
+                                                document.createElement(
                                                         "span"
                                                         );
 
@@ -1835,10 +2017,15 @@
                                                 );
 
 
+                                        /*
+                                         * Seleccionar.
+                                         */
+
                                         opcion.addEventListener(
                                                 "mousedown",
                                                 function (
                                                         evento) {
+
 
                                                     evento.preventDefault();
 
@@ -1860,31 +2047,36 @@
 
 
                             lista.style.display
-                                    = "block";
+                                    =
+                                    "block";
 
                         }
 
 
                         /*
-                         * =============================================
-                         * AL HACER CLIC EN EL CAMPO
-                         * =============================================
+                         * =================================================
+                         * AL HACER CLIC
+                         * =================================================
                          */
 
                         buscador.addEventListener(
                                 "focus",
                                 function () {
 
+
                                     if (
                                             buscador.value.trim()
                                             === ""
                                             ) {
 
+
                                         mostrarResultados(
                                                 true
                                                 );
 
+
                                     } else {
+
 
                                         mostrarResultados(
                                                 false
@@ -1897,20 +2089,15 @@
 
 
                         /*
-                         * =============================================
+                         * =================================================
                          * AL ESCRIBIR
-                         * =============================================
-                         *
-                         * Busca por:
-                         *
-                         * - nombre;
-                         * - código;
-                         * - cargo.
+                         * =================================================
                          */
 
                         buscador.addEventListener(
                                 "input",
                                 function () {
+
 
                                     mostrarResultados(
                                             false
@@ -1921,58 +2108,56 @@
 
 
                         /*
-                         * =============================================
-                         * FLECHA DEL COMBO
-                         * =============================================
+                         * =================================================
+                         * FLECHA
+                         * =================================================
                          */
 
-                        flecha.addEventListener(
-                                "mousedown",
-                                function (
-                                        evento) {
-
-                                    evento.preventDefault();
-
-                                    evento.stopPropagation();
+                        if (flecha) {
 
 
-                                    const estaAbierto
-                                            =
-                                            lista.style.display
-                                            === "block";
+                            flecha.addEventListener(
+                                    "mousedown",
+                                    function (
+                                            evento) {
 
 
-                                    if (
-                                            estaAbierto
-                                            ) {
+                                        evento.preventDefault();
 
-                                        cerrarLista();
-
-                                    } else {
-
-                                        buscador.focus();
+                                        evento.stopPropagation();
 
 
-                                        /*
-                                         * Al presionar la flecha
-                                         * muestra los primeros
-                                         * colaboradores.
-                                         */
+                                        if (
+                                                lista.style.display
+                                                === "block"
+                                                ) {
 
-                                        mostrarResultados(
-                                                true
-                                                );
+
+                                            cerrarLista();
+
+
+                                        } else {
+
+
+                                            buscador.focus();
+
+
+                                            mostrarResultados(
+                                                    true
+                                                    );
+
+                                        }
 
                                     }
+                            );
 
-                                }
-                        );
+                        }
 
 
                         /*
-                         * =============================================
+                         * =================================================
                          * TECLADO
-                         * =============================================
+                         * =================================================
                          */
 
                         buscador.addEventListener(
@@ -1980,8 +2165,10 @@
                                 function (
                                         evento) {
 
+
                                     const opciones
-                                            = Array.from(
+                                            =
+                                            Array.from(
                                                     lista.querySelectorAll(
                                                             ".combo-opcion"
                                                             )
@@ -1998,14 +2185,17 @@
                                             === "Escape"
                                             ) {
 
+
                                         cerrarLista();
 
+
                                         return;
+
                                     }
 
 
                                     /*
-                                     * FLECHA ABAJO
+                                     * ↓
                                      */
 
                                     if (
@@ -2014,32 +2204,28 @@
                                             ) {
 
 
+                                        evento.preventDefault();
+
+
                                         if (
                                                 lista.style.display
                                                 !== "block"
                                                 ) {
 
+
                                             mostrarResultados(
                                                     false
                                                     );
 
-                                            return;
-                                        }
-
-
-                                        if (
-                                                opciones.length === 0
-                                                ) {
 
                                             return;
+
                                         }
-
-
-                                        evento.preventDefault();
 
 
                                         indiceSeleccionado
-                                                = Math.min(
+                                                =
+                                                Math.min(
                                                         indiceSeleccionado
                                                         + 1,
                                                         opciones.length
@@ -2049,7 +2235,7 @@
 
 
                                         /*
-                                         * FLECHA ARRIBA
+                                         * ↑
                                          */
 
                                     } else if (
@@ -2058,19 +2244,12 @@
                                             ) {
 
 
-                                        if (
-                                                opciones.length === 0
-                                                ) {
-
-                                            return;
-                                        }
-
-
                                         evento.preventDefault();
 
 
                                         indiceSeleccionado
-                                                = Math.max(
+                                                =
+                                                Math.max(
                                                         indiceSeleccionado
                                                         - 1,
                                                         0
@@ -2125,9 +2304,7 @@
 
 
                                     /*
-                                     * =====================================
-                                     * RESALTAR OPCIÓN
-                                     * =====================================
+                                     * Resaltar.
                                      */
 
                                     opciones.forEach(
@@ -2136,14 +2313,12 @@
                                                     indice) {
 
 
-                                                opcion
-                                                        .classList
-                                                        .toggle(
-                                                                "seleccionada",
-                                                                indice
-                                                                === indiceSeleccionado
+                                                opcion.classList.toggle(
+                                                        "seleccionada",
+                                                        indice
+                                                        === indiceSeleccionado
 
-                                                                );
+                                                        );
 
                                             }
                                     );
@@ -2177,9 +2352,9 @@
 
 
                         /*
-                         * =============================================
-                         * CERRAR AL HACER CLIC FUERA
-                         * =============================================
+                         * =================================================
+                         * CERRAR HACIENDO CLIC FUERA
+                         * =================================================
                          */
 
                         document.addEventListener(
@@ -2202,10 +2377,12 @@
                                 }
                         );
 
+
                     }
             );
 
         </script>
+
 
     </body>
 

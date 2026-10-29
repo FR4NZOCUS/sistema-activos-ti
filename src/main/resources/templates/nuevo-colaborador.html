@@ -260,6 +260,7 @@
 
     <body>
 
+
         <header class="header">
 
             <div class="header-contenido">
@@ -371,9 +372,15 @@
 
             <div class="tarjeta">
 
-                <h2>
+                <h2
+                    th:text="${colaborador.idColaborador != null
+                    ? 'Editar colaborador'
+                    : 'Nuevo colaborador'}">
+
                     Nuevo colaborador
+
                 </h2>
+
 
                 <p class="descripcion">
 
@@ -388,6 +395,22 @@
                     th:action="@{/colaboradores/guardar}"
                     th:object="${colaborador}"
                     method="post">
+
+
+                    <!-- =========================================
+                         IMPORTANTE PARA EDICIÓN
+                         =========================================
+        
+                         Si el colaborador ya existe,
+                         conserva su ID.
+        
+                         Sin este campo Spring puede intentar
+                         crear un colaborador nuevo.
+                         ========================================= -->
+
+                    <input
+                        type="hidden"
+                        th:field="*{idColaborador}">
 
 
                     <div class="form-grid">
@@ -531,7 +554,7 @@
 
 
                         <!-- =========================================
-                             UBICACIÓN ORGANIZACIONAL
+                             INFORMACIÓN ORGANIZACIONAL
                              ========================================= -->
 
                         <div class="subtitulo">
@@ -549,7 +572,7 @@
                                 th:field="*{centroCosto.idCentroCosto}">
 
                                 <option value="">
-                                    Sin asignar
+                                    -- Sin asignar --
                                 </option>
 
                                 <option
@@ -652,7 +675,10 @@
 
                         <button
                             type="submit"
-                            class="btn btn-guardar">
+                            class="btn btn-guardar"
+                            th:text="${colaborador.idColaborador != null
+                            ? 'Guardar cambios'
+                            : 'Guardar colaborador'}">
 
                             Guardar colaborador
 

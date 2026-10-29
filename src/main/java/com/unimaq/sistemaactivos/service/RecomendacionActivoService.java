@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 public class RecomendacionActivoService {
 
     private final ActivoRepository activoRepository;
+
     private final ColaboradorRepository colaboradorRepository;
+
     private final RequisitoCargoRepository requisitoCargoRepository;
 
     public RecomendacionActivoService(
@@ -26,28 +28,45 @@ public class RecomendacionActivoService {
             ColaboradorRepository colaboradorRepository,
             RequisitoCargoRepository requisitoCargoRepository) {
 
-        this.activoRepository = activoRepository;
-        this.colaboradorRepository = colaboradorRepository;
-        this.requisitoCargoRepository = requisitoCargoRepository;
+        this.activoRepository
+                = activoRepository;
+
+        this.colaboradorRepository
+                = colaboradorRepository;
+
+        this.requisitoCargoRepository
+                = requisitoCargoRepository;
     }
 
 
     /*
      * =====================================================
-     * EQUIPOS PRINCIPALES RECOMENDADOS
+     * OBTENER EQUIPOS RECOMENDADOS
      * =====================================================
      */
     public List<Activo> obtenerRecomendados(
             Integer idColaborador) {
 
         Colaborador colaborador
-                = buscarColaborador(idColaborador);
+                = buscarColaborador(
+                        idColaborador
+                );
 
+
+        /*
+         * El colaborador debe tener cargo.
+         */
         if (colaborador.getCargo() == null) {
 
             return new ArrayList<>();
         }
 
+
+        /*
+         * =================================================
+         * REQUISITOS PRINCIPALES DEL CARGO
+         * =================================================
+         */
         List<RequisitoCargo> requisitosPrincipales
                 = requisitoCargoRepository
                         .findByCargoIdCargoAndTipoRequisito(
@@ -57,24 +76,51 @@ public class RecomendacionActivoService {
                                 "PRINCIPAL"
                         );
 
+
+        /*
+         * Si el cargo no tiene un requisito PRINCIPAL,
+         * no podemos seleccionar automáticamente.
+         */
         if (requisitosPrincipales == null
                 || requisitosPrincipales.isEmpty()) {
 
             return new ArrayList<>();
         }
 
+
+        /*
+         * =================================================
+         * EQUIPOS DISPONIBLES
+         * =================================================
+         */
         List<Activo> disponibles
                 = activoRepository
                         .findByEstadoNombreEstado(
                                 "DISPONIBLE"
                         );
 
+        if (disponibles == null
+                || disponibles.isEmpty()) {
+
+            return new ArrayList<>();
+        }
+
+
+        /*
+         * =================================================
+         * FILTRAR EQUIPOS COMPATIBLES
+         * =================================================
+         */
         List<Activo> recomendados
                 = filtrarActivos(
                         disponibles,
                         requisitosPrincipales
                 );
 
+
+        /*
+         * Ordenar de mejor a peor opción.
+         */
         ordenarActivosPrincipales(
                 recomendados,
                 requisitosPrincipales
@@ -86,21 +132,151 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * SELECCIÓN AUTOMÁTICA DEL ACTIVO PRINCIPAL
+     * ACTIVO PRINCIPAL AUTOMÁTICO
      * =====================================================
      */
     public Activo obtenerActivoPrincipalAutomatico(
             Integer idColaborador) {
 
         List<Activo> recomendados
-                = obtenerRecomendados(idColaborador);
+                = obtenerRecomendados(
+                        idColaborador
+                );
 
-        if (recomendados.isEmpty()) {
+        if (recomendados == null
+                || recomendados.isEmpty()) {
 
             return null;
         }
 
+
+        /*
+         * El primero representa el equipo
+         * más adecuado.
+         */
         return recomendados.get(0);
+    }
+
+
+    /*
+     * =====================================================
+     * DIAGNÓSTICO DE LA RECOMENDACIÓN
+     * =====================================================
+     *
+     * Permite distinguir entre:
+     *
+     * - colaborador sin cargo;
+     * - cargo sin requisito PRINCIPAL;
+     * - falta de stock;
+     * - equipos disponibles pero incompatibles;
+     * - equipo encontrado correctamente.
+     */
+    public String obtenerDiagnostico(
+            Integer idColaborador) {
+
+        Colaborador colaborador
+                = buscarColaborador(
+                        idColaborador
+                );
+
+
+        /*
+         * =================================================
+         * SIN CARGO
+         * =================================================
+         */
+        if (colaborador.getCargo() == null) {
+
+            return "El colaborador no tiene un cargo asignado.";
+        }
+
+
+        /*
+         * =================================================
+         * BUSCAR REQUISITOS
+         * =================================================
+         */
+        List<RequisitoCargo> requisitos
+                = requisitoCargoRepository
+                        .findByCargoIdCargoAndTipoRequisito(
+                                colaborador
+                                        .getCargo()
+                                        .getIdCargo(),
+                                "PRINCIPAL"
+                        );
+
+
+        /*
+         * =================================================
+         * CARGO SIN REQUISITO PRINCIPAL
+         * =================================================
+         */
+        if (requisitos == null
+                || requisitos.isEmpty()) {
+
+            return "El cargo "
+                    + colaborador
+                            .getCargo()
+                            .getNombreCargo()
+                    + " no tiene un requisito PRINCIPAL configurado.";
+        }
+
+
+        /*
+         * =================================================
+         * BUSCAR STOCK DISPONIBLE
+         * =================================================
+         */
+        List<Activo> disponibles
+                = activoRepository
+                        .findByEstadoNombreEstado(
+                                "DISPONIBLE"
+                        );
+
+
+        /*
+         * =================================================
+         * SIN STOCK
+         * =================================================
+         */
+        if (disponibles == null
+                || disponibles.isEmpty()) {
+
+            return "Actualmente no existen activos "
+                    + "con estado DISPONIBLE.";
+        }
+
+
+        /*
+         * =================================================
+         * COMPROBAR COMPATIBILIDAD
+         * =================================================
+         */
+        List<Activo> recomendados
+                = filtrarActivos(
+                        disponibles,
+                        requisitos
+                );
+
+        if (recomendados.isEmpty()) {
+
+            return "Existen "
+                    + disponibles.size()
+                    + " activos DISPONIBLES, pero ninguno "
+                    + "cumple completamente los requisitos "
+                    + "del cargo "
+                    + colaborador
+                            .getCargo()
+                            .getNombreCargo()
+                    + ". Revise tipo de equipo, procesador, "
+                    + "generación, RAM y almacenamiento.";
+        }
+
+
+        /*
+         * Todo correcto.
+         */
+        return null;
     }
 
 
@@ -113,7 +289,9 @@ public class RecomendacionActivoService {
             Integer idColaborador) {
 
         Colaborador colaborador
-                = buscarColaborador(idColaborador);
+                = buscarColaborador(
+                        idColaborador
+                );
 
         if (colaborador.getCargo() == null) {
 
@@ -132,14 +310,16 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * ACTIVOS COMPLEMENTARIOS DISPONIBLES
+     * ACTIVOS COMPLEMENTARIOS
      * =====================================================
      */
     public List<Activo> obtenerActivosComplementarios(
             Integer idColaborador) {
 
         Colaborador colaborador
-                = buscarColaborador(idColaborador);
+                = buscarColaborador(
+                        idColaborador
+                );
 
         if (colaborador.getCargo() == null) {
 
@@ -154,6 +334,17 @@ public class RecomendacionActivoService {
                                         .getIdCargo(),
                                 "COMPLEMENTARIO"
                         );
+
+
+        /*
+         * Si no existen requisitos complementarios,
+         * devolver lista vacía.
+         */
+        if (requisitosComplementarios == null
+                || requisitosComplementarios.isEmpty()) {
+
+            return new ArrayList<>();
+        }
 
         List<Activo> disponibles
                 = activoRepository
@@ -181,22 +372,39 @@ public class RecomendacionActivoService {
                 = new ArrayList<>();
 
         if (activos == null
-                || requisitos == null
+                || activos.isEmpty()) {
+
+            return resultado;
+        }
+
+        if (requisitos == null
                 || requisitos.isEmpty()) {
 
             return resultado;
         }
 
+
+        /*
+         * Evaluar cada activo.
+         */
         for (Activo activo : activos) {
 
-            for (RequisitoCargo requisito : requisitos) {
+            for (RequisitoCargo requisito
+                    : requisitos) {
 
                 if (cumpleRequisito(
                         activo,
                         requisito)) {
 
-                    resultado.add(activo);
+                    resultado.add(
+                            activo
+                    );
 
+
+                    /*
+                     * No agregar el mismo equipo
+                     * más de una vez.
+                     */
                     break;
                 }
             }
@@ -214,12 +422,6 @@ public class RecomendacionActivoService {
     private boolean cumpleRequisito(
             Activo activo,
             RequisitoCargo requisito) {
-
-        if (activo == null
-                || requisito == null) {
-
-            return false;
-        }
 
 
         /*
@@ -268,7 +470,8 @@ public class RecomendacionActivoService {
 
             if (!cumpleProcesador(
                     activo.getProcesador(),
-                    requisito.getProcesadorMinimo())) {
+                    requisito.getProcesadorMinimo()
+            )) {
 
                 return false;
             }
@@ -277,12 +480,14 @@ public class RecomendacionActivoService {
 
         /*
          * =================================================
-         * GENERACIÓN DEL PROCESADOR
+         * GENERACIÓN
          * =================================================
          */
-        if (requisito.getGeneracionMinima() != null) {
+        if (requisito.getGeneracionMinima()
+                != null) {
 
-            if (activo.getGeneracionProcesador() == null) {
+            if (activo.getGeneracionProcesador()
+                    == null) {
 
                 return false;
             }
@@ -300,10 +505,16 @@ public class RecomendacionActivoService {
          * RAM
          * =================================================
          */
-        if (requisito.getRamMinimaGb() != null) {
+        if (requisito.getRamMinimaGb()
+                != null) {
 
-            if (activo.getRamGb() == null
-                    || activo.getRamGb()
+            if (activo.getRamGb()
+                    == null) {
+
+                return false;
+            }
+
+            if (activo.getRamGb()
                     < requisito.getRamMinimaGb()) {
 
                 return false;
@@ -316,12 +527,16 @@ public class RecomendacionActivoService {
          * ALMACENAMIENTO
          * =================================================
          */
-        if (requisito
-                .getAlmacenamientoMinimoGb()
+        if (requisito.getAlmacenamientoMinimoGb()
                 != null) {
 
-            if (activo.getAlmacenamientoGb() == null
-                    || activo.getAlmacenamientoGb()
+            if (activo.getAlmacenamientoGb()
+                    == null) {
+
+                return false;
+            }
+
+            if (activo.getAlmacenamientoGb()
                     < requisito
                             .getAlmacenamientoMinimoGb()) {
 
@@ -329,6 +544,10 @@ public class RecomendacionActivoService {
             }
         }
 
+
+        /*
+         * Cumple todos los criterios.
+         */
         return true;
     }
 
@@ -343,60 +562,67 @@ public class RecomendacionActivoService {
             List<RequisitoCargo> requisitos) {
 
         if (activos == null
-                || activos.isEmpty()
-                || requisitos == null
+                || activos.isEmpty()) {
+
+            return;
+        }
+
+        if (requisitos == null
                 || requisitos.isEmpty()) {
 
             return;
         }
 
+        RequisitoCargo requisitoReferencia
+                = requisitos.get(0);
+
         activos.sort(
                 Comparator
                         /*
-                         * MENOR EXCESO DE GENERACIÓN
+                         * Generación.
                          */
-                        .comparingInt(
+                        .comparing(
                                 (Activo activo)
-                                -> mejorValorGeneracion(
+                                -> valorGeneracionOrden(
                                         activo,
-                                        requisitos
+                                        requisitoReferencia
                                 )
                         )
                         /*
-                         * MENOR EXCESO DE PROCESADOR
+                         * Procesador.
                          */
-                        .thenComparingInt(
-                                (Activo activo)
-                                -> mejorValorProcesador(
+                        .thenComparing(
+                                activo
+                                -> valorProcesadorOrden(
                                         activo,
-                                        requisitos
+                                        requisitoReferencia
                                 )
                         )
                         /*
-                         * MENOR EXCESO DE RAM
+                         * RAM.
                          */
-                        .thenComparingInt(
-                                (Activo activo)
-                                -> mejorValorRam(
+                        .thenComparing(
+                                activo
+                                -> valorRamOrden(
                                         activo,
-                                        requisitos
+                                        requisitoReferencia
                                 )
                         )
                         /*
-                         * MENOR EXCESO DE ALMACENAMIENTO
+                         * Almacenamiento.
                          */
-                        .thenComparingInt(
-                                (Activo activo)
-                                -> mejorValorAlmacenamiento(
+                        .thenComparing(
+                                activo
+                                -> valorAlmacenamientoOrden(
                                         activo,
-                                        requisitos
+                                        requisitoReferencia
                                 )
                         )
                         /*
-                         * CRITERIO FINAL
+                         * ID.
                          */
-                        .thenComparingInt(
-                                (Activo activo)
+                        .thenComparing(
+                                activo
                                 -> activo.getIdActivo() != null
                                 ? activo.getIdActivo()
                                 : Integer.MAX_VALUE
@@ -407,179 +633,36 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * MEJOR VALOR DE GENERACIÓN
-     * =====================================================
-     */
-    private int mejorValorGeneracion(
-            Activo activo,
-            List<RequisitoCargo> requisitos) {
-
-        int mejor
-                = Integer.MAX_VALUE;
-
-        for (RequisitoCargo requisito : requisitos) {
-
-            if (!cumpleRequisito(
-                    activo,
-                    requisito)) {
-
-                continue;
-            }
-
-            int valor
-                    = valorGeneracionOrden(
-                            activo,
-                            requisito
-                    );
-
-            if (valor < mejor) {
-
-                mejor = valor;
-            }
-        }
-
-        return mejor;
-    }
-
-
-    /*
-     * =====================================================
-     * MEJOR VALOR DE PROCESADOR
-     * =====================================================
-     */
-    private int mejorValorProcesador(
-            Activo activo,
-            List<RequisitoCargo> requisitos) {
-
-        int mejor
-                = Integer.MAX_VALUE;
-
-        for (RequisitoCargo requisito : requisitos) {
-
-            if (!cumpleRequisito(
-                    activo,
-                    requisito)) {
-
-                continue;
-            }
-
-            int valor
-                    = valorProcesadorOrden(
-                            activo,
-                            requisito
-                    );
-
-            if (valor < mejor) {
-
-                mejor = valor;
-            }
-        }
-
-        return mejor;
-    }
-
-
-    /*
-     * =====================================================
-     * MEJOR VALOR DE RAM
-     * =====================================================
-     */
-    private int mejorValorRam(
-            Activo activo,
-            List<RequisitoCargo> requisitos) {
-
-        int mejor
-                = Integer.MAX_VALUE;
-
-        for (RequisitoCargo requisito : requisitos) {
-
-            if (!cumpleRequisito(
-                    activo,
-                    requisito)) {
-
-                continue;
-            }
-
-            int valor
-                    = valorRamOrden(
-                            activo,
-                            requisito
-                    );
-
-            if (valor < mejor) {
-
-                mejor = valor;
-            }
-        }
-
-        return mejor;
-    }
-
-
-    /*
-     * =====================================================
-     * MEJOR VALOR DE ALMACENAMIENTO
-     * =====================================================
-     */
-    private int mejorValorAlmacenamiento(
-            Activo activo,
-            List<RequisitoCargo> requisitos) {
-
-        int mejor
-                = Integer.MAX_VALUE;
-
-        for (RequisitoCargo requisito : requisitos) {
-
-            if (!cumpleRequisito(
-                    activo,
-                    requisito)) {
-
-                continue;
-            }
-
-            int valor
-                    = valorAlmacenamientoOrden(
-                            activo,
-                            requisito
-                    );
-
-            if (valor < mejor) {
-
-                mejor = valor;
-            }
-        }
-
-        return mejor;
-    }
-
-
-    /*
-     * =====================================================
-     * VALOR GENERACIÓN
+     * ORDEN GENERACIÓN
      * =====================================================
      */
     private int valorGeneracionOrden(
             Activo activo,
             RequisitoCargo requisito) {
 
-        if (activo.getGeneracionProcesador() == null) {
+        if (activo.getGeneracionProcesador()
+                == null) {
 
             return Integer.MAX_VALUE;
         }
 
-        if (requisito.getGeneracionMinima() == null) {
+        if (requisito.getGeneracionMinima()
+                == null) {
 
-            return 0;
+            return activo
+                    .getGeneracionProcesador();
         }
 
-        return activo.getGeneracionProcesador()
-                - requisito.getGeneracionMinima();
+        return activo
+                .getGeneracionProcesador()
+                - requisito
+                        .getGeneracionMinima();
     }
 
 
     /*
      * =====================================================
-     * VALOR PROCESADOR
+     * ORDEN PROCESADOR
      * =====================================================
      */
     private int valorProcesadorOrden(
@@ -603,7 +686,7 @@ public class RecomendacionActivoService {
 
         if (nivelRequisito == 0) {
 
-            return 0;
+            return nivelActivo;
         }
 
         return nivelActivo
@@ -613,21 +696,23 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * VALOR RAM
+     * ORDEN RAM
      * =====================================================
      */
     private int valorRamOrden(
             Activo activo,
             RequisitoCargo requisito) {
 
-        if (requisito.getRamMinimaGb() == null) {
-
-            return 0;
-        }
-
-        if (activo.getRamGb() == null) {
+        if (activo.getRamGb()
+                == null) {
 
             return Integer.MAX_VALUE;
+        }
+
+        if (requisito.getRamMinimaGb()
+                == null) {
+
+            return activo.getRamGb();
         }
 
         return activo.getRamGb()
@@ -637,26 +722,28 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * VALOR ALMACENAMIENTO
+     * ORDEN ALMACENAMIENTO
      * =====================================================
      */
     private int valorAlmacenamientoOrden(
             Activo activo,
             RequisitoCargo requisito) {
 
-        if (requisito
-                .getAlmacenamientoMinimoGb()
+        if (activo.getAlmacenamientoGb()
                 == null) {
-
-            return 0;
-        }
-
-        if (activo.getAlmacenamientoGb() == null) {
 
             return Integer.MAX_VALUE;
         }
 
-        return activo.getAlmacenamientoGb()
+        if (requisito.getAlmacenamientoMinimoGb()
+                == null) {
+
+            return activo
+                    .getAlmacenamientoGb();
+        }
+
+        return activo
+                .getAlmacenamientoGb()
                 - requisito
                         .getAlmacenamientoMinimoGb();
     }
@@ -671,7 +758,9 @@ public class RecomendacionActivoService {
             Integer idColaborador) {
 
         return colaboradorRepository
-                .findById(idColaborador)
+                .findById(
+                        idColaborador
+                )
                 .orElseThrow(()
                         -> new IllegalArgumentException(
                                 "Colaborador no encontrado."
@@ -682,7 +771,7 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * COMPARACIÓN DE PROCESADORES
+     * COMPARAR PROCESADORES
      * =====================================================
      */
     private boolean cumpleProcesador(
@@ -691,23 +780,19 @@ public class RecomendacionActivoService {
 
 
         /*
-         * No hay requisito de procesador.
-         */
-        if (procesadorMinimo == null
-                || procesadorMinimo.isBlank()) {
-
-            return true;
-        }
-
-
-        /*
-         * Existe requisito.
-         * Por ello el activo debe tener procesador.
+         * Si se exige procesador,
+         * el activo debe tenerlo registrado.
          */
         if (procesadorActivo == null
                 || procesadorActivo.isBlank()) {
 
             return false;
+        }
+
+        if (procesadorMinimo == null
+                || procesadorMinimo.isBlank()) {
+
+            return true;
         }
 
         int nivelActivo
@@ -722,13 +807,14 @@ public class RecomendacionActivoService {
 
 
         /*
-         * Si alguno no puede reconocerse,
-         * no se asigna automáticamente.
+         * Si algún texto no puede clasificarse,
+         * no descartamos el activo solamente
+         * por el nombre del procesador.
          */
         if (nivelActivo == 0
                 || nivelMinimo == 0) {
 
-            return false;
+            return true;
         }
 
         return nivelActivo
@@ -738,19 +824,13 @@ public class RecomendacionActivoService {
 
     /*
      * =====================================================
-     * NIVEL SIMPLIFICADO DE PROCESADOR
+     * NIVEL DEL PROCESADOR
      * =====================================================
-     *
-     * Nivel 4 = i9 / Ryzen 9
-     * Nivel 3 = i7 / Ryzen 7
-     * Nivel 2 = i5 / Ryzen 5
-     * Nivel 1 = i3 / Ryzen 3
      */
     private int obtenerNivelProcesador(
             String procesador) {
 
-        if (procesador == null
-                || procesador.isBlank()) {
+        if (procesador == null) {
 
             return 0;
         }
@@ -761,6 +841,29 @@ public class RecomendacionActivoService {
                         .replace(" ", "")
                         .replace("-", "");
 
+
+        /*
+         * Intel Core Ultra.
+         */
+        if (cpu.contains("ultra9")) {
+
+            return 4;
+        }
+
+        if (cpu.contains("ultra7")) {
+
+            return 3;
+        }
+
+        if (cpu.contains("ultra5")) {
+
+            return 2;
+        }
+
+
+        /*
+         * Intel Core tradicional / Ryzen.
+         */
         if (cpu.contains("i9")
                 || cpu.contains("ryzen9")) {
 

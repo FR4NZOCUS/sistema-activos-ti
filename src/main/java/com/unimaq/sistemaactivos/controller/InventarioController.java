@@ -19,8 +19,10 @@ import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,34 +30,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class InventarioController {
 
-
-    /*
-     * =====================================================
-     * REPOSITORIOS
-     * =====================================================
-     */
     private final ActivoRepository activoRepository;
-
     private final TipoEquipoRepository tipoEquipoRepository;
-
     private final MarcaRepository marcaRepository;
-
     private final EstadoActivoRepository estadoActivoRepository;
-
     private final SedeRepository sedeRepository;
-
     private final UbicacionOperativaRepository ubicacionRepository;
-
     private final CentroCostoRepository centroCostoRepository;
-
     private final HistorialActivoService historialActivoService;
 
-
-    /*
-     * =====================================================
-     * CONSTRUCTOR
-     * =====================================================
-     */
     public InventarioController(
             ActivoRepository activoRepository,
             TipoEquipoRepository tipoEquipoRepository,
@@ -66,73 +49,27 @@ public class InventarioController {
             CentroCostoRepository centroCostoRepository,
             HistorialActivoService historialActivoService) {
 
-        this.activoRepository
-                = activoRepository;
-
-        this.tipoEquipoRepository
-                = tipoEquipoRepository;
-
-        this.marcaRepository
-                = marcaRepository;
-
-        this.estadoActivoRepository
-                = estadoActivoRepository;
-
-        this.sedeRepository
-                = sedeRepository;
-
-        this.ubicacionRepository
-                = ubicacionRepository;
-
-        this.centroCostoRepository
-                = centroCostoRepository;
-
-        this.historialActivoService
-                = historialActivoService;
+        this.activoRepository = activoRepository;
+        this.tipoEquipoRepository = tipoEquipoRepository;
+        this.marcaRepository = marcaRepository;
+        this.estadoActivoRepository = estadoActivoRepository;
+        this.sedeRepository = sedeRepository;
+        this.ubicacionRepository = ubicacionRepository;
+        this.centroCostoRepository = centroCostoRepository;
+        this.historialActivoService = historialActivoService;
     }
 
-
-    /*
-     * =====================================================
-     * LISTAR INVENTARIO
-     * =====================================================
-     */
     @GetMapping("/inventario")
     public String mostrarInventario(
-            @RequestParam(
-                    value = "q",
-                    required = false
-            ) String q,
-            @RequestParam(
-                    value = "tipoId",
-                    required = false
-            ) Integer tipoId,
-            @RequestParam(
-                    value = "marcaId",
-                    required = false
-            ) Integer marcaId,
-            @RequestParam(
-                    value = "estadoId",
-                    required = false
-            ) Integer estadoId,
-            @RequestParam(
-                    value = "sedeId",
-                    required = false
-            ) Integer sedeId,
-            @RequestParam(
-                    value = "page",
-                    defaultValue = "0"
-            ) int page,
-            @RequestParam(
-                    value = "size",
-                    defaultValue = "10"
-            ) int size,
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "tipoId", required = false) Integer tipoId,
+            @RequestParam(value = "marcaId", required = false) Integer marcaId,
+            @RequestParam(value = "estadoId", required = false) Integer estadoId,
+            @RequestParam(value = "sedeId", required = false) Integer sedeId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             Model model) {
 
-
-        /*
-         * Tamaños permitidos.
-         */
         if (size != 10
                 && size != 20
                 && size != 50) {
@@ -141,7 +78,6 @@ public class InventarioController {
         }
 
         if (page < 0) {
-
             page = 0;
         }
 
@@ -156,15 +92,14 @@ public class InventarioController {
                 );
 
         Page<Activo> paginaActivos
-                = activoRepository
-                        .buscarConFiltros(
-                                q,
-                                tipoId,
-                                marcaId,
-                                estadoId,
-                                sedeId,
-                                pageable
-                        );
+                = activoRepository.buscarConFiltros(
+                        q,
+                        tipoId,
+                        marcaId,
+                        estadoId,
+                        sedeId,
+                        pageable
+                );
 
         model.addAttribute(
                 "activos",
@@ -176,10 +111,6 @@ public class InventarioController {
                 paginaActivos
         );
 
-
-        /*
-         * Catálogos para filtros.
-         */
         model.addAttribute(
                 "tiposEquipo",
                 tipoEquipoRepository.findAll()
@@ -200,49 +131,16 @@ public class InventarioController {
                 sedeRepository.findAll()
         );
 
-
-        /*
-         * Mantener filtros seleccionados.
-         */
-        model.addAttribute(
-                "q",
-                q
-        );
-
-        model.addAttribute(
-                "tipoId",
-                tipoId
-        );
-
-        model.addAttribute(
-                "marcaId",
-                marcaId
-        );
-
-        model.addAttribute(
-                "estadoId",
-                estadoId
-        );
-
-        model.addAttribute(
-                "sedeId",
-                sedeId
-        );
-
-        model.addAttribute(
-                "size",
-                size
-        );
+        model.addAttribute("q", q);
+        model.addAttribute("tipoId", tipoId);
+        model.addAttribute("marcaId", marcaId);
+        model.addAttribute("estadoId", estadoId);
+        model.addAttribute("sedeId", sedeId);
+        model.addAttribute("size", size);
 
         return "inventario";
     }
 
-
-    /*
-     * =====================================================
-     * NUEVO ACTIVO
-     * =====================================================
-     */
     @GetMapping("/inventario/nuevo")
     public String mostrarFormularioNuevo(
             Model model) {
@@ -252,25 +150,27 @@ public class InventarioController {
                 new Activo()
         );
 
-        cargarCatalogos(
-                model
-        );
+        cargarCatalogos(model);
 
         return "nuevo-activo";
     }
 
-
-    /*
-     * =====================================================
-     * GUARDAR / ACTUALIZAR ACTIVO
-     * =====================================================
-     */
     @PostMapping("/inventario/guardar")
     public String guardarActivo(
-            Activo formulario,
-            @RequestParam("tipoEquipoId") Integer tipoEquipoId,
-            @RequestParam("marcaId") Integer marcaId,
-            @RequestParam("estadoId") Integer estadoId,
+            @ModelAttribute("activo") Activo formulario,
+            BindingResult bindingResult,
+            @RequestParam(
+                    value = "tipoEquipoId",
+                    required = false
+            ) Integer tipoEquipoId,
+            @RequestParam(
+                    value = "marcaId",
+                    required = false
+            ) Integer marcaId,
+            @RequestParam(
+                    value = "estadoId",
+                    required = false
+            ) Integer estadoId,
             @RequestParam(
                     value = "sedeId",
                     required = false
@@ -282,19 +182,100 @@ public class InventarioController {
             @RequestParam(
                     value = "centroCostoId",
                     required = false
-            ) Integer centroCostoId) {
+            ) Integer centroCostoId,
+            Model model) {
 
+        if (bindingResult.hasErrors()) {
 
-        /*
-         * =================================================
-         * RECUPERAR RELACIONES REALES DE LA BASE DE DATOS
-         * =================================================
-         */
+            System.out.println(
+                    "===== ERRORES DEL FORMULARIO ====="
+            );
+
+            bindingResult
+                    .getAllErrors()
+                    .forEach(
+                            error
+                            -> System.out.println(
+                                    error.toString()
+                            )
+                    );
+
+            cargarCatalogos(model);
+
+            return "nuevo-activo";
+        }
+
+        System.out.println(
+                "===== DATOS RECIBIDOS ====="
+        );
+
+        System.out.println(
+                "Inventario: "
+                + formulario.getNumeroInventario()
+        );
+
+        System.out.println(
+                "Serie: "
+                + formulario.getNumeroSerie()
+        );
+
+        System.out.println(
+                "Tipo equipo ID: "
+                + tipoEquipoId
+        );
+
+        System.out.println(
+                "Marca ID: "
+                + marcaId
+        );
+
+        System.out.println(
+                "Estado ID: "
+                + estadoId
+        );
+
+        System.out.println(
+                "Sede ID: "
+                + sedeId
+        );
+
+        System.out.println(
+                "Ubicación ID: "
+                + ubicacionId
+        );
+
+        System.out.println(
+                "Centro costo ID: "
+                + centroCostoId
+        );
+
+        System.out.println(
+                "Fecha compra: "
+                + formulario.getFechaCompra()
+        );
+
+        System.out.println(
+                "Fecha garantía: "
+                + formulario.getFechaVencimientoGarantia()
+        );
+
+        if (tipoEquipoId == null
+                || marcaId == null
+                || estadoId == null) {
+
+            model.addAttribute(
+                    "error",
+                    "Debe seleccionar tipo de equipo, marca y estado."
+            );
+
+            cargarCatalogos(model);
+
+            return "nuevo-activo";
+        }
+
         var tipoEquipo
                 = tipoEquipoRepository
-                        .findById(
-                                tipoEquipoId
-                        )
+                        .findById(tipoEquipoId)
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Tipo de equipo no encontrado."
@@ -303,9 +284,7 @@ public class InventarioController {
 
         var marca
                 = marcaRepository
-                        .findById(
-                                marcaId
-                        )
+                        .findById(marcaId)
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Marca no encontrada."
@@ -314,99 +293,56 @@ public class InventarioController {
 
         var estado
                 = estadoActivoRepository
-                        .findById(
-                                estadoId
-                        )
+                        .findById(estadoId)
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Estado no encontrado."
                                 )
                         );
 
-
-        /*
-         * Relaciones opcionales.
-         */
         var sede
                 = sedeId != null
                         ? sedeRepository
-                                .findById(
-                                        sedeId
-                                )
-                                .orElseThrow(()
-                                        -> new IllegalArgumentException(
-                                                "Sede no encontrada."
-                                        )
-                                )
+                                .findById(sedeId)
+                                .orElse(null)
                         : null;
 
         var ubicacion
                 = ubicacionId != null
                         ? ubicacionRepository
-                                .findById(
-                                        ubicacionId
-                                )
-                                .orElseThrow(()
-                                        -> new IllegalArgumentException(
-                                                "Ubicación no encontrada."
-                                        )
-                                )
+                                .findById(ubicacionId)
+                                .orElse(null)
                         : null;
 
         var centroCosto
                 = centroCostoId != null
                         ? centroCostoRepository
-                                .findById(
-                                        centroCostoId
-                                )
-                                .orElseThrow(()
-                                        -> new IllegalArgumentException(
-                                                "Centro de costo no encontrado."
-                                        )
-                                )
+                                .findById(centroCostoId)
+                                .orElse(null)
                         : null;
 
-
-        /*
-         * =================================================
-         * EDICIÓN
-         * =================================================
-         */
-        if (formulario.getIdActivo()
-                != null) {
+        if (formulario.getIdActivo() != null) {
 
             Activo existente
                     = activoRepository
                             .findById(
-                                    formulario
-                                            .getIdActivo()
+                                    formulario.getIdActivo()
                             )
                             .orElseThrow(()
                                     -> new IllegalArgumentException(
                                             "Activo no encontrado con ID: "
-                                            + formulario
-                                                    .getIdActivo()
+                                            + formulario.getIdActivo()
                                     )
                             );
 
-
-            /*
-             * Identificación.
-             */
             existente.setNumeroInventario(
-                    formulario
-                            .getNumeroInventario()
+                    formulario.getNumeroInventario()
             );
 
             existente.setNumeroSerie(
-                    formulario
-                            .getNumeroSerie()
+                    formulario.getNumeroSerie()
             );
 
-
-            /*
-             * Clasificación.
-             */
             existente.setTipoEquipo(
                     tipoEquipo
             );
@@ -416,63 +352,33 @@ public class InventarioController {
             );
 
             existente.setModelo(
-                    formulario
-                            .getModelo()
+                    formulario.getModelo()
             );
 
-
-            /*
-             * =================================================
-             * CARACTERÍSTICAS TÉCNICAS
-             * =================================================
-             */
             existente.setProcesador(
-                    formulario
-                            .getProcesador()
+                    formulario.getProcesador()
             );
 
             existente.setGeneracionProcesador(
-                    formulario
-                            .getGeneracionProcesador()
+                    formulario.getGeneracionProcesador()
             );
 
             existente.setRamGb(
-                    formulario
-                            .getRamGb()
+                    formulario.getRamGb()
             );
 
             existente.setAlmacenamientoGb(
-                    formulario
-                            .getAlmacenamientoGb()
+                    formulario.getAlmacenamientoGb()
             );
 
-
-            /*
-             * =================================================
-             * FECHAS
-             * =================================================
-             */
             existente.setFechaCompra(
-                    formulario
-                            .getFechaCompra()
+                    formulario.getFechaCompra()
             );
 
-
-            /*
-             * Permite modificar o eliminar
-             * la fecha de garantía.
-             */
             existente.setFechaVencimientoGarantia(
-                    formulario
-                            .getFechaVencimientoGarantia()
+                    formulario.getFechaVencimientoGarantia()
             );
 
-
-            /*
-             * =================================================
-             * ESTADO Y UBICACIÓN
-             * =================================================
-             */
             existente.setEstado(
                     estado
             );
@@ -485,45 +391,20 @@ public class InventarioController {
                     ubicacion
             );
 
-
-            /*
-             * =================================================
-             * CENTRO DE COSTO
-             * =================================================
-             */
             existente.setCentroCosto(
                     centroCosto
             );
 
-
-            /*
-             * =================================================
-             * OBSERVACIONES
-             * =================================================
-             */
             existente.setObservaciones(
-                    formulario
-                            .getObservaciones()
+                    formulario.getObservaciones()
             );
 
-
-            /*
-             * =================================================
-             * GUARDAR
-             * =================================================
-             */
             activoRepository.save(
                     existente
             );
 
         } else {
 
-
-            /*
-             * =================================================
-             * NUEVO ACTIVO
-             * =================================================
-             */
             formulario.setTipoEquipo(
                     tipoEquipo
             );
@@ -551,18 +432,11 @@ public class InventarioController {
             activoRepository.save(
                     formulario
             );
-
         }
 
         return "redirect:/inventario";
     }
 
-
-    /*
-     * =====================================================
-     * EDITAR ACTIVO
-     * =====================================================
-     */
     @GetMapping("/inventario/editar/{id}")
     public String editarActivo(
             @PathVariable("id") Integer id,
@@ -570,9 +444,7 @@ public class InventarioController {
 
         Activo activo
                 = activoRepository
-                        .findById(
-                                id
-                        )
+                        .findById(id)
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Activo no encontrado con ID: "
@@ -585,19 +457,11 @@ public class InventarioController {
                 activo
         );
 
-        cargarCatalogos(
-                model
-        );
+        cargarCatalogos(model);
 
         return "editar-activo";
     }
 
-
-    /*
-     * =====================================================
-     * VER ACTIVO
-     * =====================================================
-     */
     @GetMapping("/inventario/ver/{id}")
     public String verActivo(
             @PathVariable("id") Integer id,
@@ -605,9 +469,7 @@ public class InventarioController {
 
         Activo activo
                 = activoRepository
-                        .findById(
-                                id
-                        )
+                        .findById(id)
                         .orElseThrow(()
                                 -> new IllegalArgumentException(
                                         "Activo no encontrado con ID: "
@@ -623,20 +485,12 @@ public class InventarioController {
         model.addAttribute(
                 "historial",
                 historialActivoService
-                        .obtenerHistorial(
-                                id
-                        )
+                        .obtenerHistorial(id)
         );
 
         return "ver-activo";
     }
 
-
-    /*
-     * =====================================================
-     * CARGAR CATÁLOGOS
-     * =====================================================
-     */
     private void cargarCatalogos(
             Model model) {
 
@@ -669,7 +523,5 @@ public class InventarioController {
                 "centrosCosto",
                 centroCostoRepository.findAll()
         );
-
     }
-
 }

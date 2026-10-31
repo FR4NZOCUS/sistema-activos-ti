@@ -11,26 +11,17 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "activos")
 public class Activo {
 
-    /*
-     * =====================================================
-     * ID
-     * =====================================================
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_activo")
     private Integer idActivo;
 
-
-    /*
-     * =====================================================
-     * IDENTIFICACIÓN DEL ACTIVO
-     * =====================================================
-     */
     @Column(
             name = "numero_inventario",
             nullable = false,
@@ -44,57 +35,20 @@ public class Activo {
     )
     private String numeroSerie;
 
-
-    /*
-     * =====================================================
-     * TIPO DE EQUIPO
-     * =====================================================
-     */
     @ManyToOne
     @JoinColumn(name = "id_tipo_equipo")
     private TipoEquipo tipoEquipo;
 
-
-    /*
-     * =====================================================
-     * MARCA
-     * =====================================================
-     */
     @ManyToOne
     @JoinColumn(name = "id_marca")
     private Marca marca;
 
-
-    /*
-     * =====================================================
-     * MODELO
-     * =====================================================
-     */
     @Column(name = "modelo")
     private String modelo;
 
-
-    /*
-     * =====================================================
-     * CARACTERÍSTICAS TÉCNICAS
-     * =====================================================
-     */
     @Column(name = "procesador")
     private String procesador;
 
-
-    /*
-     * Generación del procesador.
-     *
-     * Ejemplos:
-     *
-     * Intel Core i7 generación 9  -> 9
-     * Intel Core i7 generación 11 -> 11
-     * Intel Core i7 generación 14 -> 14
-     *
-     * Puede ser NULL mientras el equipo
-     * todavía no haya sido revisado.
-     */
     @Column(name = "generacion_procesador")
     private Integer generacionProcesador;
 
@@ -104,94 +58,47 @@ public class Activo {
     @Column(name = "almacenamiento_gb")
     private Integer almacenamientoGb;
 
-
-    /*
-     * =====================================================
-     * FECHAS
-     * =====================================================
-     */
+    @DateTimeFormat(
+            iso = DateTimeFormat.ISO.DATE
+    )
     @Column(name = "fecha_compra")
     private LocalDate fechaCompra;
 
+    @DateTimeFormat(
+            iso = DateTimeFormat.ISO.DATE
+    )
     @Column(name = "fecha_vencimiento_garantia")
     private LocalDate fechaVencimientoGarantia;
 
-
-    /*
-     * =====================================================
-     * ESTADO
-     * =====================================================
-     */
     @ManyToOne
     @JoinColumn(name = "id_estado")
     private EstadoActivo estado;
 
-
-    /*
-     * =====================================================
-     * SEDE
-     * =====================================================
-     */
     @ManyToOne
     @JoinColumn(name = "id_sede")
     private Sede sede;
 
-
-    /*
-     * =====================================================
-     * UBICACIÓN OPERATIVA
-     * =====================================================
-     */
     @ManyToOne
     @JoinColumn(name = "id_ubicacion")
     private UbicacionOperativa ubicacion;
 
-
-    /*
-     * =====================================================
-     * CENTRO DE COSTO
-     * =====================================================
-     *
-     * Antes se manejaba únicamente como Integer:
-     *
-     * private Integer idCentroCosto;
-     *
-     * Ahora se modela correctamente como relación
-     * con la tabla centros_costo.
-     */
     @ManyToOne
     @JoinColumn(name = "id_centro_costo")
     private CentroCosto centroCosto;
 
-
-    /*
-     * =====================================================
-     * OBSERVACIONES
-     * =====================================================
-     */
     @Column(name = "observaciones")
     private String observaciones;
 
-
-    /*
-     * =====================================================
-     * CONSTRUCTOR
-     * =====================================================
-     */
     public Activo() {
     }
 
-
-    /*
-     * =====================================================
-     * GETTERS Y SETTERS
-     * =====================================================
-     */
     public Integer getIdActivo() {
         return idActivo;
     }
 
-    public void setIdActivo(Integer idActivo) {
+    public void setIdActivo(
+            Integer idActivo) {
+
         this.idActivo = idActivo;
     }
 
@@ -202,7 +109,8 @@ public class Activo {
     public void setNumeroInventario(
             String numeroInventario) {
 
-        this.numeroInventario = numeroInventario;
+        this.numeroInventario
+                = numeroInventario;
     }
 
     public String getNumeroSerie() {
@@ -212,7 +120,8 @@ public class Activo {
     public void setNumeroSerie(
             String numeroSerie) {
 
-        this.numeroSerie = numeroSerie;
+        this.numeroSerie
+                = numeroSerie;
     }
 
     public TipoEquipo getTipoEquipo() {
@@ -222,7 +131,8 @@ public class Activo {
     public void setTipoEquipo(
             TipoEquipo tipoEquipo) {
 
-        this.tipoEquipo = tipoEquipo;
+        this.tipoEquipo
+                = tipoEquipo;
     }
 
     public Marca getMarca() {
@@ -232,7 +142,8 @@ public class Activo {
     public void setMarca(
             Marca marca) {
 
-        this.marca = marca;
+        this.marca
+                = marca;
     }
 
     public String getModelo() {
@@ -242,7 +153,8 @@ public class Activo {
     public void setModelo(
             String modelo) {
 
-        this.modelo = modelo;
+        this.modelo
+                = modelo;
     }
 
     public String getProcesador() {
@@ -252,7 +164,8 @@ public class Activo {
     public void setProcesador(
             String procesador) {
 
-        this.procesador = procesador;
+        this.procesador
+                = procesador;
     }
 
     public Integer getGeneracionProcesador() {
@@ -273,7 +186,8 @@ public class Activo {
     public void setRamGb(
             Integer ramGb) {
 
-        this.ramGb = ramGb;
+        this.ramGb
+                = ramGb;
     }
 
     public Integer getAlmacenamientoGb() {
@@ -294,7 +208,8 @@ public class Activo {
     public void setFechaCompra(
             LocalDate fechaCompra) {
 
-        this.fechaCompra = fechaCompra;
+        this.fechaCompra
+                = fechaCompra;
     }
 
     public LocalDate getFechaVencimientoGarantia() {
@@ -315,7 +230,8 @@ public class Activo {
     public void setEstado(
             EstadoActivo estado) {
 
-        this.estado = estado;
+        this.estado
+                = estado;
     }
 
     public Sede getSede() {
@@ -325,7 +241,8 @@ public class Activo {
     public void setSede(
             Sede sede) {
 
-        this.sede = sede;
+        this.sede
+                = sede;
     }
 
     public UbicacionOperativa getUbicacion() {
@@ -335,7 +252,8 @@ public class Activo {
     public void setUbicacion(
             UbicacionOperativa ubicacion) {
 
-        this.ubicacion = ubicacion;
+        this.ubicacion
+                = ubicacion;
     }
 
     public CentroCosto getCentroCosto() {
@@ -345,7 +263,8 @@ public class Activo {
     public void setCentroCosto(
             CentroCosto centroCosto) {
 
-        this.centroCosto = centroCosto;
+        this.centroCosto
+                = centroCosto;
     }
 
     public String getObservaciones() {
@@ -355,6 +274,7 @@ public class Activo {
     public void setObservaciones(
             String observaciones) {
 
-        this.observaciones = observaciones;
+        this.observaciones
+                = observaciones;
     }
 }

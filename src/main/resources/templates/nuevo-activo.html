@@ -24,10 +24,6 @@
                 color: #263238;
             }
 
-            /* =====================================================
-               CABECERA
-               ===================================================== */
-
             .cabecera {
                 background: #14476b;
                 color: white;
@@ -54,10 +50,6 @@
                 margin: 5px 0 0;
                 font-size: 14px;
             }
-
-            /* =====================================================
-               USUARIO
-               ===================================================== */
 
             .usuario-area {
                 display: flex;
@@ -98,10 +90,6 @@
                 background: #e8edf1;
             }
 
-            /* =====================================================
-               MENÚ
-               ===================================================== */
-
             .nav {
                 background: #0b2f4a;
                 padding: 0 30px;
@@ -137,10 +125,6 @@
                 font-weight: bold;
             }
 
-            /* =====================================================
-               CONTENIDO
-               ===================================================== */
-
             .contenedor {
                 width: 95%;
                 max-width: 1050px;
@@ -171,9 +155,16 @@
                 margin-bottom: 25px;
             }
 
-            /* =====================================================
-               FORMULARIO
-               ===================================================== */
+            .mensaje-error {
+                background: #ffebee;
+                border: 1px solid #ef9a9a;
+                color: #b71c1c;
+
+                padding: 12px 15px;
+                border-radius: 5px;
+
+                margin-bottom: 20px;
+            }
 
             .grid {
                 display: grid;
@@ -239,10 +230,6 @@
                 line-height: 1.4;
             }
 
-            /* =====================================================
-               SUBTÍTULOS
-               ===================================================== */
-
             .subtitulo {
                 grid-column: 1 / -1;
 
@@ -260,10 +247,6 @@
                 font-weight: bold;
             }
 
-            /* =====================================================
-               SECCIÓN TÉCNICA
-               ===================================================== */
-
             .seccion-tecnica {
                 grid-column: 1 / -1;
             }
@@ -280,10 +263,6 @@
             .seccion-oculta {
                 display: none;
             }
-
-            /* =====================================================
-               BOTONES
-               ===================================================== */
 
             .acciones {
                 display: flex;
@@ -329,10 +308,6 @@
                 background: #dfe3e6;
             }
 
-            /* =====================================================
-               RESPONSIVE
-               ===================================================== */
-
             @media(max-width: 750px) {
 
                 .grid {
@@ -369,11 +344,6 @@
 
     <body>
 
-
-        <!-- =====================================================
-             CABECERA
-             ===================================================== -->
-
         <div class="cabecera">
 
             <div class="cabecera-contenido">
@@ -389,7 +359,6 @@
                     </p>
 
                 </div>
-
 
                 <div class="usuario-area">
 
@@ -418,7 +387,6 @@
 
                     </div>
 
-
                     <form
                         method="post"
                         th:action="@{/logout}">
@@ -438,11 +406,6 @@
             </div>
 
         </div>
-
-
-        <!-- =====================================================
-             MENÚ
-             ===================================================== -->
 
         <div class="nav">
 
@@ -492,11 +455,6 @@
 
         </div>
 
-
-        <!-- =====================================================
-             CONTENIDO
-             ===================================================== -->
-
         <div class="contenedor">
 
             <div class="tarjeta">
@@ -510,24 +468,22 @@
                     y características técnicas del activo tecnológico.
                 </p>
 
+                <div
+                    th:if="${error != null}"
+                    class="mensaje-error"
+                    th:text="${error}">
+                </div>
 
                 <form
                     method="post"
                     th:action="@{/inventario/guardar}"
                     th:object="${activo}">
 
-
                     <div class="grid">
-
-
-                        <!-- =================================================
-                             IDENTIFICACIÓN
-                             ================================================= -->
 
                         <div class="subtitulo">
                             Identificación
                         </div>
-
 
                         <div class="campo">
 
@@ -542,7 +498,6 @@
 
                         </div>
 
-
                         <div class="campo">
 
                             <label>
@@ -554,11 +509,6 @@
                                 th:field="*{numeroSerie}">
 
                         </div>
-
-
-                        <!-- =================================================
-                             TIPO DE EQUIPO
-                             ================================================= -->
 
                         <div class="campo">
 
@@ -585,11 +535,6 @@
 
                         </div>
 
-
-                        <!-- =================================================
-                             MARCA
-                             ================================================= -->
-
                         <div class="campo">
 
                             <label>
@@ -614,11 +559,6 @@
 
                         </div>
 
-
-                        <!-- =================================================
-                             MODELO
-                             ================================================= -->
-
                         <div class="campo campo-completo">
 
                             <label>
@@ -632,25 +572,15 @@
 
                         </div>
 
-
-                        <!-- =================================================
-                             CARACTERÍSTICAS TÉCNICAS
-                             ================================================= -->
-
                         <div
                             id="seccionCaracteristicasTecnicas"
                             class="seccion-tecnica">
-
 
                             <div class="subtitulo">
                                 Características técnicas
                             </div>
 
-
                             <div class="grid-tecnico">
-
-
-                                <!-- PROCESADOR -->
 
                                 <div class="campo">
 
@@ -668,9 +598,6 @@
                                     </div>
 
                                 </div>
-
-
-                                <!-- GENERACIÓN -->
 
                                 <div class="campo">
 
@@ -691,9 +618,6 @@
 
                                 </div>
 
-
-                                <!-- RAM -->
-
                                 <div class="campo">
 
                                     <label>
@@ -707,9 +631,6 @@
                                         placeholder="Ej. 16">
 
                                 </div>
-
-
-                                <!-- ALMACENAMIENTO -->
 
                                 <div class="campo">
 
@@ -725,22 +646,13 @@
 
                                 </div>
 
-
                             </div>
 
                         </div>
 
-
-                        <!-- =================================================
-                             ESTADO Y UBICACIÓN
-                             ================================================= -->
-
                         <div class="subtitulo">
                             Estado y ubicación
                         </div>
-
-
-                        <!-- ESTADO -->
 
                         <div class="campo">
 
@@ -766,9 +678,6 @@
 
                         </div>
 
-
-                        <!-- SEDE -->
-
                         <div class="campo">
 
                             <label>
@@ -791,9 +700,6 @@
 
                         </div>
 
-
-                        <!-- UBICACIÓN -->
-
                         <div class="campo">
 
                             <label>
@@ -815,9 +721,6 @@
                             </select>
 
                         </div>
-
-
-                        <!-- CENTRO DE COSTO -->
 
                         <div class="campo">
 
@@ -845,17 +748,9 @@
 
                         </div>
 
-
-                        <!-- =================================================
-                             COMPRA Y GARANTÍA
-                             ================================================= -->
-
                         <div class="subtitulo">
                             Compra y garantía
                         </div>
-
-
-                        <!-- FECHA COMPRA -->
 
                         <div class="campo">
 
@@ -869,9 +764,6 @@
 
                         </div>
 
-
-                        <!-- GARANTÍA -->
-
                         <div class="campo">
 
                             <label>
@@ -883,11 +775,6 @@
                                 th:field="*{fechaVencimientoGarantia}">
 
                         </div>
-
-
-                        <!-- =================================================
-                             OBSERVACIONES
-                             ================================================= -->
 
                         <div class="campo campo-completo">
 
@@ -902,13 +789,7 @@
 
                         </div>
 
-
                     </div>
-
-
-                    <!-- =================================================
-                         BOTONES
-                         ================================================= -->
 
                     <div class="acciones">
 
@@ -920,7 +801,6 @@
 
                         </a>
 
-
                         <button
                             type="submit"
                             class="btn btn-guardar">
@@ -929,9 +809,7 @@
 
                         </button>
 
-
                     </div>
-
 
                 </form>
 
@@ -939,32 +817,23 @@
 
         </div>
 
-
-        <!-- =====================================================
-             MOSTRAR / OCULTAR CAMPOS TÉCNICOS
-             ===================================================== -->
-
         <script>
 
             document.addEventListener(
                     "DOMContentLoaded",
                     function () {
 
-
-                        const tipoEquipo
-                                = document.getElementById(
+                        const tipoEquipo =
+                                document.getElementById(
                                         "tipoEquipo"
                                         );
 
-
-                        const seccionTecnica
-                                = document.getElementById(
+                        const seccionTecnica =
+                                document.getElementById(
                                         "seccionCaracteristicasTecnicas"
                                         );
 
-
                         function actualizarCamposTecnicos() {
-
 
                             if (!tipoEquipo
                                     || !seccionTecnica) {
@@ -972,14 +841,13 @@
                                 return;
                             }
 
-
-                            const opcionSeleccionada
-                                    = tipoEquipo.options[
+                            const opcionSeleccionada =
+                                    tipoEquipo.options[
                                             tipoEquipo.selectedIndex
                                     ];
 
-
-                            if (!opcionSeleccionada) {
+                            if (!opcionSeleccionada
+                                    || !opcionSeleccionada.value) {
 
                                 seccionTecnica
                                         .classList
@@ -990,20 +858,17 @@
                                 return;
                             }
 
-
-                            const tipo
-                                    = opcionSeleccionada
+                            const tipo =
+                                    opcionSeleccionada
                                     .text
                                     .trim()
                                     .toUpperCase();
 
-
-                            const requiereCaracteristicas
-                                    = tipo === "LAPTOP"
+                            const requiereCaracteristicas =
+                                    tipo === "LAPTOP"
                                     || tipo === "DESKTOP"
                                     || tipo === "PC"
                                     || tipo === "WORKSTATION";
-
 
                             if (requiereCaracteristicas) {
 
@@ -1021,13 +886,11 @@
                                                 "seccion-oculta"
                                                 );
 
-
-                                const inputsTecnicos
-                                        = seccionTecnica
+                                const inputsTecnicos =
+                                        seccionTecnica
                                         .querySelectorAll(
                                                 "input"
                                                 );
-
 
                                 inputsTecnicos
                                         .forEach(
@@ -1037,26 +900,19 @@
 
                                                 }
                                         );
-
                             }
-
                         }
-
 
                         tipoEquipo.addEventListener(
                                 "change",
                                 actualizarCamposTecnicos
                                 );
 
-
                         actualizarCamposTecnicos();
-
-
                     }
             );
 
         </script>
-
 
     </body>
 

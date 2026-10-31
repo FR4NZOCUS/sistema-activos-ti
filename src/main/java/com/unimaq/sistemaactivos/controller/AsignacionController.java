@@ -9,6 +9,8 @@ import com.unimaq.sistemaactivos.repository.ActivoRepository;
 import com.unimaq.sistemaactivos.repository.AsignacionRepository;
 import com.unimaq.sistemaactivos.repository.ColaboradorRepository;
 import com.unimaq.sistemaactivos.repository.EstadoActivoRepository;
+import com.unimaq.sistemaactivos.repository.SedeRepository;
+import com.unimaq.sistemaactivos.repository.TipoEquipoRepository;
 
 import com.unimaq.sistemaactivos.service.HistorialActivoService;
 import com.unimaq.sistemaactivos.service.RecomendacionActivoService;
@@ -16,6 +18,11 @@ import com.unimaq.sistemaactivos.service.RecomendacionActivoService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +44,10 @@ public class AsignacionController {
 
     private final EstadoActivoRepository estadoActivoRepository;
 
+    private final TipoEquipoRepository tipoEquipoRepository;
+
+    private final SedeRepository sedeRepository;
+
     private final RecomendacionActivoService recomendacionActivoService;
 
     private final HistorialActivoService historialActivoService;
@@ -52,6 +63,8 @@ public class AsignacionController {
             ColaboradorRepository colaboradorRepository,
             ActivoRepository activoRepository,
             EstadoActivoRepository estadoActivoRepository,
+            TipoEquipoRepository tipoEquipoRepository,
+            SedeRepository sedeRepository,
             RecomendacionActivoService recomendacionActivoService,
             HistorialActivoService historialActivoService) {
 
@@ -67,6 +80,12 @@ public class AsignacionController {
         this.estadoActivoRepository
                 = estadoActivoRepository;
 
+        this.tipoEquipoRepository
+                = tipoEquipoRepository;
+
+        this.sedeRepository
+                = sedeRepository;
+
         this.recomendacionActivoService
                 = recomendacionActivoService;
 
@@ -77,16 +96,209 @@ public class AsignacionController {
 
     /*
      * =====================================================
-     * LISTADO
+     * LISTADO CON FILTROS Y PAGINACIÓN
      * =====================================================
      */
     @GetMapping("/asignaciones")
     public String listarAsignaciones(
+            @RequestParam(
+                    value = "q",
+                    required = false
+            ) String q,
+            @RequestParam(
+                    value = "estado",
+                    required = false
+            ) String estado,
+            @RequestParam(
+                    value = "tipoId",
+                    required = false
+            ) Integer tipoId,
+            @RequestParam(
+                    value = "sedeId",
+                    required = false
+            ) Integer sedeId,
+            @RequestParam(
+                    value = "page",
+                    defaultValue = "0"
+            ) int page,
+            @RequestParam(
+                    value = "size",
+                    defaultValue = "10"
+            ) int size,
             Model model) {
 
+
+        /*
+         * =================================================
+         * VALIDAR TAMAÑO
+         * =================================================
+         */
+        if (size != 10
+                && size != 20
+                && size != 50) {
+
+            size = 10;
+        }
+
+
+        /*
+         * Evitar páginas negativas.
+         */
+        if (page < 0) {
+
+            page = 0;
+        }
+
+
+        /*
+         * Limpiar búsqueda.
+         */
+        if (q != null) {
+
+            q = q.trim();
+
+            if (q.isEmpty()) {
+
+                q = null;
+            }
+        }
+
+
+        /*
+         * Limpiar estado.
+         */
+        if (estado != null) {
+
+            estado = estado.trim();
+
+            if (estado.isEmpty()) {
+
+                estado = null;
+            }
+        }
+
+
+        /*
+         * =================================================
+         * PAGINACIÓN
+         * =================================================
+         */
+        Pageable pageable
+                = PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(
+                                Sort.Direction.DESC,
+                                "idAsignacion"
+                        )
+                );
+
+
+        /*
+         * =================================================
+         * CONSULTA CON FILTROS
+         * =================================================
+         */
+        Page<Asignacion> paginaAsignaciones
+                = asignacionRepository
+                        .buscarConFiltros(
+                                q,
+                                estado,
+                                tipoId,
+                                sedeId,
+                                pageable
+                        );
+
+
+        /*
+         * Si se solicita una página que ya no existe
+         * después de aplicar filtros, volver a página 0.
+         */
+        if (paginaAsignaciones.getTotalPages() > 0
+                && page >= paginaAsignaciones.getTotalPages()) {
+
+            pageable
+                    = PageRequest.of(
+                            0,
+                            size,
+                            Sort.by(
+                                    Sort.Direction.DESC,
+                                    "idAsignacion"
+                            )
+                    );
+
+            paginaAsignaciones
+                    = asignacionRepository
+                            .buscarConFiltros(
+                                    q,
+                                    estado,
+                                    tipoId,
+                                    sedeId,
+                                    pageable
+                            );
+        }
+
+
+        /*
+         * =================================================
+         * RESULTADOS
+         * =================================================
+         */
         model.addAttribute(
                 "asignaciones",
-                asignacionRepository.findAll()
+                paginaAsignaciones.getContent()
+        );
+
+        model.addAttribute(
+                "paginaAsignaciones",
+                paginaAsignaciones
+        );
+
+
+        /*
+         * =================================================
+         * CATÁLOGOS PARA FILTROS
+         * =================================================
+         */
+        model.addAttribute(
+                "tiposEquipo",
+                tipoEquipoRepository.findAll()
+        );
+
+        model.addAttribute(
+                "sedes",
+                sedeRepository.findAll()
+        );
+
+
+        /*
+         * =================================================
+         * CONSERVAR FILTROS
+         * =================================================
+         */
+        model.addAttribute(
+                "q",
+                q
+        );
+
+        model.addAttribute(
+                "estado",
+                estado
+        );
+
+        model.addAttribute(
+                "tipoId",
+                tipoId
+        );
+
+        model.addAttribute(
+                "sedeId",
+                sedeId
+        );
+
+        model.addAttribute(
+                "size",
+                size
         );
 
         return "asignaciones";
@@ -125,8 +337,7 @@ public class AsignacionController {
 
 
         /*
-         * Todavía no se seleccionó
-         * un colaborador.
+         * Todavía no existe colaborador seleccionado.
          */
         if (colaboradorId == null) {
 
@@ -226,7 +437,7 @@ public class AsignacionController {
 
         /*
          * =================================================
-         * ACTIVOS COMPLEMENTARIOS DISPONIBLES
+         * ACTIVOS COMPLEMENTARIOS
          * =================================================
          */
         model.addAttribute(
@@ -251,8 +462,7 @@ public class AsignacionController {
     public String guardarAsignacion(
             Asignacion formulario,
             @RequestParam(
-                    value
-                    = "activosComplementariosSeleccionados",
+                    value = "activosComplementariosSeleccionados",
                     required = false
             ) List<Integer> idsComplementarios) {
 
@@ -263,7 +473,6 @@ public class AsignacionController {
          * =================================================
          */
         if (formulario.getColaborador() == null
-
                 || formulario
                         .getColaborador()
                         .getIdColaborador()
@@ -386,8 +595,7 @@ public class AsignacionController {
                 "Activo principal asignado "
                 + "automáticamente según los "
                 + "requisitos del cargo a "
-                + colaborador
-                        .getNombreCompleto()
+                + colaborador.getNombreCompleto()
         );
 
 
@@ -501,8 +709,7 @@ public class AsignacionController {
                         estadoAsignado,
                         formulario.getObservaciones(),
                         "Activo complementario asignado a "
-                        + colaborador
-                                .getNombreCompleto()
+                        + colaborador.getNombreCompleto()
                 );
             }
         }
@@ -588,12 +795,10 @@ public class AsignacionController {
             Activo activo) {
 
         if (activo.getEstado() == null
-
                 || activo
                         .getEstado()
                         .getNombreEstado()
                 == null
-
                 || !"DISPONIBLE"
                         .equals(
                                 activo

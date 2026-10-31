@@ -1,528 +1,1133 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
     <head>
+
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
         <title>Asignaciones</title>
 
         <style>
+
             * {
                 box-sizing: border-box;
                 font-family: Arial, Helvetica, sans-serif;
             }
+
             body {
                 margin: 0;
                 background: #f4f6f8;
                 color: #263238;
             }
+
             .cabecera {
                 background: #14476b;
                 color: white;
                 padding: 18px 30px;
             }
+
             .cabecera-contenido {
                 max-width: 1400px;
                 margin: 0 auto;
+
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
                 gap: 20px;
             }
+
             .cabecera h1 {
                 margin: 0;
                 font-size: 25px;
             }
+
             .cabecera p {
                 margin: 5px 0 0;
                 font-size: 14px;
             }
+
             .usuario-area {
                 display: flex;
                 align-items: center;
                 gap: 15px;
             }
+
             .usuario-info {
                 text-align: right;
             }
+
             .usuario-info strong {
                 display: block;
                 font-size: 14px;
             }
+
             .usuario-info span {
                 font-size: 12px;
                 opacity: .85;
             }
+
             .btn-logout {
                 background: white;
                 color: #14476b;
+
                 border: none;
                 border-radius: 5px;
+
                 padding: 9px 14px;
+
                 font-size: 13px;
                 font-weight: bold;
+
                 cursor: pointer;
             }
+
             .nav {
                 background: #0b2f4a;
                 padding: 0 30px;
             }
+
             .nav-contenido {
                 max-width: 1400px;
                 margin: 0 auto;
+
                 display: flex;
                 align-items: center;
+
                 gap: 5px;
             }
+
             .nav a {
                 color: white;
                 text-decoration: none;
+
                 padding: 13px 16px;
+
                 display: block;
+
                 font-size: 14px;
             }
+
             .nav a:hover {
                 background: #164f78;
             }
+
             .nav a.activo {
                 background: #0f5ca8;
                 font-weight: bold;
             }
+
             .contenedor {
                 width: 95%;
                 max-width: 1400px;
                 margin: 30px auto;
             }
+
             .encabezado-pagina {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+
                 gap: 15px;
+
                 margin-bottom: 20px;
             }
+
             .encabezado-pagina h2 {
                 margin: 0;
                 color: #16374f;
             }
+
             .encabezado-pagina p {
                 margin: 6px 0 0;
+
                 color: #607d8b;
+
                 font-size: 14px;
             }
+
             .btn {
                 border: none;
                 border-radius: 5px;
+
                 padding: 10px 15px;
+
                 text-decoration: none;
+
                 cursor: pointer;
+
                 display: inline-block;
+
                 font-size: 13px;
             }
+
             .btn-primario {
                 background: #0f5ca8;
                 color: white;
             }
+
             .btn-secundario {
                 background: #eceff1;
                 color: #37474f;
             }
+
             .btn-ver {
                 background: #e7f1fc;
                 color: #0f5ca8;
             }
+
             .btn-devolver {
                 background: #fff3cd;
                 color: #765b00;
             }
+
             .filtros {
                 background: white;
+
                 border: 1px solid #e0e5e8;
                 border-radius: 8px;
+
                 padding: 18px;
+
                 margin-bottom: 20px;
-                box-shadow: 0 2px 5px rgba(0,0,0,.04);
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
             }
+
             .filtros-grid {
                 display: grid;
-                grid-template-columns: 2fr 1fr 1fr 1fr 120px auto auto;
+
+                grid-template-columns:
+                    2fr 1fr 1fr 1fr 120px auto auto;
+
                 gap: 12px;
+
                 align-items: end;
             }
+
             .campo label {
                 display: block;
+
                 font-size: 12px;
                 font-weight: bold;
+
                 margin-bottom: 6px;
+
                 color: #455a64;
             }
-            .campo input, .campo select {
+
+            .campo input,
+            .campo select {
                 width: 100%;
                 height: 40px;
+
                 padding: 8px 10px;
+
                 border: 1px solid #cfd8dc;
                 border-radius: 5px;
+
                 background: white;
             }
+
             .tabla-contenedor {
                 background: white;
+
                 border: 1px solid #e0e5e8;
                 border-radius: 8px;
+
                 overflow-x: auto;
-                box-shadow: 0 2px 5px rgba(0,0,0,.04);
+
+                box-shadow:
+                    0 2px 5px rgba(0,0,0,.04);
             }
+
             table {
                 width: 100%;
                 border-collapse: collapse;
                 min-width: 1050px;
             }
+
             th {
                 background: #eef3f7;
+
                 color: #16374f;
+
                 font-size: 13px;
+
                 text-align: left;
+
                 padding: 12px;
-                border-bottom: 1px solid #d9e1e5;
+
+                border-bottom:
+                    1px solid #d9e1e5;
             }
+
             td {
                 padding: 12px;
-                border-bottom: 1px solid #edf0f2;
+
+                border-bottom:
+                    1px solid #edf0f2;
+
                 font-size: 13px;
+
                 vertical-align: top;
             }
+
             tr:hover td {
                 background: #fafcfd;
             }
+
             .badge {
                 display: inline-block;
+
                 padding: 5px 8px;
+
                 border-radius: 12px;
+
                 font-size: 11px;
+
                 font-weight: bold;
             }
+
             .badge-activa {
                 background: #e8f5e9;
                 color: #2e7d32;
             }
+
             .badge-finalizada {
                 background: #eceff1;
                 color: #546e7a;
             }
+
             .acciones {
                 display: flex;
+
                 gap: 6px;
+
                 flex-wrap: wrap;
             }
+
             .sin-resultados {
                 padding: 30px;
+
                 text-align: center;
+
                 color: #607d8b;
             }
+
             .paginacion-barra {
                 margin-top: 18px;
+
                 display: flex;
+
                 justify-content: space-between;
+
                 align-items: center;
+
                 gap: 15px;
+
                 flex-wrap: wrap;
             }
+
             .paginacion-info {
                 font-size: 13px;
                 color: #607d8b;
             }
+
             .paginacion {
                 display: flex;
+
                 gap: 5px;
+
                 flex-wrap: wrap;
             }
+
             .pagina {
                 min-width: 36px;
                 height: 36px;
+
                 padding: 8px 10px;
+
                 border-radius: 5px;
+
                 border: 1px solid #cfd8dc;
+
                 background: white;
+
                 color: #37474f;
+
                 text-decoration: none;
+
                 text-align: center;
+
                 font-size: 13px;
             }
+
             .pagina:hover {
                 border-color: #0f5ca8;
                 color: #0f5ca8;
             }
+
             .pagina.activa {
                 background: #0f5ca8;
                 border-color: #0f5ca8;
+
                 color: white;
+
                 font-weight: bold;
             }
+
             .pagina.deshabilitada {
                 opacity: .45;
                 pointer-events: none;
             }
+
             @media(max-width: 1100px) {
+
                 .filtros-grid {
-                    grid-template-columns: 1fr 1fr;
+                    grid-template-columns:
+                        1fr 1fr;
                 }
+
                 .nav-contenido {
                     flex-wrap: wrap;
                 }
             }
+
             @media(max-width: 650px) {
+
                 .filtros-grid {
-                    grid-template-columns: 1fr;
+                    grid-template-columns:
+                        1fr;
                 }
-                .encabezado-pagina, .cabecera-contenido {
+
+                .encabezado-pagina,
+                .cabecera-contenido {
                     flex-direction: column;
                     align-items: flex-start;
                 }
+
                 .usuario-info {
                     text-align: left;
                 }
             }
+
         </style>
+
     </head>
+
     <body>
 
+
         <div class="cabecera">
+
             <div class="cabecera-contenido">
+
                 <div>
-                    <h1>Sistema de Gestión de Activos TI</h1>
-                    <p>Control y asignación de activos tecnológicos</p>
+
+                    <h1>
+                        Sistema de Gestión de Activos TI
+                    </h1>
+
+                    <p>
+                        Control y asignación de activos tecnológicos
+                    </p>
+
                 </div>
+
 
                 <div class="usuario-area">
+
                     <div class="usuario-info">
-                        <strong th:text="${usuarioAutenticado != null ? usuarioAutenticado : 'Usuario'}">Usuario</strong>
-                        <span th:if="${esAdministrador}">Administrador</span>
-                        <span th:if="${esSoporte}">Soporte TI</span>
-                        <span th:if="${esConsulta}">Consulta</span>
+
+                        <strong
+                            th:text="${usuarioAutenticado != null
+                            ? usuarioAutenticado
+                            : 'Usuario'}">
+
+                            Usuario
+
+                        </strong>
+
+                        <span th:if="${esAdministrador}">
+                            Administrador
+                        </span>
+
+                        <span th:if="${esSoporte}">
+                            Soporte TI
+                        </span>
+
+                        <span th:if="${esConsulta}">
+                            Consulta
+                        </span>
+
                     </div>
 
-                    <form method="post" th:action="@{/logout}">
-                        <button type="submit" class="btn-logout">Cerrar sesión</button>
+
+                    <form
+                        method="post"
+                        th:action="@{/logout}">
+
+                        <button
+                            type="submit"
+                            class="btn-logout">
+
+                            Cerrar sesión
+
+                        </button>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
 
+
         <div class="nav">
+
             <div class="nav-contenido">
-                <a th:href="@{/}">Inicio</a>
-                <a th:href="@{/inventario}">Inventario</a>
-                <a th:href="@{/colaboradores}">Colaboradores</a>
-                <a th:href="@{/asignaciones}" class="activo">Asignaciones</a>
-                <a th:href="@{/devoluciones}">Devoluciones</a>
-                <a th:href="@{/alertas-garantia}">Garantías</a>
-                <a th:href="@{/requisitos-cargo}">Requisitos</a>
-                <a th:if="${esAdministrador}" th:href="@{/usuarios}">Usuarios</a>
+
+                <a th:href="@{/}">
+                    Inicio
+                </a>
+
+                <a th:href="@{/inventario}">
+                    Inventario
+                </a>
+
+                <a th:href="@{/colaboradores}">
+                    Colaboradores
+                </a>
+
+                <a
+                    th:href="@{/asignaciones}"
+                    class="activo">
+
+                    Asignaciones
+
+                </a>
+
+                <a th:href="@{/devoluciones}">
+                    Devoluciones
+                </a>
+
+                <a th:href="@{/alertas-garantia}">
+                    Garantías
+                </a>
+
+                <a th:href="@{/requisitos-cargo}">
+                    Requisitos
+                </a>
+
+                <a
+                    th:if="${esAdministrador}"
+                    th:href="@{/usuarios}">
+
+                    Usuarios
+
+                </a>
+
             </div>
+
         </div>
+
 
         <div class="contenedor">
 
+
             <div class="encabezado-pagina">
+
                 <div>
-                    <h2>Asignaciones</h2>
-                    <p>Filtre y consulte las asignaciones registradas sin cargar todos los registros a la vez.</p>
+
+                    <h2>
+                        Asignaciones
+                    </h2>
+
+                    <p>
+                        Filtre y consulte las asignaciones registradas
+                        sin cargar todos los registros a la vez.
+                    </p>
+
                 </div>
 
-                <a th:if="${esAdministrador or esSoporte}"
-                   th:href="@{/asignaciones/nueva}"
-                   class="btn btn-primario">
+
+                <a
+                    th:if="${esAdministrador or esSoporte}"
+                    th:href="@{/asignaciones/nueva}"
+                    class="btn btn-primario">
+
                     Nueva asignación
+
                 </a>
+
             </div>
 
-            <form class="filtros" method="get" th:action="@{/asignaciones}">
+
+            <!-- =====================================================
+                 FILTROS
+                 ===================================================== -->
+
+            <form
+                class="filtros"
+                method="get"
+                th:action="@{/asignaciones}">
+
+
                 <div class="filtros-grid">
 
-                    <div class="campo">
-                        <label>Búsqueda</label>
-                        <input type="text"
-                               name="q"
-                               th:value="${q}"
-                               placeholder="Colaborador, código, inventario, serie o modelo">
-                    </div>
 
                     <div class="campo">
-                        <label>Estado</label>
+
+                        <label>
+                            Búsqueda
+                        </label>
+
+                        <input
+                            type="text"
+                            name="q"
+                            th:value="${q}"
+                            placeholder="Colaborador, código, inventario, serie o modelo">
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label>
+                            Estado
+                        </label>
+
                         <select name="estado">
-                            <option value="">Todos</option>
-                            <option value="ACTIVA" th:selected="${estado == 'ACTIVA'}">ACTIVA</option>
-                            <option value="FINALIZADA" th:selected="${estado == 'FINALIZADA'}">FINALIZADA</option>
+
+                            <option value="">
+                                Todos
+                            </option>
+
+                            <option
+                                value="ACTIVA"
+                                th:selected="${estado == 'ACTIVA'}">
+
+                                ACTIVA
+
+                            </option>
+
+                            <option
+                                value="FINALIZADA"
+                                th:selected="${estado == 'FINALIZADA'}">
+
+                                FINALIZADA
+
+                            </option>
+
                         </select>
+
                     </div>
 
+
                     <div class="campo">
-                        <label>Tipo de equipo</label>
+
+                        <label>
+                            Tipo de equipo
+                        </label>
+
                         <select name="tipoId">
-                            <option value="">Todos</option>
-                            <option th:each="tipo : ${tiposEquipo}"
-                                    th:value="${tipo.idTipoEquipo}"
-                                    th:text="${tipo.nombreTipo}"
-                                    th:selected="${tipoId != null and tipoId == tipo.idTipoEquipo}">
+
+                            <option value="">
+                                Todos
                             </option>
+
+                            <option
+                                th:each="tipo : ${tiposEquipo}"
+                                th:value="${tipo.idTipoEquipo}"
+                                th:text="${tipo.nombreTipo}"
+                                th:selected="${tipoId != null
+                                and tipoId == tipo.idTipoEquipo}">
+                            </option>
+
                         </select>
+
                     </div>
 
+
                     <div class="campo">
-                        <label>Sede</label>
+
+                        <label>
+                            Sede
+                        </label>
+
                         <select name="sedeId">
-                            <option value="">Todas</option>
-                            <option th:each="sede : ${sedes}"
-                                    th:value="${sede.idSede}"
-                                    th:text="${sede.nombreSede}"
-                                    th:selected="${sedeId != null and sedeId == sede.idSede}">
+
+                            <option value="">
+                                Todas
                             </option>
+
+                            <option
+                                th:each="sede : ${sedes}"
+                                th:value="${sede.idSede}"
+                                th:text="${sede.nombreSede}"
+                                th:selected="${sedeId != null
+                                and sedeId == sede.idSede}">
+                            </option>
+
                         </select>
+
                     </div>
+
 
                     <div class="campo">
-                        <label>Por página</label>
+
+                        <label>
+                            Por página
+                        </label>
+
                         <select name="size">
-                            <option value="10" th:selected="${size == 10}">10</option>
-                            <option value="20" th:selected="${size == 20}">20</option>
-                            <option value="50" th:selected="${size == 50}">50</option>
+
+                            <option
+                                value="10"
+                                th:selected="${size == 10}">
+                                10
+                            </option>
+
+                            <option
+                                value="20"
+                                th:selected="${size == 20}">
+                                20
+                            </option>
+
+                            <option
+                                value="50"
+                                th:selected="${size == 50}">
+                                50
+                            </option>
+
                         </select>
+
                     </div>
 
-                    <button type="submit" class="btn btn-primario">Filtrar</button>
-                    <a th:href="@{/asignaciones}" class="btn btn-secundario">Limpiar</a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primario">
+
+                        Filtrar
+
+                    </button>
+
+
+                    <a
+                        th:href="@{/asignaciones}"
+                        class="btn btn-secundario">
+
+                        Limpiar
+
+                    </a>
+
+
                 </div>
+
             </form>
 
+
+            <!-- =====================================================
+                 TABLA
+                 ===================================================== -->
+
             <div class="tabla-contenedor">
-                <table th:if="${asignaciones != null and !asignaciones.isEmpty()}">
+
+
+                <table
+                    th:if="${asignaciones != null
+                    and !asignaciones.isEmpty()}">
+
+
                     <thead>
+
                         <tr>
+
                             <th>ID</th>
+
                             <th>Colaborador</th>
+
                             <th>Código</th>
+
                             <th>Activo</th>
+
                             <th>Tipo</th>
+
                             <th>Marca / Modelo</th>
+
                             <th>Sede</th>
+
                             <th>Estado</th>
+
                             <th>Acciones</th>
+
                         </tr>
+
                     </thead>
 
+
                     <tbody>
-                        <tr th:each="asignacion : ${asignaciones}">
-                            <td th:text="${asignacion.idAsignacion}">1</td>
 
-                            <td th:text="${asignacion.colaborador != null ? asignacion.colaborador.nombreCompleto : '-'}">
+
+                        <tr
+                            th:each="asignacion : ${asignaciones}">
+
+
+                            <td
+                                th:text="${asignacion.idAsignacion}">
+                                1
+                            </td>
+
+
+                            <td
+                                th:text="${asignacion.colaborador != null
+                                ? asignacion.colaborador.nombreCompleto
+                                : '-'}">
+
                                 Colaborador
+
                             </td>
 
-                            <td th:text="${asignacion.colaborador != null ? asignacion.colaborador.codigoUsuario : '-'}">
+
+                            <td
+                                th:text="${asignacion.colaborador != null
+                                ? asignacion.colaborador.codigoUsuario
+                                : '-'}">
+
                                 Código
+
                             </td>
+
 
                             <td>
-                                <div th:text="${asignacion.activo != null ? asignacion.activo.numeroInventario : '-'}">Inventario</div>
-                                <small th:text="${asignacion.activo != null and asignacion.activo.numeroSerie != null ? asignacion.activo.numeroSerie : ''}"></small>
-                            </td>
 
-                            <td th:text="${asignacion.activo != null and asignacion.activo.tipoEquipo != null ? asignacion.activo.tipoEquipo.nombreTipo : '-'}">
-                                Tipo
-                            </td>
+                                <div
+                                    th:text="${asignacion.activo != null
+                                    ? asignacion.activo.numeroInventario
+                                    : '-'}">
 
-                            <td>
-                                <span th:text="${asignacion.activo != null and asignacion.activo.marca != null ? asignacion.activo.marca.nombreMarca : '-'}"></span>
-                                <span th:if="${asignacion.activo != null and asignacion.activo.modelo != null}"
-                                      th:text="${' - ' + asignacion.activo.modelo}"></span>
-                            </td>
+                                    Inventario
 
-                            <td th:text="${asignacion.activo != null and asignacion.activo.sede != null ? asignacion.activo.sede.nombreSede : '-'}">
-                                Sede
-                            </td>
-
-                            <td>
-                                <span class="badge"
-                                      th:classappend="${asignacion.estadoAsignacion == 'ACTIVA' ? ' badge-activa' : ' badge-finalizada'}"
-                                      th:text="${asignacion.estadoAsignacion}">
-                                    ACTIVA
-                                </span>
-                            </td>
-
-                            <td>
-                                <div class="acciones">
-                                    <a th:href="@{/asignaciones/ver/{id}(id=${asignacion.idAsignacion})}"
-                                       class="btn btn-ver">
-                                        Ver
-                                    </a>
-
-                                    <a th:if="${(esAdministrador or esSoporte) and asignacion.estadoAsignacion == 'ACTIVA'}"
-                                       th:href="@{/devoluciones/nueva/{id}(id=${asignacion.idAsignacion})}"
-                                       class="btn btn-devolver">
-                                        Devolver
-                                    </a>
                                 </div>
+
+                                <small
+                                    th:text="${asignacion.activo != null
+                                    and asignacion.activo.numeroSerie != null
+                                    ? asignacion.activo.numeroSerie
+                                    : ''}">
+                                </small>
+
                             </td>
+
+
+                            <td
+                                th:text="${asignacion.activo != null
+                                and asignacion.activo.tipoEquipo != null
+                                ? asignacion.activo.tipoEquipo.nombreTipo
+                                : '-'}">
+
+                                Tipo
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    th:text="${asignacion.activo != null
+                                    and asignacion.activo.marca != null
+                                    ? asignacion.activo.marca.nombreMarca
+                                    : '-'}">
+                                </span>
+
+
+                                <span
+                                    th:if="${asignacion.activo != null
+                                    and asignacion.activo.modelo != null}"
+                                    th:text="${' - '
+                                    + asignacion.activo.modelo}">
+                                </span>
+
+                            </td>
+
+
+                            <td
+                                th:text="${asignacion.activo != null
+                                and asignacion.activo.sede != null
+                                ? asignacion.activo.sede.nombreSede
+                                : '-'}">
+
+                                Sede
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="badge"
+                                    th:classappend="${asignacion.estadoAsignacion
+                                    == 'ACTIVA'
+                                    ? ' badge-activa'
+                                    : ' badge-finalizada'}"
+                                    th:text="${asignacion.estadoAsignacion}">
+
+                                    ACTIVA
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="acciones">
+
+
+                                    <a
+                                        th:href="@{/asignaciones/ver/{id}
+                                        (id=${asignacion.idAsignacion})}"
+                                        class="btn btn-ver">
+
+                                        Ver
+
+                                    </a>
+
+
+                                    <a
+                                        th:if="${(esAdministrador or esSoporte)
+                                        and asignacion.estadoAsignacion
+                                        == 'ACTIVA'}"
+                                        th:href="@{/devoluciones/nueva/{id}
+                                        (id=${asignacion.idAsignacion})}"
+                                        class="btn btn-devolver">
+
+                                        Devolver
+
+                                    </a>
+
+
+                                </div>
+
+                            </td>
+
+
                         </tr>
+
+
                     </tbody>
+
                 </table>
 
-                <div class="sin-resultados"
-                     th:if="${asignaciones == null or asignaciones.isEmpty()}">
-                    No se encontraron asignaciones con los filtros seleccionados.
+
+                <div
+                    class="sin-resultados"
+                    th:if="${asignaciones == null
+                    or asignaciones.isEmpty()}">
+
+                    No se encontraron asignaciones
+                    con los filtros seleccionados.
+
                 </div>
+
+
             </div>
 
-            <div class="paginacion-barra" th:if="${paginaAsignaciones != null}">
+
+            <!-- =====================================================
+                 PAGINACIÓN
+                 ===================================================== -->
+
+            <div
+                class="paginacion-barra"
+                th:if="${paginaAsignaciones != null}">
+
 
                 <div class="paginacion-info">
-                    <span th:if="${paginaAsignaciones.totalElements > 0}">
+
+
+                    <span
+                        th:if="${paginaAsignaciones.totalElements > 0}">
+
                         Mostrando
-                        <strong th:text="${paginaAsignaciones.number * paginaAsignaciones.size + 1}">1</strong>
+
+                        <strong
+                            th:text="${paginaAsignaciones.number
+                            * paginaAsignaciones.size + 1}">
+                            1
+                        </strong>
+
                         -
-                        <strong th:text="${paginaAsignaciones.number * paginaAsignaciones.size + paginaAsignaciones.numberOfElements}">10</strong>
+
+                        <strong
+                            th:text="${paginaAsignaciones.number
+                            * paginaAsignaciones.size
+                            + paginaAsignaciones.numberOfElements}">
+                            10
+                        </strong>
+
                         de
-                        <strong th:text="${paginaAsignaciones.totalElements}">0</strong>
+
+                        <strong
+                            th:text="${paginaAsignaciones.totalElements}">
+                            0
+                        </strong>
+
                         registros
+
                     </span>
 
-                    <span th:if="${paginaAsignaciones.totalElements == 0}">0 registros</span>
+
+                    <span
+                        th:if="${paginaAsignaciones.totalElements == 0}">
+
+                        0 registros
+
+                    </span>
+
+
                 </div>
 
-                <div class="paginacion" th:if="${paginaAsignaciones.totalPages > 1}">
 
-                    <a class="pagina"
-                       th:classappend="${paginaAsignaciones.first} ? ' deshabilitada'"
-                       th:href="@{/asignaciones(page=0,size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+                <div
+                    class="paginacion"
+                    th:if="${paginaAsignaciones.totalPages > 1}">
+
+
+                    <!-- PRIMERA PÁGINA -->
+
+                    <a
+                        class="pagina"
+                        th:classappend="${paginaAsignaciones.first}
+                        ? ' deshabilitada' : ''"
+                        th:href="@{/asignaciones(
+                        page=0,
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        tipoId=${tipoId},
+                        sedeId=${sedeId}
+                        )}">
+
                         «
+
                     </a>
 
-                    <a class="pagina"
-                       th:classappend="${paginaAsignaciones.first} ? ' deshabilitada'"
-                       th:href="@{/asignaciones(page=${paginaAsignaciones.number - 1},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+
+                    <!-- ANTERIOR -->
+
+                    <a
+                        class="pagina"
+                        th:classappend="${paginaAsignaciones.first}
+                        ? ' deshabilitada' : ''"
+                        th:href="@{/asignaciones(
+                        page=${paginaAsignaciones.number - 1},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        tipoId=${tipoId},
+                        sedeId=${sedeId}
+                        )}">
+
                         ‹
+
                     </a>
 
-                    <a class="pagina"
-                       th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, paginaAsignaciones.number - 2), T(java.lang.Math).min(paginaAsignaciones.totalPages - 1, paginaAsignaciones.number + 2))}"
-                       th:classappend="${i == paginaAsignaciones.number} ? ' activa'"
-                       th:text="${i + 1}"
-                       th:href="@{/asignaciones(page=${i},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+
+                    <!-- NÚMEROS -->
+
+                    <a
+                        class="pagina"
+
+                        th:each="i :
+                        ${#numbers.sequence(
+                        T(java.lang.Math).max(
+                        0,
+                        paginaAsignaciones.number - 2
+                        ),
+                        T(java.lang.Math).min(
+                        paginaAsignaciones.totalPages - 1,
+                        paginaAsignaciones.number + 2
+                        )
+                        )}"
+
+                        th:classappend="${i
+                        == paginaAsignaciones.number}
+                        ? ' activa' : ''"
+
+                        th:text="${i + 1}"
+
+                        th:href="@{/asignaciones(
+                        page=${i},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        tipoId=${tipoId},
+                        sedeId=${sedeId}
+                        )}">
+
                         1
+
                     </a>
 
-                    <a class="pagina"
-                       th:classappend="${paginaAsignaciones.last} ? ' deshabilitada'"
-                       th:href="@{/asignaciones(page=${paginaAsignaciones.number + 1},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+
+                    <!-- SIGUIENTE -->
+
+                    <a
+                        class="pagina"
+                        th:classappend="${paginaAsignaciones.last}
+                        ? ' deshabilitada' : ''"
+                        th:href="@{/asignaciones(
+                        page=${paginaAsignaciones.number + 1},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        tipoId=${tipoId},
+                        sedeId=${sedeId}
+                        )}">
+
                         ›
+
                     </a>
 
-                    <a class="pagina"
-                       th:classappend="${paginaAsignaciones.last} ? ' deshabilitada'"
-                       th:href="@{/asignaciones(page=${paginaAsignaciones.totalPages - 1},size=${size},q=${q},estado=${estado},tipoId=${tipoId},sedeId=${sedeId})}">
+
+                    <!-- ÚLTIMA -->
+
+                    <a
+                        class="pagina"
+                        th:classappend="${paginaAsignaciones.last}
+                        ? ' deshabilitada' : ''"
+                        th:href="@{/asignaciones(
+                        page=${paginaAsignaciones.totalPages - 1},
+                        size=${size},
+                        q=${q},
+                        estado=${estado},
+                        tipoId=${tipoId},
+                        sedeId=${sedeId}
+                        )}">
+
                         »
+
                     </a>
+
 
                 </div>
+
+
             </div>
 
+
         </div>
+
+
     </body>
+
 </html>
